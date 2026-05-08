@@ -1,5 +1,7 @@
 # Pricing History Implementation Plan
 
+## USE SKILLS ON AGENTS FILES!
+
 ## 1. Overview
 This plan outlines the steps to build a robust Pricing History feature. The goal is to allow users to search for items, apply specific filters, and retrieve historical pricing data from the backend. The feature will be powered by Django (backend) and React (frontend) using modern data fetching and form management tools.
 
@@ -23,6 +25,7 @@ The search functionality will allow querying the `Item.name` field (case-insensi
 - **Date Range:** 
   - `FromDate` and `ToDate` fields implemented using date picker components.
   - The form should store these as formatted strings (e.g., `YYYY-MM-DD`) representing the selected range.
+  USE THE EXISTRING COMPONENT FOR THE DATE RANGE, DO NOT MODIFY OR BREAK IT. FromDate and ToDate are selected on the same component.
 
 *Note: All filter dropdown options (Class, Subclass, Quality, Faction, Realm) should be fetched from the backend on page mount and cached via React Query.*
 
@@ -31,12 +34,16 @@ Create the following REST API endpoints in the `Registros` app. Every endpoint m
 
 1. **GET `/api/filters/class-subclass/`**
    - Returns a structured mapping of classes and their associated subclasses.
-2. **GET `/api/filters/options/`**
-   - Returns available options for Quality, Faction, and Realm.
-3. **GET `/api/items/search/`**
+2. **GET `/api/filters/quality/`**
+  GI - Returns available options for Quality.
+3. **GET `/api/filters/faction/`**
+   - Returns available options for Faction.
+4. **GET `/api/filters/realm/`**
+   - Returns available options for Realm.
+5. **GET `/api/items/search/`**
    - **Query Params:** `searchterm`, `class`, `subclass`, `quality`.
    - Returns a list of items matching the case-insensitive search and applied filters.
-4. **GET `/api/pricing-history/`**
+6. **GET `/api/pricing-history/`**
    - **Query Params:** `item_id` (required), `faction_id`, `realm_id`, `from_date`, `to_date`.
    - Returns the pricing records for the selected item over the specified date range.
 
