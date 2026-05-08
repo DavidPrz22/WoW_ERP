@@ -43,6 +43,7 @@ Create the following REST API endpoints in the `Registros` app. Every endpoint m
 5. **GET `/api/items/search/`**
    - **Query Params:** `searchterm`, `class`, `subclass`, `quality`.
    - Returns a list of items matching the case-insensitive search and applied filters.
+   - CREATE queryOptions for each individual filter option.
 6. **GET `/api/pricing-history/`**
    - **Query Params:** `item_id` (required), `faction_id`, `realm_id`, `from_date`, `to_date`.
    - Returns the pricing records for the selected item over the specified date range.
