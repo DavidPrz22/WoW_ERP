@@ -1,111 +1,106 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+    /* WoW TBC inspired dark parchment + gold */
+    --background: 30 18% 7%;
+    --foreground: 40 35% 88%;
+
+    --card: 30 20% 10%;
+    --card-foreground: 40 35% 88%;
+
+    --popover: 30 22% 9%;
+    --popover-foreground: 40 35% 88%;
+
+    --primary: 42 78% 55%;
+    --primary-foreground: 30 30% 8%;
+
+    --secondary: 30 18% 14%;
+    --secondary-foreground: 40 35% 88%;
+
+    --muted: 30 14% 16%;
+    --muted-foreground: 40 15% 65%;
+
+    --accent: 24 80% 45%;
+    --accent-foreground: 40 35% 95%;
+
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 40 35% 95%;
+
+    --border: 36 28% 22%;
+    --input: 36 28% 18%;
+    --ring: 42 78% 55%;
+
+    --radius: 0.5rem;
+
+    /* Item quality colors (WoW) */
+    --quality-poor: 0 0% 62%;
+    --quality-common: 0 0% 100%;
+    --quality-uncommon: 120 60% 45%;
+    --quality-rare: 217 100% 50%;
+    --quality-epic: 277 75% 60%;
+    --quality-legendary: 30 100% 50%;
+
+    /* Faction */
+    --faction-horde: 0 75% 45%;
+    --faction-alliance: 217 90% 55%;
+
+    /* Gradients & shadows */
+    --gradient-gold: linear-gradient(135deg, hsl(42 78% 55%), hsl(36 90% 42%));
+    --gradient-hero: radial-gradient(ellipse at top, hsl(36 60% 22% / 0.6), hsl(30 18% 7%) 60%);
+    --shadow-gold: 0 10px 40px -10px hsl(42 78% 55% / 0.35);
+    --shadow-panel: 0 8px 32px -12px hsl(0 0% 0% / 0.6);
+
+    --sidebar-background: 30 22% 6%;
+    --sidebar-foreground: 40 25% 78%;
+    --sidebar-primary: 42 78% 55%;
+    --sidebar-primary-foreground: 30 30% 8%;
+    --sidebar-accent: 30 18% 12%;
+    --sidebar-accent-foreground: 42 78% 65%;
+    --sidebar-border: 36 28% 18%;
+    --sidebar-ring: 42 78% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
   }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    background-image:
+      radial-gradient(ellipse at top, hsl(36 60% 18% / 0.35), transparent 60%),
+      radial-gradient(ellipse at bottom, hsl(0 50% 14% / 0.25), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  .font-display {
+    font-family: 'Cinzel', 'Georgia', serif;
+    letter-spacing: 0.02em;
   }
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+@layer utilities {
+  .text-gold {
+    color: hsl(var(--primary));
   }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+  .bg-gradient-gold {
+    background: var(--gradient-gold);
   }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  .bg-hero {
+    background: var(--gradient-hero);
+  }
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+  .shadow-panel {
+    box-shadow: var(--shadow-panel);
+  }
 }

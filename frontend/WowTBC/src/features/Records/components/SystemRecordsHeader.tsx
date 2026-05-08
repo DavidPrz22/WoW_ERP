@@ -1,0 +1,139 @@
+import { useState, useMemo } from "react";
+import { toast } from "sonner";
+import { X, TableProperties, RefreshCw, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { records } from "@/data/mock";
+import { PriceTablePanel } from "./SystemRecordsTable";
+import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
+
+export function SystemRecordsHeader() {
+  const { recordsQuery, faction, showPrices, setRecordsQuery, setFaction, setShowPrices } = useRecordsStore();
+  const [generating, setGenerating] = useState(false);
+
+  const filtered = useMemo(
+    () =>
+      records.filter((r) => {
+        const q = recordsQuery.toLowerCase();
+        return (
+          (faction === "all" || r.faction === faction) &&
+          (!q || r.realm.toLowerCase().includes(q) || r.id.toLowerCase().includes(q))
+        );
+      }),
+    [recordsQuery, faction]
+  );
+
+  const handleGenerate = () => {
+    setGenerating(true);
+    setTimeout(() => {
+      setGenerating(false);
+      toast.success("Snapshot triggered", { description: "Fetching latest data from TSM API…" });
+    }, 900);
+  };
+
+  if (showPrices) {
+    return (
+      <div className="px-6 md:px-12 py-10 space-y-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="font-display text-4xl text-gold">Price Table</h1>
+            <p className="text-muted-foreground text-sm">Reagent prices grouped by category. Override values inline.</p>
+          </div>
+          <Button variant="outline" className="border-primary/40" onClick={() => setShowPrices(false)}>
+            <X className="mr-2 h-4 w-4" /> Close
+          </Button>
+        </div>
+        <Card className="bg-card/60 border-border shadow-panel">
+          <CardContent className="pt-6">
+            <PriceTablePanel />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-6 md:px-12 py-10 space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl text-gold">Records</h1>
+          <p className="text-muted-foreground text-sm">Browse and generate auction house ingestion snapshots.</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" className="border-primary/40" onClick={() => setShowPrices(true)}>
+            <TableProperties className="mr-2 h-4 w-4" /> Price Table
+          </Button>
+          <Button onClick={handleGenerate} disabled={generating} className="bg-gradient-gold text-primary-foreground shadow-gold">
+            <RefreshCw className={`mr-2 h-4 w-4 ${generating ? "animate-spin" : ""}`} />
+            Generate Record
+          </Button>
+        </div>
+      </div>
+
+      <Card className="bg-card/60 border-border shadow-panel">
+        <CardHeader className="flex flex-row flex-wrap gap-3 items-center justify-between">
+          <div className="relative flex-1 min-w-[240px] max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={recordsQuery}
+              onChange={(e) => setRecordsQuery(e.target.value)}
+              placeholder="Search by realm or record id…"
+              className="pl-9 bg-secondary/40"
+            />
+          </div>
+          <Select value={faction} onValueChange={setFaction}>
+            <SelectTrigger className="w-[180px] bg-secondary/40">
+              <SelectValue placeholder="Faction" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All factions</SelectItem>
+              <SelectItem value="Horde">Horde</SelectItem>
+              <SelectItem value="Alliance">Alliance</SelectItem>
+            </SelectContent>
+          </Select>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Record ID</TableHead>
+                <TableHead>Realm</TableHead>
+                <TableHead>Faction</TableHead>
+                <TableHead>Items</TableHead>
+                <TableHead className="text-right">Timestamp</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((r) => (
+                <TableRow key={r.id}>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{r.id}</TableCell>
+                  <TableCell className="font-medium">{r.realm}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={r.faction === "Horde" ? "border-[hsl(var(--faction-horde))] text-[hsl(var(--faction-horde))]" : "border-[hsl(var(--faction-alliance))] text-[hsl(var(--faction-alliance))]"}>
+                      {r.faction}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{r.items.toLocaleString()}</TableCell>
+                  <TableCell className="text-right text-muted-foreground text-sm">
+                    {new Date(r.timestamp).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {filtered.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
+                    No records found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
