@@ -14,7 +14,7 @@ export function ItemDetailsCard({ selected, lastRecord }: ItemDetailsCardProps) 
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
         <div className="flex justify-between"><span className="text-muted-foreground">Class</span><span>{selected.itemClass}</span></div>
-        <div className="flex justify-between"><span className="text-muted-foreground">Subclass</span><span>{selected.subclass}</span></div>
+        <div className="flex justify-between"><span className="text-muted-foreground">Subclass</span><span>{selected.subClass}</span></div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Quality</span>
           <Badge variant="outline" style={{ borderColor: qualityColor[selected.quality], color: qualityColor[selected.quality] }}>

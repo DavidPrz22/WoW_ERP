@@ -1,7 +1,7 @@
 # Pricing History Implementation Plan
 
 ## USE SKILLS ON AGENTS FILES!
-
+## CREATE THE FORM ON EXISTING COMPONENTS
 ## 1. Overview
 This plan outlines the steps to build a robust Pricing History feature. The goal is to allow users to search for items, apply specific filters, and retrieve historical pricing data from the backend. The feature will be powered by Django (backend) and React (frontend) using modern data fetching and form management tools.
 
