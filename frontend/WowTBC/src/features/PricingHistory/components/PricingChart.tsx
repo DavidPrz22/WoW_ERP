@@ -1,14 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Chart from "chart.js/auto";
 import zoomPlugin from "chartjs-plugin-zoom";
 import type { PricingChartProps } from "../types";
+import { SERIES_COLORS } from "@/data/ItemsColors";
+import { Button } from "@/components/ui/button";
 
 Chart.register(zoomPlugin);
 
-export function PricingChart({ history }: PricingChartProps) {
+type Metric = "marketValue" | "minBuyout" | "historical" | "numAuctions";
+
+const METRICS: { label: string; value: Metric }[] = [
+  { label: "Market Value", value: "marketValue" },
+  { label: "Min Buyout", value: "minBuyout" },
+  { label: "Historical", value: "historical" },
+  { label: "Num Auctions", value: "numAuctions" },
+];
+
+export function PricingChart({ compareItems = [] }: PricingChartProps) {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
+  const [activeMetric, setActiveMetric] = useState<Metric>("marketValue");
 
   useEffect(() => {
     if (chartInstance.current) {
@@ -17,42 +29,26 @@ export function PricingChart({ history }: PricingChartProps) {
     const ctx = chartRef.current?.getContext("2d");
     if (!ctx) return;
 
+    const isComparing = compareItems.length > 0;
+
+    const labels = isComparing ? compareItems[0].chartData.map(d => d.date.slice(5)) : [];
+    const datasets = compareItems.map((item, idx) => ({
+      label: item.name,
+      data: item.chartData.map(d => (d as any)[activeMetric]),
+      borderColor: SERIES_COLORS[idx % SERIES_COLORS.length],
+      backgroundColor: SERIES_COLORS[idx % SERIES_COLORS.length].replace("hsl", "hsla").replace(")", ", 0.1)"),
+      fill: false,
+      tension: 0.4,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 4,
+    }));
+
     chartInstance.current = new Chart(ctx, {
       type: "line",
       data: {
-        labels: history.map((d) => d.date.slice(5)),
-        datasets: [
-          {
-            label: "Market Value",
-            data: history.map((d) => d.marketValue),
-            borderColor: "hsl(42, 78%, 55%)",
-            backgroundColor: "hsla(42, 78%, 55%, 0.1)",
-            fill: true,
-            tension: 0.4,
-            borderWidth: 2,
-            pointRadius: 0,
-            pointHoverRadius: 4,
-          },
-          {
-            label: "Min Buyout",
-            data: history.map((d) => d.minBuyout),
-            borderColor: "hsl(120, 60%, 45%)",
-            tension: 0.4,
-            borderWidth: 1.5,
-            pointRadius: 0,
-            pointHoverRadius: 4,
-          },
-          {
-            label: "Historical",
-            data: history.map((d) => d.historical),
-            borderColor: "hsl(217, 100%, 50%)",
-            borderDash: [5, 5],
-            tension: 0.4,
-            borderWidth: 1.5,
-            pointRadius: 0,
-            pointHoverRadius: 4,
-          }
-        ],
+        labels: labels,
+        datasets: datasets,
       },
       options: {
         responsive: true,
@@ -63,10 +59,7 @@ export function PricingChart({ history }: PricingChartProps) {
         },
         plugins: {
           zoom: {
-            pan: {
-              enabled: true,
-              mode: "x",
-            },
+            pan: { enabled: true, mode: "x" },
             zoom: {
               wheel: { enabled: true },
               pinch: { enabled: true },
@@ -86,17 +79,22 @@ export function PricingChart({ history }: PricingChartProps) {
                   label += ": ";
                 }
                 if (context.parsed.y !== null) {
-                  const copper = context.parsed.y;
-                  const g = Math.floor(copper / 10000);
-                  const s = Math.floor((copper % 10000) / 100);
-                  const c = Math.floor(copper % 100);
-                  label += `${g}g ${s}s ${c}c`;
+                  const val = context.parsed.y;
+                  if (activeMetric === "numAuctions") {
+                      label += val;
+                  } else {
+                    const g = Math.floor(val / 10000);
+                    const s = Math.floor((val % 10000) / 100);
+                    const c = Math.floor(val % 100);
+                    label += `${g}g ${s}s ${c}c`;
+                  }
                 }
                 return label;
               },
             },
           },
           legend: {
+            display: isComparing,
             labels: { color: "hsl(40, 15%, 65%)" }
           }
         },
@@ -110,6 +108,7 @@ export function PricingChart({ history }: PricingChartProps) {
             ticks: {
               color: "hsl(40, 15%, 65%)",
               callback: function (value) {
+                if (activeMetric === "numAuctions") return value;
                 return Math.round(Number(value) / 10000) + "g";
               },
             },
@@ -123,15 +122,31 @@ export function PricingChart({ history }: PricingChartProps) {
         chartInstance.current.destroy();
       }
     };
-  }, [history]);
+  }, [compareItems, activeMetric]);
 
   return (
     <Card className="bg-card/60 border-border shadow-panel">
-      <CardHeader>
-        <CardTitle className="font-display text-gold">Trend — 30 day</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <div>
+            <CardTitle className="font-display text-gold">Trend — 30 day</CardTitle>
+            <p className="text-xs text-muted-foreground mt-1">Comparing {compareItems.length > 0 ? `${compareItems.length} items` : "current selection"}</p>
+        </div>
+        <div className="flex gap-2">
+            {METRICS.map(m => (
+                <Button 
+                    key={m.value}
+                    variant={activeMetric === m.value ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 text-xs"
+                    onClick={() => setActiveMetric(m.value)}
+                >
+                    {m.label}
+                </Button>
+            ))}
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="relative w-full h-[80vh]">
+        <div className="relative w-full h-[60vh]">
           <canvas ref={chartRef} />
         </div>
       </CardContent>

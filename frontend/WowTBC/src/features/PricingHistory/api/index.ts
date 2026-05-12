@@ -1,5 +1,6 @@
 import apiClient from '../../../api';
 import type { TPricingSearchValues, TPricingHistoryValues } from '../schemas';
+import type { TPricingHistoryRecord } from '../types';
 
 export const fetchClassSubclass = async () => {
     const res = await apiClient.get('registros/filters/class-subclass/');
@@ -27,7 +28,7 @@ export const searchItems = async (params: TPricingSearchValues) => {
     return res.data;
 };
 
-export const fetchPricingHistory = async (params: TPricingHistoryValues) => {
+export const fetchPricingHistory = async (params: TPricingHistoryValues): Promise<TPricingHistoryRecord[]> => {
     const res = await apiClient.get('registros/pricing-history/', { params });
     console.log(res.data);
     return res.data;

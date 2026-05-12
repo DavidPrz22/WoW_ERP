@@ -1,22 +1,29 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useItemSearch, usePricingHistory } from "../hooks/queries/queries";
-import type { TPricingSearchValues, TPricingHistoryValues } from "../schemas";
-import { PricingSearchValuesSchema } from "../schemas";
+import { useQueryClient } from "@tanstack/react-query";
+import type { TPricingSearchValues, TPricingHistoryValues, TPricingHistoryInput } from "../schemas";
+import { PricingSearchValuesSchema, PricingHistorySchema } from "../schemas";
 import { PricingFilters } from "./PricingFilters";
 import { PricingChart } from "./PricingChart";
 import type { Item } from "../types";
 import { useWatch } from "react-hook-form";
 import { useDebounce } from "@/hooks/useDebounce";
+import { usePricingHistoryStore } from "@/ZustandStores/usePricingHistoryStore";
+import { CompareItemSection } from "./CompareItemSection";
+import { pricingHistoryQueryOptions } from "../hooks/queries/queryOptions";
 
 export function PricingHistory() {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const { 
+    compareItems, 
+    addCompareItem, 
+    removeCompareItem 
+  } = usePricingHistoryStore();
 
-  // State for triggering queries
-
-  const [activeHistoryParams, setActiveHistoryParams] = useState<TPricingHistoryValues | null>(null);
+  const selectedItemRef = useRef<Item | null>(null);
 
   const searchForm = useForm<TPricingSearchValues>({
     resolver: zodResolver(PricingSearchValuesSchema),
@@ -28,11 +35,12 @@ export function PricingHistory() {
     },
   });
 
-  const historyForm = useForm<any>({
+  const historyForm = useForm<TPricingHistoryInput>({
+    resolver: zodResolver(PricingHistorySchema),
     defaultValues: {
       item_id: undefined,
-      faction_id: undefined,
-      realm_id: undefined,
+      faction: 'Alliance',
+      realm: 'Nightslayer',
       range: undefined,
     },
   });
@@ -56,50 +64,34 @@ export function PricingHistory() {
     console.log(data);
   };
 
-  const onHistorySubmit = (data: any) => {
-    console.log(data);
+  const onHistorySubmit = async (data: TPricingHistoryValues) => {
     
-    let fromDate = data.range?.from;
-    let toDate = data.range?.to;
+    const item = selectedItemRef.current;
 
-    if (fromDate) {
-      fromDate = new Date(fromDate);
-      fromDate.setHours(0, 0, 0, 0);
+    if (item && item.id_ingame === data.item_id) {
+      const chartData = await queryClient.fetchQuery(pricingHistoryQueryOptions(data, true));
+      addCompareItem({
+        id: item.id,
+        name: item.name,
+        icon: item.icon,
+        quality: item.quality,
+        chartData: chartData
+      });
     }
-
-    if (toDate) {
-      toDate = new Date(toDate);
-      toDate.setHours(23, 59, 59, 999);
-    }
-
-    const formattedData: TPricingHistoryValues = {
-      item_id: data.item_id,
-      faction: data.faction,
-      realm: data.realm,
-      from_date: fromDate?.toISOString(),
-      to_date: toDate?.toISOString(),
-    };
-    setActiveHistoryParams(formattedData);
   };
 
   const wrappedSearchSubmit = searchHandleSubmit(onSearchSubmit);
   const wrappedHistorySubmit = historyHandleSubmit(onHistorySubmit);
 
-  // Trigger search on explicit submit or change if needed
   const { data: suggestions = [] } = useItemSearch(searchParams as TPricingSearchValues);
-
-  const { data: history = [] } = usePricingHistory(
-    activeHistoryParams!,
-    !!activeHistoryParams
-  );
-
-  const lastRecord = history.length > 0 ? history[history.length - 1] : undefined;
 
   return (
     <div className="px-6 md:px-12 py-10 space-y-6">
-      <div>
-        <h1 className="font-display text-4xl text-gold">Pricing History</h1>
-        <p className="text-muted-foreground text-sm">Explore item prices and market trends across realms.</p>
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="font-display text-4xl text-gold">Pricing History</h1>
+          <p className="text-muted-foreground text-sm">Explore item prices and market trends across realms.</p>
+        </div>
       </div>
 
       <PricingFilters
@@ -110,7 +102,7 @@ export function PricingHistory() {
         setOpen={setOpen}
         suggestions={suggestions}
         onSelect={(item: Item) => {
-          setSelectedItem(item);
+          selectedItemRef.current = item;
           historyForm.setValue("item_id", item.id_ingame);
           setOpen(false);
           wrappedHistorySubmit();
@@ -120,9 +112,13 @@ export function PricingHistory() {
         }}
       />
 
-      {selectedItem && lastRecord && (
-        <PricingChart history={history} />
+      {compareItems.length > 0 && (
+        <CompareItemSection bucket={compareItems} removeItem={removeCompareItem} />
       )}
+
+      {compareItems.length > 0 ? (
+        <PricingChart compareItems={compareItems} />
+      ) : null}
     </div>
   );
 }

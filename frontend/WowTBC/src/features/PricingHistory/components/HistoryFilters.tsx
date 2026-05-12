@@ -8,9 +8,11 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller, type Control } from "react-hook-form";
 import { useFactionOptions, useRealmOptions } from "../hooks/queries/queries";
+import type { TPricingHistoryInput } from "../schemas";
+import { type DateRange } from "react-day-picker";
 
 interface HistoryFiltersProps {
-  control: Control<any>;
+  control: Control<TPricingHistoryInput>;
 }
 
 export function HistoryFilters({ control }: HistoryFiltersProps) {
@@ -83,7 +85,7 @@ export function HistoryFilters({ control }: HistoryFiltersProps) {
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar 
                     mode="range" 
-                    selected={field.value} 
+                    selected={field.value as DateRange | undefined} 
                     onSelect={(val) => {
                       field.onChange(val);
                     }} 

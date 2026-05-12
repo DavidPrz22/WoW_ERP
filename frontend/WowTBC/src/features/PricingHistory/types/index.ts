@@ -9,6 +9,14 @@ export type Item = {
   vendor_sell_price: number;
 };
 
+export interface CompareItem {
+  id: number;
+  name: string;
+  icon: string;
+  quality: string;
+  chartData: TPricingHistoryRecord[];
+}
+
 export interface PricingFiltersProps {
   query: string;
   setQuery: (q: string) => void;
@@ -36,6 +44,7 @@ export interface TPricingHistoryRecord {
   numAuctions: number;
 }
 
+
 export interface PricingChartProps {
-  history: TPricingHistoryRecord[];
+  compareItems?: CompareItem[];
 }

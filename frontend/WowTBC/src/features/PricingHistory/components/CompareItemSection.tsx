@@ -3,10 +3,11 @@ import { X } from "lucide-react";
 import { SERIES_COLORS } from "@/data/ItemsColors";
 import { qualityColor } from "@/data/ItemsColors";
 import { IconImg } from "@/components/IconImg";
+import type { CompareItem } from "@/features/PricingHistory/types";
 
 interface CompareItemSectionProps {
-  bucket: any[];
-  removeItem: (id: string) => void;
+  bucket: CompareItem[];
+  removeItem: (id: number) => void;
 }
 
 export const CompareItemSection = ({ bucket, removeItem }: CompareItemSectionProps) => {

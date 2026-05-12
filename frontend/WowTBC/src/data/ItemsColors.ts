@@ -9,10 +9,10 @@ export const qualityColor: Record<Quality, string> = {
 };
 
 export const SERIES_COLORS = [
-  "hsl(var(--primary))",
-  "hsl(var(--quality-uncommon))",
-  "hsl(var(--quality-rare))",
-  "hsl(var(--quality-epic))",
-  "hsl(var(--quality-legendary))",
-  "hsl(var(--destructive))",
-];
+  "hsl(42, 78%, 55%)",
+  "hsl(120, 60%, 45%)",
+  "hsl(217, 100%, 50%)",
+  "hsl(277, 75%, 60%)",
+  "hsl(30, 100%, 50%)",
+  "hsl(0, 70%, 45%)",
+];

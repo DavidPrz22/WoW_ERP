@@ -1,11 +1,11 @@
 import { type Control } from "react-hook-form";
-import type { TPricingSearchValues } from "../schemas";
+import type { TPricingSearchValues, TPricingHistoryInput } from "../schemas";
 import { SearchFilters } from "./SearchFilters";
 import { HistoryFilters } from "./HistoryFilters";
 
 export interface PricingFiltersProps {
   searchControl: Control<TPricingSearchValues>;
-  historyControl: Control<any>;
+  historyControl: Control<TPricingHistoryInput>;
   open: boolean;
   setOpen: (o: boolean) => void;
   suggestions: any[];
