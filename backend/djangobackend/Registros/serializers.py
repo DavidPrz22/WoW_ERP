@@ -29,8 +29,8 @@ class AuctionHouseSerializer(serializers.ModelSerializer):
 
 class PricingHistorySerializer(serializers.Serializer):
     item_id = serializers.CharField()
-    faction_id = serializers.CharField()
-    realm_id = serializers.IntegerField()
+    faction = serializers.CharField()
+    realm = serializers.CharField()
     from_date = serializers.CharField(required=False)
     to_date = serializers.CharField(required=False)
 
@@ -47,15 +47,16 @@ class PricingHistorySerializer(serializers.Serializer):
 
 
 class PricingFormattedSerializer(serializers.Serializer):
-    date = serializers.DateField()
+    date = serializers.DateTimeField(format='%Y-%m-%d:%H:%M')
     market_value = serializers.FloatField()
     min_buyout = serializers.FloatField()
     num_auctions = serializers.IntegerField()
     historical = serializers.BooleanField()
 
     def to_representation(self, instance):
+        timestamp = instance['record__timestamp']
         return {
-            'date': instance['record__timestamp'],
+            'date': timestamp.strftime('%Y-%m-%d:%H:%M') if timestamp else None,
             'marketValue': instance['market_value'],
             'minBuyout': instance['min_buyout'],
             'numAuctions': instance['num_auctions'],

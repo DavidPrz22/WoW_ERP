@@ -126,12 +126,12 @@ export function PricingChart({ history }: PricingChartProps) {
   }, [history]);
 
   return (
-    <Card className="bg-card/60 border-border shadow-panel lg:col-span-2">
+    <Card className="bg-card/60 border-border shadow-panel">
       <CardHeader>
         <CardTitle className="font-display text-gold">Trend — 30 day</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[320px] relative w-full">
+        <div className="relative w-full h-[80vh]">
           <canvas ref={chartRef} />
         </div>
       </CardContent>

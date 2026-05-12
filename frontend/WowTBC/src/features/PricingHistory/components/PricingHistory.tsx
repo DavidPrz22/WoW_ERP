@@ -58,12 +58,26 @@ export function PricingHistory() {
 
   const onHistorySubmit = (data: any) => {
     console.log(data);
+    
+    let fromDate = data.range?.from;
+    let toDate = data.range?.to;
+
+    if (fromDate) {
+      fromDate = new Date(fromDate);
+      fromDate.setHours(0, 0, 0, 0);
+    }
+
+    if (toDate) {
+      toDate = new Date(toDate);
+      toDate.setHours(23, 59, 59, 999);
+    }
+
     const formattedData: TPricingHistoryValues = {
       item_id: data.item_id,
-      faction_id: data.faction_id,
-      realm_id: data.realm_id,
-      from_date: data.range?.from?.toISOString(),
-      to_date: data.range?.to?.toISOString(),
+      faction: data.faction,
+      realm: data.realm,
+      from_date: fromDate?.toISOString(),
+      to_date: toDate?.toISOString(),
     };
     setActiveHistoryParams(formattedData);
   };
@@ -107,9 +121,7 @@ export function PricingHistory() {
       />
 
       {selectedItem && lastRecord && (
-        <div className="grid gap-6 lg:grid-cols-3">
-           <PricingChart history={history} />
-        </div>
+        <PricingChart history={history} />
       )}
     </div>
   );

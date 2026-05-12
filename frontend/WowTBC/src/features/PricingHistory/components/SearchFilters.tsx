@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Controller, type Control, useWatch } from "react-hook-form";
 import { useClassSubclass, useQualityOptions } from "../hooks/queries/queries";
 import type { TPricingSearchValues } from "../schemas";
+import { qualityColor } from "@/data/ItemsColors";
 
 interface SearchFiltersProps {
   control: Control<TPricingSearchValues>;
@@ -76,7 +77,7 @@ export function SearchFilters({
                     onMouseDown={() => {
                       onSelect(i);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-accent/30 transition-colors"
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-accent/30 transition-colors text-[${qualityColor[i.quality]}]`}
                   >
                     <IconImg src={`/icons/${i.icon}`} alt={i.name} className="size-8 rounded-lg" />
                     <span className="text-sm font-medium">{i.name}</span>

@@ -7,6 +7,7 @@ from django.conf import settings
 from django.db.models import Prefetch
 from .models import Item, Faction, Records, ItemRecord, ItemClass, Quality, AuctionHouse
 from .serializers import PricingHistorySerializer, ItemClassSerializer, ItemSerializer, AuctionHouseSerializer, PricingFormattedSerializer
+from django.utils import timezone
 from datetime import datetime
 
 class PricingHistoryView(GenericAPIView):
@@ -15,26 +16,34 @@ class PricingHistoryView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         
         item_id = serializer.validated_data.get('item_id')
-        faction_id = serializer.validated_data.get('faction_id')
-        realm_id = serializer.validated_data.get('realm_id')
-        from_date = serializer.validated_data.get('from_date')
-        to_date = serializer.validated_data.get('to_date')
-
-        # Default dates if not provided
-        if not from_date:
-            from_date = "2000-01-01T00:00:00"
-        if not to_date:
-            to_date = datetime.now().isoformat()
+        from_date_str = serializer.validated_data.get('from_date')
+        to_date_str = serializer.validated_data.get('to_date')
+        faction = serializer.validated_data.get('faction')
+        realm = serializer.validated_data.get('realm')
         
-        records_queryset = Records.objects.filter(
-            auction_house__realm_id=realm_id,
-            auction_house__faction=faction_id,
-            timestamp__range=(datetime.fromisoformat(from_date), datetime.fromisoformat(to_date)),
-        )
+        # Parse from_date
+        if from_date_str:
+            from_date = datetime.fromisoformat(from_date_str)
+        else:
+            from_date = timezone.make_aware(datetime(2000, 1, 1))
+            
+        # Parse to_date
+        if to_date_str:
+            to_date = datetime.fromisoformat(to_date_str)
+        else:
+            to_date = timezone.now()
 
+        if timezone.is_naive(from_date):
+            from_date = timezone.make_aware(from_date)
+        if timezone.is_naive(to_date):
+            to_date = timezone.make_aware(to_date)
+        
         item_record_queryset = ItemRecord.objects.filter(
-            record__in=records_queryset,
             item__id_ingame=item_id,
+            record__auction_house__realm_name=realm,
+            record__auction_house__faction=faction,
+            record__timestamp__gte=from_date,
+            record__timestamp__lte=to_date,
         ).values(
             'record__timestamp', 
             'market_value', 
@@ -42,6 +51,7 @@ class PricingHistoryView(GenericAPIView):
             'num_auctions', 
             'historical'
         ).order_by('record__timestamp')
+
         
         serializer = PricingFormattedSerializer(item_record_queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -76,7 +86,7 @@ class FilterRealmView(APIView):
     Returns available options for Realm from the AuctionHouse model.
     """
     def get(self, request):
-        realms = AuctionHouse.objects.values('realm_id', 'realm_name').distinct()
+        realms = AuctionHouse.objects.values('realm_name').distinct()
         return Response(list(realms), status=status.HTTP_200_OK)
 
 class ItemSearchView(GenericAPIView):

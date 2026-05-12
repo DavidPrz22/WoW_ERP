@@ -39,19 +39,3 @@ export interface TPricingHistoryRecord {
 export interface PricingChartProps {
   history: TPricingHistoryRecord[];
 }
-
-export type SearchItemsParams = {
-  searchterm: string;
-  class?: string;
-  subclass?: string;
-  quality?: string;
-};
-
-export type PricingHistoryParams = {
-  item_id: string;
-  faction_id: string;
-  realm_id: number;
-  from_date?: string;
-  to_date?: string;
-};
-

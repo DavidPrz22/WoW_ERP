@@ -9,8 +9,8 @@ export const PricingSearchValuesSchema = z.object({
 
 export const PricingHistorySchema = z.object({
   item_id: z.string(),
-  faction_id: z.string(),
-  realm_id: z.number(),
+  faction: z.string(),
+  realm: z.string(),
   from_date: z.string().optional(),
   to_date: z.string().optional()
 });

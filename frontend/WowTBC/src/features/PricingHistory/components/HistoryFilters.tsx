@@ -22,7 +22,7 @@ export function HistoryFilters({ control }: HistoryFiltersProps) {
       <CardContent className="p-5">
         <div className="grid gap-4 md:grid-cols-12">
           <Controller
-            name="faction_id"
+            name="faction"
             control={control}
             render={({ field }) => (
               <Select 
@@ -40,21 +40,21 @@ export function HistoryFilters({ control }: HistoryFiltersProps) {
           />
 
           <Controller
-            name="realm_id"
+            name="realm"
             control={control}
             render={({ field }) => (
               <Select 
-                value={field.value?.toString()} 
+                value={field.value} 
                 onValueChange={(v) => {
-                  field.onChange(parseInt(v));
+                  field.onChange(v);
                 }}
               >
                 <SelectTrigger className="md:col-span-4 bg-secondary/40">
                   <SelectValue placeholder="Realm"/>
                 </SelectTrigger>
                 <SelectContent>
-                  {realms.map((r: { realm_id: number, realm_name: string }) => (
-                    <SelectItem key={r.realm_id} value={r.realm_id.toString()}>{r.realm_name}</SelectItem>
+                  {realms.map((r: { realm_name: string }) => (
+                    <SelectItem key={r.realm_name} value={r.realm_name}>{r.realm_name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
