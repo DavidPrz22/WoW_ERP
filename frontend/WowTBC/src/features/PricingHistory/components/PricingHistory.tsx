@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useItemSearch, usePricingHistory } from "../hooks/queries/queries";
+import { useItemSearch } from "../hooks/queries/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import type { TPricingSearchValues, TPricingHistoryValues, TPricingHistoryInput } from "../schemas";
 import { PricingSearchValuesSchema, PricingHistorySchema } from "../schemas";
@@ -22,7 +22,8 @@ export function PricingHistory() {
     addCompareItem, 
     removeCompareItem 
   } = usePricingHistoryStore();
-
+  console.log("compareItems",compareItems);
+  
   const selectedItemRef = useRef<Item | null>(null);
 
   const searchForm = useForm<TPricingSearchValues>({

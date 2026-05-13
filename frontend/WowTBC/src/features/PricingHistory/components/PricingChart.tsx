@@ -31,18 +31,34 @@ export function PricingChart({ compareItems = [] }: PricingChartProps) {
 
     const isComparing = compareItems.length > 0;
 
-    const labels = isComparing ? compareItems[0].chartData.map(d => d.date.slice(5)) : [];
-    const datasets = compareItems.map((item, idx) => ({
-      label: item.name,
-      data: item.chartData.map(d => (d as any)[activeMetric]),
-      borderColor: SERIES_COLORS[idx % SERIES_COLORS.length],
-      backgroundColor: SERIES_COLORS[idx % SERIES_COLORS.length].replace("hsl", "hsla").replace(")", ", 0.1)"),
-      fill: false,
-      tension: 0.4,
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 4,
-    }));
+    const allDates = new Set<string>();
+    compareItems.forEach(item => {
+      item.chartData.forEach(d => allDates.add(d.date));
+    });
+    const sortedDates = Array.from(allDates).sort();
+    const labels = sortedDates.map(date => date.slice(5));
+
+    const datasets = compareItems.map((item, idx) => {
+      const dataMap = new Map<string, number>();
+      item.chartData.forEach(d => {
+        dataMap.set(d.date, (d as any)[activeMetric]);
+      });
+
+      const data = sortedDates.map(date => dataMap.has(date) ? dataMap.get(date) : null);
+
+      return {
+        label: item.name,
+        data: data,
+        borderColor: SERIES_COLORS[idx % SERIES_COLORS.length],
+        backgroundColor: SERIES_COLORS[idx % SERIES_COLORS.length].replace("hsl", "hsla").replace(")", ", 0.1)"),
+        fill: false,
+        tension: 0.4,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        spanGaps: true,
+      };
+    });
 
     chartInstance.current = new Chart(ctx, {
       type: "line",
