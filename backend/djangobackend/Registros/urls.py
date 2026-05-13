@@ -5,7 +5,8 @@ from .views import (
     FilterQualityView,
     FilterFactionView,
     FilterRealmView,
-    ItemSearchView
+    ItemSearchView,
+    RecordsView
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('filters/faction/', FilterFactionView.as_view(), name='filter-faction'),
     path('filters/realm/', FilterRealmView.as_view(), name='filter-realm'),
     path('items/search/', ItemSearchView.as_view(), name='item-search'),
+    path('records/', RecordsView.as_view(), name='records'),
 ]

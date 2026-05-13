@@ -7,25 +7,22 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { records } from "@/data/mock";
 import { PriceTablePanel } from "./SystemRecordsTable";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
+import { useRecordsQuery } from "../hooks/useRecords";
 
 export function SystemRecordsHeader() {
   const { recordsQuery, faction, showPrices, setRecordsQuery, setFaction, setShowPrices } = useRecordsStore();
   const [generating, setGenerating] = useState(false);
 
-  const filtered = useMemo(
-    () =>
-      records.filter((r) => {
-        const q = recordsQuery.toLowerCase();
-        return (
-          (faction === "all" || r.faction === faction) &&
-          (!q || r.realm.toLowerCase().includes(q) || r.id.toLowerCase().includes(q))
-        );
-      }),
-    [recordsQuery, faction]
-  );
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useRecordsQuery({
+    search: recordsQuery || undefined,
+    faction: faction === "all" ? undefined : faction,
+    page: page,
+  });
+
+  const records = data?.results || [];
 
   const handleGenerate = () => {
     setGenerating(true);
@@ -108,22 +105,28 @@ export function SystemRecordsHeader() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((r) => (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
+                    Loading records...
+                  </TableCell>
+                </TableRow>
+              ) : records.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell className="font-mono text-xs text-muted-foreground">{r.id}</TableCell>
-                  <TableCell className="font-medium">{r.realm}</TableCell>
+                  <TableCell className="font-medium">{r.realm_name}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={r.faction === "Horde" ? "border-[hsl(var(--faction-horde))] text-[hsl(var(--faction-horde))]" : "border-[hsl(var(--faction-alliance))] text-[hsl(var(--faction-alliance))]"}>
                       {r.faction}
                     </Badge>
                   </TableCell>
-                  <TableCell>{r.items.toLocaleString()}</TableCell>
+                  <TableCell>{r.item_count?.toLocaleString() || 0}</TableCell>
                   <TableCell className="text-right text-muted-foreground text-sm">
                     {new Date(r.timestamp).toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}
-              {filtered.length === 0 && (
+              {!isLoading && records.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
                     No records found.
@@ -132,6 +135,24 @@ export function SystemRecordsHeader() {
               )}
             </TableBody>
           </Table>
+          
+          <div className="flex items-center justify-between mt-4">
+            <Button 
+              variant="outline" 
+              disabled={!data?.previous} 
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Previous
+            </Button>
+            <span className="text-sm text-muted-foreground">Page {page}</span>
+            <Button 
+              variant="outline" 
+              disabled={!data?.next} 
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

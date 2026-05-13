@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Item, ItemClass, ItemSubclass, AuctionHouse
+from .models import Item, ItemClass, ItemSubclass, AuctionHouse, Records
 
 class ItemSubclassSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,3 +62,12 @@ class PricingFormattedSerializer(serializers.Serializer):
             'numAuctions': instance['num_auctions'],
             'historical': instance['historical'],
         }
+
+class RecordsSerializer(serializers.ModelSerializer):
+    realm_name = serializers.CharField(source='auction_house.realm_name', read_only=True)
+    faction = serializers.CharField(source='auction_house.faction', read_only=True)
+    item_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Records
+        fields = ['id', 'realm_name', 'faction', 'item_count', 'timestamp']

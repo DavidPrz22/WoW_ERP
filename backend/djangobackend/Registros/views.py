@@ -6,9 +6,11 @@ from django.db import connection
 from django.conf import settings
 from django.db.models import Prefetch
 from .models import Item, Faction, Records, ItemRecord, ItemClass, Quality, AuctionHouse
-from .serializers import PricingHistorySerializer, ItemClassSerializer, ItemSerializer, AuctionHouseSerializer, PricingFormattedSerializer
+from .serializers import PricingHistorySerializer, ItemClassSerializer, ItemSerializer, AuctionHouseSerializer, PricingFormattedSerializer, RecordsSerializer
 from django.utils import timezone
 from datetime import datetime
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Count, Q
 
 class PricingHistoryView(GenericAPIView):
     def get(self, request):
@@ -118,4 +120,39 @@ class ItemSearchView(GenericAPIView):
         queryset = queryset[:50]
         
         serializer = ItemSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class RecordsPagination(PageNumberPagination):
+    page_size = 50
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+
+class RecordsView(GenericAPIView):
+    pagination_class = RecordsPagination
+
+    def get(self, request):
+        queryset = Records.objects.select_related('auction_house').annotate(
+            item_count=Count('item_records')
+        ).order_by('-timestamp')
+        
+        realm = request.query_params.get('realm')
+        faction = request.query_params.get('faction')
+        search = request.query_params.get('search')
+        
+        if realm:
+            queryset = queryset.filter(auction_house__realm_name__iexact=realm)
+        if faction:
+            queryset = queryset.filter(auction_house__faction__iexact=faction)
+        if search:
+            if search.isdigit():
+                queryset = queryset.filter(Q(id=search) | Q(auction_house__realm_name__icontains=search))
+            else:
+                queryset = queryset.filter(auction_house__realm_name__icontains=search)
+            
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = RecordsSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+            
+        serializer = RecordsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

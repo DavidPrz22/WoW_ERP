@@ -1,14 +1,23 @@
-### Implement data retrieval for records from the backend data
+# Implementation Plan: Backend Records Integration
 
-#### 1. Backend Implementation (Django)
-1. **Serializers:** Create serializers in `backend/djangobackend/Registros/serializers.py` for `ItemRecord`, including nested details from the related `Records` and `AuctionHouse` models (e.g., to expose `timestamp`, `realm_name`, and `faction`).
-2. **Endpoints:** Create a ViewSet or API view for `ItemRecord` to retrieve pricing data.
-3. **Filtering & Pagination:** Configure the endpoint to support pagination (max 50 records per page) and allow filtering by `item_id`, `realm_name`, and `faction`.
+## Objective
+Implement data retrieval for historical records from the backend and populate the frontend UI components.
 
-#### 2. Frontend Implementation (React / TypeScript)
-1. **Data Types:** Create appropriate TypeScript interfaces in the feature folder (`src/features/Records/types/index.ts` or similar) to accurately represent the API response (e.g., `ItemRecord`, `PaginatedResponse<ItemRecord>`).
-2. **React Query Hooks:** Create custom hooks (e.g., `useItemRecords`) leveraging `@tanstack/react-query` to fetch, cache, and manage loading/error states for the endpoints.
-3. **Component Updates:** 
-   - Update `PriceTablePanel.tsx` to consume data from the new hook instead of relying on the local mock data (`generateHistory`, `realms`, `factions`).
-   - Add UI controls for Pagination (Next/Previous pages).
-   - Add UI Dropdowns/Toggles to filter the table by `Realm` and `Faction`.
+## Backend Tasks
+1. **Create API Endpoint:** Develop a new endpoint to retrieve all ingestion records.
+2. **Query Database:** Fetch data from the `Records` table (`backend/djangobackend/Registros/models.py`).
+3. **Format Response:** Ensure the returned data includes:
+   - Record ID (`id`).
+   - Realm Name (from the related `AuctionHouse` model).
+   - Faction (from the related `AuctionHouse` model).
+   - Number of items in the record (count of related `item_records`).
+   - Timestamp formatted as `DD/MM/YYYY, HH:MM:SS AM/PM`.
+4. **Pagination:** Add server-side pagination to limit the payload to a maximum of 50 records per page.
+5. **Filtering:** Implement filtering query parameters based on `realm` and `faction`.
+
+## Frontend Tasks
+1. **Define Types:** Create appropriate TypeScript interfaces in the `features/Records` folder to match the expected backend response.
+2. **API Hooks:** Utilize `react-query` to create custom hooks that manage API requests, caching, and loading/error states.
+3. **Update UI Components:** Refactor the UI to consume data from the new endpoint instead of using mock data. Display Realm and Faction as two distinct columns.
+4. **Table Integration:** Ensure the table implements the pagination and filtering controls matching the backend capabilities.
+\\wsl.localhost\Ubuntu\home\davidprz\projects\WowTBC_ERP\frontend\WowTBC\src\features\Records\components\SystemRecordsHeader.tsx
