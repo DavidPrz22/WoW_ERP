@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useItemSearch } from "../hooks/queries/queries";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { PricingSearchValuesSchema, PricingHistorySchema } from "../schemas";
 import { PricingFilters } from "./PricingFilters";
 import { PricingChart } from "./PricingChart";
 import type { Item } from "../types";
-import { useWatch } from "react-hook-form";
+
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePricingHistoryStore } from "@/ZustandStores/usePricingHistoryStore";
 import { CompareItemSection } from "./CompareItemSection";
