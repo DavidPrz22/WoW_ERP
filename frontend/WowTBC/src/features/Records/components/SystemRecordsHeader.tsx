@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { X, TableProperties, RefreshCw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,26 +10,24 @@ import { Badge } from "@/components/ui/badge";
 import { PriceTablePanel } from "./SystemRecordsTable";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { useRecordsQuery } from "../hooks/useRecords";
+import { useGenerateRecordMutation } from "../hooks/mutations/useGenerateRecord";
 
 export function SystemRecordsHeader() {
   const { recordsQuery, faction, showPrices, setRecordsQuery, setFaction, setShowPrices } = useRecordsStore();
-  const [generating, setGenerating] = useState(false);
 
   const [page, setPage] = useState(1);
   const { data, isLoading } = useRecordsQuery({
-    search: recordsQuery || undefined,
     faction: faction === "all" ? undefined : faction,
     page: page,
   });
 
   const records = data?.results || [];
 
+  const { mutate: generateRecord, isPending: generating } = useGenerateRecordMutation();
+
   const handleGenerate = () => {
-    setGenerating(true);
-    setTimeout(() => {
-      setGenerating(false);
-      toast.success("Snapshot triggered", { description: "Fetching latest data from TSM API…" });
-    }, 900);
+    toast.info("Snapshot triggered", { description: "Fetching latest data from TSM API…" });
+    generateRecord();
   };
 
   if (showPrices) {

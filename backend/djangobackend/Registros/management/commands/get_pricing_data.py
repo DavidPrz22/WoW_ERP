@@ -91,5 +91,4 @@ class Command(BaseCommand):
         
         self.stdout.write("Saving data to database...")
         self.save_pricing_data(data)
-g
 

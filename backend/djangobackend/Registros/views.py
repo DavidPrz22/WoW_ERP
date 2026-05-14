@@ -165,3 +165,13 @@ class RecordsView(GenericAPIView):
             
         serializer = RecordsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+from django.core.management import call_command
+
+class GenerateRecordView(APIView):
+    def post(self, request):
+        try:
+            call_command('get_pricing_data')
+            return Response({'message': 'Record generated successfully'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

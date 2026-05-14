@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getRecords, type GetRecordsParams } from '../../api/getRecords';
+import { getRecords, type GetRecordsParams } from '../../api';
 
 export const useItemRecords = (params: GetRecordsParams) => {
   return useQuery({
