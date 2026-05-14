@@ -5,9 +5,10 @@ import { qualityColor } from "@/data/ItemsColors";
 import { IconImg } from "@/components/IconImg";
 import type { CompareItem } from "@/features/PricingHistory/types";
 
+
 interface CompareItemSectionProps {
   bucket: CompareItem[];
-  removeItem: (id: number) => void;
+  removeItem: (id: string) => void;
 }
 
 export const CompareItemSection = ({ bucket, removeItem }: CompareItemSectionProps) => {

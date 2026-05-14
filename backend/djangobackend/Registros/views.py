@@ -2,11 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
-from django.db import connection
-from django.conf import settings
-from django.db.models import Prefetch
 from .models import Item, Faction, Records, ItemRecord, ItemClass, Quality, AuctionHouse
-from .serializers import PricingHistorySerializer, ItemClassSerializer, ItemSerializer, AuctionHouseSerializer, PricingFormattedSerializer, RecordsSerializer
+from .serializers import PricingHistoryQuerySerializer, ItemClassSerializer, ItemSearchSerializer, PricingFormattedSerializer, RecordsSerializer
 from django.utils import timezone
 from datetime import datetime
 from rest_framework.pagination import PageNumberPagination
@@ -14,7 +11,7 @@ from django.db.models import Count, Q
 
 class PricingHistoryView(GenericAPIView):
     def get(self, request):
-        serializer = PricingHistorySerializer(data=request.query_params)
+        serializer = PricingHistoryQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         
         item_id = serializer.validated_data.get('item_id')
@@ -56,7 +53,19 @@ class PricingHistoryView(GenericAPIView):
 
         
         serializer = PricingFormattedSerializer(item_record_queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        item_details = Item.objects.get(id_ingame=item_id)
+        quality = item_details.quality
+        name = item_details.name
+        icon = item_details.icon
+
+        return Response({
+            'id': item_id,
+            'quality': quality,
+            'name': name,
+            'icon': icon,
+            'chartData': serializer.data
+            }, status=status.HTTP_200_OK)
 
 class FilterClassSubclassView(APIView):
     """
@@ -119,7 +128,7 @@ class ItemSearchView(GenericAPIView):
         # Limit to 50 results to prevent massive responses
         queryset = queryset[:50]
         
-        serializer = ItemSerializer(queryset, many=True)
+        serializer = ItemSearchSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class RecordsPagination(PageNumberPagination):

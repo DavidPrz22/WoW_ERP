@@ -2,15 +2,15 @@ import { type Control } from "react-hook-form";
 import type { TPricingSearchValues, TPricingHistoryInput } from "../schemas";
 import { SearchFilters } from "./SearchFilters";
 import { HistoryFilters } from "./HistoryFilters";
-import type { Item } from "../types";
+import type { ItemSearchResult} from "../types";
 
 export interface PricingFiltersProps {
   searchControl: Control<TPricingSearchValues>;
   historyControl: Control<TPricingHistoryInput>;
   open: boolean;
   setOpen: (o: boolean) => void;
-  suggestions: Item[];
-  onSelect: (item: Item) => void;
+  suggestions: ItemSearchResult[];
+  onSelect: (item: ItemSearchResult) => void;
   onSearchSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
   setSubclass: (value: string) => void;
 }

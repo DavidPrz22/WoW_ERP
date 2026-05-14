@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useItemSearch } from "../hooks/queries/queries";
@@ -7,7 +7,7 @@ import type { TPricingSearchValues, TPricingHistoryValues, TPricingHistoryInput 
 import { PricingSearchValuesSchema, PricingHistorySchema } from "../schemas";
 import { PricingFilters } from "./PricingFilters";
 import { PricingChart } from "./PricingChart";
-import type { Item } from "../types";
+import type { ItemSearchResult } from "../types";
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePricingHistoryStore } from "@/ZustandStores/usePricingHistoryStore";
@@ -22,9 +22,8 @@ export function PricingHistory() {
     addCompareItem, 
     removeCompareItem 
   } = usePricingHistoryStore();
+
   console.log("compareItems",compareItems);
-  
-  const selectedItemRef = useRef<Item | null>(null);
 
   const searchForm = useForm<TPricingSearchValues>({
     resolver: zodResolver(PricingSearchValuesSchema),
@@ -36,13 +35,12 @@ export function PricingHistory() {
     },
   });
 
-  const historyForm = useForm<TPricingHistoryInput>({
+  const historyForm = useForm<TPricingHistoryInput, undefined, TPricingHistoryValues>({
     resolver: zodResolver(PricingHistorySchema),
     defaultValues: {
       item_id: undefined,
       faction: 'Alliance',
       realm: 'Nightslayer',
-      range: undefined,
     },
   });
 
@@ -66,19 +64,16 @@ export function PricingHistory() {
   };
 
   const onHistorySubmit = async (data: TPricingHistoryValues) => {
-    
-    const item = selectedItemRef.current;
+      console.log(data);
+      const historyData = await queryClient.fetchQuery(pricingHistoryQueryOptions(data, true));
 
-    if (item && item.id_ingame === data.item_id) {
-      const chartData = await queryClient.fetchQuery(pricingHistoryQueryOptions(data, true));
       addCompareItem({
-        id: item.id,
-        name: item.name,
-        icon: item.icon,
-        quality: item.quality,
-        chartData: chartData
+        id: historyData.id,
+        name: historyData.name,
+        icon: historyData.icon,
+        quality: historyData.quality,
+        chartData: historyData.chartData
       });
-    }
   };
 
   const wrappedSearchSubmit = searchHandleSubmit(onSearchSubmit);
@@ -102,8 +97,7 @@ export function PricingHistory() {
         open={open}
         setOpen={setOpen}
         suggestions={suggestions}
-        onSelect={(item: Item) => {
-          selectedItemRef.current = item;
+        onSelect={(item: ItemSearchResult) => {
           historyForm.setValue("item_id", item.id_ingame);
           setOpen(false);
           wrappedHistorySubmit();

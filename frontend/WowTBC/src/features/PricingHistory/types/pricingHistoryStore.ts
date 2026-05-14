@@ -20,7 +20,7 @@ export interface PricingHistoryActions {
   setRealm: (realm: string) => void;
   setRange: (range: DateRange | undefined) => void;
   addCompareItem: (item: CompareItem) => void;
-  removeCompareItem: (id: number) => void;
+  removeCompareItem: (id: string) => void;
   clearCompareItems: () => void;
 }
 

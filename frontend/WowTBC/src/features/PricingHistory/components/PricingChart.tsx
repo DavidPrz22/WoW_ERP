@@ -41,7 +41,7 @@ export function PricingChart({ compareItems = [] }: PricingChartProps) {
     const datasets = compareItems.map((item, idx) => {
       const dataMap = new Map<string, number>();
       item.chartData.forEach(d => {
-        dataMap.set(d.date, (d as any)[activeMetric]);
+        dataMap.set(d.date, (d)[activeMetric]);
       });
 
       const data = sortedDates.map(date => dataMap.has(date) ? dataMap.get(date) : null);

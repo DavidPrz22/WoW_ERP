@@ -1,33 +1,54 @@
-export type Item = {
+import type { Quality } from "@/types/types";
+
+export interface TItemSubclass {
   id: number;
-  icon: string;
   name: string;
+}
+
+
+export interface TItemClass {
+  id: number;
+  name: string;
+  subclasses: TItemSubclass[];
+}
+
+
+export interface TRealm {
+  realm_name: string;
+}
+
+
+export type ItemSearchResult = {
+  id_ingame: string;
+  name: string;
+  quality: Quality;
+  icon: string;
   itemClass: string;
   subClass: string;
-  quality: string;
-  id_ingame: string;
-  vendor_sell_price: number;
 };
 
+
 export interface CompareItem {
-  id: number;
+  id: string;
   name: string;
   icon: string;
-  quality: string;
+  quality: Quality;
   chartData: TPricingHistoryRecord[];
 }
+
 
 export interface PricingFiltersProps {
   query: string;
   setQuery: (q: string) => void;
   open: boolean;
   setOpen: (o: boolean) => void;
-  suggestions: Item[];
+  suggestions: ItemSearchResult[];
   subOptions: string[];
 }
 
+
 export interface ItemDetailsCardProps {
-  selected: Item;
+  selected: ItemSearchResult;
   lastRecord: {
     marketValue: number;
     minBuyout: number;
@@ -35,6 +56,7 @@ export interface ItemDetailsCardProps {
     numAuctions: number;
   };
 }
+
 
 export interface TPricingHistoryRecord {
   date: string;
@@ -48,3 +70,4 @@ export interface TPricingHistoryRecord {
 export interface PricingChartProps {
   compareItems?: CompareItem[];
 }
+

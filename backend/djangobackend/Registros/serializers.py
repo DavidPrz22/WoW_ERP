@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Item, ItemClass, ItemSubclass, AuctionHouse, Records
+from .models import Item, ItemClass, ItemRecord, ItemSubclass, AuctionHouse, Records
 
 class ItemSubclassSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,13 +13,13 @@ class ItemClassSerializer(serializers.ModelSerializer):
         model = ItemClass
         fields = ['id', 'name', 'subclasses']
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemSearchSerializer(serializers.ModelSerializer):
     itemClass = serializers.CharField(source='item_subclass.item_class.name', read_only=True)
     subClass = serializers.CharField(source='item_subclass.name', read_only=True)
     
     class Meta:
         model = Item
-        fields = ['id', 'id_ingame', 'name', 'quality', 'vendor_sell_price', 'icon', 'itemClass', 'subClass']
+        fields = ['id_ingame', 'name', 'icon', 'quality', 'itemClass', 'subClass']
 
 class AuctionHouseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,7 +27,7 @@ class AuctionHouseSerializer(serializers.ModelSerializer):
         fields = ['id', 'realm_id', 'realm_name', 'faction']
 
 
-class PricingHistorySerializer(serializers.Serializer):
+class PricingHistoryQuerySerializer(serializers.Serializer):
     item_id = serializers.CharField()
     faction = serializers.CharField()
     realm = serializers.CharField()
@@ -45,7 +45,6 @@ class PricingHistorySerializer(serializers.Serializer):
             })
         return attrs
 
-
 class PricingFormattedSerializer(serializers.Serializer):
     date = serializers.DateTimeField(format='%Y-%m-%d:%H:%M')
     market_value = serializers.FloatField()
@@ -62,6 +61,8 @@ class PricingFormattedSerializer(serializers.Serializer):
             'numAuctions': instance['num_auctions'],
             'historical': instance['historical'],
         }
+
+
 
 class RecordsSerializer(serializers.ModelSerializer):
     realm_name = serializers.CharField(source='auction_house.realm_name', read_only=True)

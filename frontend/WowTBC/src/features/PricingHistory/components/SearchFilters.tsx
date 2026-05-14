@@ -8,14 +8,15 @@ import { Controller, type Control, useWatch } from "react-hook-form";
 import { useClassSubclass, useQualityOptions } from "../hooks/queries/queries";
 import type { TPricingSearchValues } from "../schemas";
 import { qualityColor } from "@/data/ItemsColors";
+import type { ItemSearchResult } from "../types";
 
 interface SearchFiltersProps {
   control: Control<TPricingSearchValues>;
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
   open: boolean;
   setOpen: (o: boolean) => void;
-  suggestions: any[];
-  onSelect: (item: any) => void;
+  suggestions: ItemSearchResult[];
+  onSelect: (item: ItemSearchResult) => void;
   setSubclass: (value: string) => void;
 }
 
@@ -32,7 +33,7 @@ export function SearchFilters({
   const { data: qualities = [] } = useQualityOptions();
   
   const [selectedClass, setSelectedClass] = useState("all");
-  const selectedClassObj = classData.find((c: any) => c.name === selectedClass);
+  const selectedClassObj = classData.find((c) => c.name === selectedClass);
   const subOptions = selectedClassObj ? selectedClassObj.subclasses : [];
 
   const classVal = useWatch({ control, name: "class" });
@@ -72,7 +73,7 @@ export function SearchFilters({
               <div className="absolute z-20 mt-1 w-full rounded-md border border-border bg-popover shadow-panel max-h-72 overflow-auto">
                 {suggestions.map((i) => (
                   <button
-                    key={i.id}
+                    key={i.id_ingame}
                     type="button"
                     onMouseDown={() => {
                       onSelect(i);
@@ -81,7 +82,7 @@ export function SearchFilters({
                   >
                     <IconImg src={`/icons/${i.icon}`} alt={i.name} className="size-8 rounded-lg" />
                     <span className="text-sm font-medium">{i.name}</span>
-                    <span className="ml-auto text-xs text-muted-foreground">{i.itemClass || i.subclass}</span>
+                    <span className="ml-auto text-xs text-muted-foreground">{i.itemClass || i.subClass}</span>
                   </button>
                 ))}
               </div>
@@ -104,7 +105,7 @@ export function SearchFilters({
                 <SelectTrigger className="md:col-span-4 bg-secondary/40"><SelectValue placeholder="Class" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All classes</SelectItem>
-                  {classData.map((c: any) => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}
+                  {classData.map((c) => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             )}
@@ -125,7 +126,7 @@ export function SearchFilters({
                 <SelectTrigger className="md:col-span-4 bg-secondary/40"><SelectValue placeholder="Subclass" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All subclasses</SelectItem>
-                  {subOptions.map((s: any) => <SelectItem key={s.id} value={s.name}>{s.name}</SelectItem>)}
+                  {subOptions.map((s) => <SelectItem key={s.id} value={s.name}>{s.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             )}
