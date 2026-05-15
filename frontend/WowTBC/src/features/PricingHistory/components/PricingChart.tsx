@@ -20,7 +20,7 @@ const METRICS: { label: string; value: Metric }[] = [
 export function PricingChart({ compareItems = [] }: PricingChartProps) {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
-  const [activeMetric, setActiveMetric] = useState<Metric>("marketValue");
+  const [activeMetric, setActiveMetric] = useState<Metric>("minBuyout");
 
   useEffect(() => {
     if (chartInstance.current) {
@@ -55,10 +55,45 @@ export function PricingChart({ compareItems = [] }: PricingChartProps) {
         tension: 0.4,
         borderWidth: 2,
         pointRadius: 0,
-        pointHoverRadius: 4,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: SERIES_COLORS[idx % SERIES_COLORS.length],
+        pointHoverBorderColor: "#fff",
+        pointHoverBorderWidth: 2,
+        pointHitRadius: 10,
         spanGaps: true,
       };
     });
+
+    const crosshairPlugin = {
+      id: "crosshair",
+      beforeDraw: (chart: any) => {
+        if (chart.tooltip?._active?.length) {
+          const { ctx } = chart;
+          const activePoint = chart.tooltip._active[0].element;
+          const { x, y } = activePoint;
+          const { top, bottom, left, right } = chart.chartArea;
+
+          ctx.save();
+          ctx.setLineDash([4, 4]);
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+
+          // Vertical line
+          ctx.beginPath();
+          ctx.moveTo(x, top);
+          ctx.lineTo(x, bottom);
+          ctx.stroke();
+
+          // Horizontal line (highlight Y axis)
+          ctx.beginPath();
+          ctx.moveTo(left, y);
+          ctx.lineTo(right, y);
+          ctx.stroke();
+
+          ctx.restore();
+        }
+      },
+    };
 
     chartInstance.current = new Chart(ctx, {
       type: "line",
@@ -83,12 +118,28 @@ export function PricingChart({ compareItems = [] }: PricingChartProps) {
             }
           },
           tooltip: {
-            backgroundColor: "hsl(30, 22%, 9%)",
-            borderColor: "hsl(36, 28%, 22%)",
+            backgroundColor: "rgba(13, 11, 9, 0.95)",
+            borderColor: "hsl(36, 28%, 35%)",
             borderWidth: 1,
             titleColor: "hsl(40, 35%, 88%)",
             bodyColor: "hsl(40, 35%, 88%)",
+            padding: 12,
+            cornerRadius: 8,
+            usePointStyle: true,
+            boxPadding: 8,
+            position: "nearest",
+            caretSize: 6,
+            caretPadding: 6,
             callbacks: {
+              labelColor: function (context) {
+                const color = context.dataset.borderColor as string;
+                return {
+                  borderColor: color,
+                  backgroundColor: color,
+                  borderWidth: 0,
+                  borderRadius: 2,
+                };
+              },
               label: function (context) {
                 let label = context.dataset.label || "";
                 if (label) {
@@ -131,6 +182,7 @@ export function PricingChart({ compareItems = [] }: PricingChartProps) {
           },
         },
       },
+      plugins: [crosshairPlugin],
     });
 
     return () => {
