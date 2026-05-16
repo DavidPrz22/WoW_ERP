@@ -72,9 +72,20 @@ class ItemRecord(models.Model):
     min_buyout = models.IntegerField(default=0)
     num_auctions = models.IntegerField(default=0)
     historical = models.IntegerField(default=0)
+    overriden_min_buyout = models.IntegerField(null=True,blank=True)
 
     class Meta:
         unique_together = ('item', 'record')
 
     def __str__(self):
         return f"{self.item.name} - {self.record.timestamp.strftime('%Y-%m-%d')} - Mkt:{self.market_value} - Buyout:{self.min_buyout}"
+
+
+class Userdata(models.Model):
+    id_user = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    dynamic_data = models.JSONField(null=False, blank=False)
+
+    def __str__(self):
+        return f"{self.id_user} - {self.dynamic_data}"
+
+    

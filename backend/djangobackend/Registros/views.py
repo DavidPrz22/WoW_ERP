@@ -1,13 +1,13 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
-from rest_framework.views import APIView
 from .models import Item, Faction, Records, ItemRecord, ItemClass, Quality, AuctionHouse
 from .serializers import PricingHistoryQuerySerializer, ItemClassSerializer, ItemSearchSerializer, PricingFormattedSerializer, RecordsSerializer
 from django.utils import timezone
 from datetime import datetime
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Count, Q
+from django.core.management import call_command
 
 class PricingHistoryView(GenericAPIView):
     def get(self, request):
@@ -67,7 +67,8 @@ class PricingHistoryView(GenericAPIView):
             'chartData': serializer.data
             }, status=status.HTTP_200_OK)
 
-class FilterClassSubclassView(APIView):
+
+class FilterClassSubclassView(GenericAPIView):
     """
     Returns a structured mapping of classes and their associated subclasses.
     """
@@ -76,7 +77,8 @@ class FilterClassSubclassView(APIView):
         serializer = ItemClassSerializer(classes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class FilterQualityView(APIView):
+
+class FilterQualityView(GenericAPIView):
     """
     Returns available options for Quality.
     """
@@ -84,7 +86,8 @@ class FilterQualityView(APIView):
         qualities = [choice[0] for choice in Quality.choices]
         return Response(qualities, status=status.HTTP_200_OK)
 
-class FilterFactionView(APIView):
+
+class FilterFactionView(GenericAPIView):
     """
     Returns available options for Faction.
     """
@@ -92,13 +95,15 @@ class FilterFactionView(APIView):
         factions = [choice[0] for choice in Faction.choices]
         return Response(factions, status=status.HTTP_200_OK)
 
-class FilterRealmView(APIView):
+
+class FilterRealmView(GenericAPIView):
     """
     Returns available options for Realm from the AuctionHouse model.
     """
     def get(self, request):
         realms = AuctionHouse.objects.values('realm_name').distinct()
         return Response(list(realms), status=status.HTTP_200_OK)
+
 
 class ItemSearchView(GenericAPIView):
     """
@@ -131,10 +136,12 @@ class ItemSearchView(GenericAPIView):
         serializer = ItemSearchSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class RecordsPagination(PageNumberPagination):
     page_size = 50
     page_size_query_param = 'page_size'
     max_page_size = 50
+
 
 class RecordsView(GenericAPIView):
     pagination_class = RecordsPagination
@@ -166,12 +173,85 @@ class RecordsView(GenericAPIView):
         serializer = RecordsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-from django.core.management import call_command
 
-class GenerateRecordView(APIView):
+class GenerateRecordView(GenericAPIView):
     def post(self, request):
         try:
             call_command('get_pricing_data')
             return Response({'message': 'Record generated successfully'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GenerateRecordsDataView(GenericAPIView):
+    def get(self, request):
+        
+        HERBS_GROUP = ["Felweed", "Dreaming Glory", "Nightmare Vine", "Terocone", "Ancient Lichen", "Netherbloom", "Mana Thistle", "Ragveil", "Fel Lotus", "Dreamfoil", "Mountain Silversage", "Plaguebloom", "Icecap", "Black Lotus", "Arthas' Tears", "Blindweed", "Gromsblood", "Firebloom", "Golden Sansam"]
+        ORE_BARS_GROUP = ["Fel Iron Ore", "Fel Iron Bar", "Adamantite Ore", "Adamantite Bar", "Khorium Ore", "Khorium Bar", "Eternium Ore", "Eternium Bar", "Felsteel Bar", "Hardened Adamantite Bar"]
+        CLOTH_GROUP = ["Netherweave Cloth", "Netherweb Spider Silk", "Spellcloth", "Shadowcloth", "Primal Mooncloth", "Bolt of Netherweave", "Bolt of Imbued Netherweave"]
+        LEATHER_GROUP = ["Knothide Leather", "Knothide Leather Scraps", "Heavy Knothide Leather", "Wind Scales", "Fel Hide", "Nether Dragonscales", "Thick Clefthoof Leather", "Fel Scales", "Cobra Scales"]
+        ENCHANTING_GROUP = ["Arcane Dust", "Greater Planar Essence", "Large Prismatic Shard", "Void Crystal", "Large Brilliant Shard"]
+        JEWELCRAFTING_GROUP = ["Living Ruby", "Dawnstone", "Star of Elune", "Noble Topaz", "Talasite", "Nightseye", "Adamantite Powder"]
+        COOKING_GROUP = ["Warped Flesh", "Figluster's Mudfish", "Clefthoof Meat", "Chunk o' Basilisk", "Icefin Bluefish", "Serpent Flesh", "Golden Darter", "Furious Crawdad", "Talbuk Venison", "Buzzard Meat", "Huge Spotted Feltail"]
+        ELEMENTALS_GROUP = ["Primal Mana", "Primal Earth", "Primal Life", "Primal Fire", "Primal Air", "Primal Shadow", "Primal Water", "Mote of Mana", "Mote of Earth", "Mote of Life", "Mote of Fire", "Mote of Air", "Mote of Shadow", "Mote of Water", "Primal Might"]
+        VIALS_GROUP = ["Imbued Vial", "Crystal Vial"]
+        
+        DATA_RECORDS = {
+            'HERB PRICES': HERBS_GROUP,
+            'ORE AND BAR PRICES': ORE_BARS_GROUP,
+            'CLOTH PRICES': CLOTH_GROUP,
+            'LEATHER PRICES': LEATHER_GROUP,
+            'ENCHANTING PRICES': ENCHANTING_GROUP,
+            'JEWELCRAFTING PRICES': JEWELCRAFTING_GROUP,
+            'COOKING PRICES': COOKING_GROUP,
+            'ELEMENTALS PRICES': ELEMENTALS_GROUP,
+            'VIALS PRICES': VIALS_GROUP
+        }
+
+        realm = request.query_params.get('realm')
+        faction = request.query_params.get('faction')
+        selected_record_id = request.query_params.get('selected_record')
+
+        if not realm or not faction or not selected_record_id:
+            return Response({'error': 'Realm, faction and selected record are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            items_map = {}
+            
+            for (title, items) in DATA_RECORDS.items():
+                items_map[title] = ItemRecord.objects.filter(
+                    item__name__in=items, 
+                    record_id=selected_record_id,
+                    auction_house__realm_name__iexact=realm,
+                    auction_house__faction__iexact=faction,
+                )
+            
+            PRICE_GROUPS = []
+
+            for (title, items) in items_map.items():
+                price_group = {
+                    'title': title
+                }
+
+                price_entries = []
+                for record in items:
+                    if record.item:
+                        price_entries.append({
+                            'recordId': str(record.id),
+                            'itemId': str(record.item.id_ingame) if hasattr(record.item, 'id_ingame') else str(record.item.id),
+                            'name': record.item.name,
+                            'price': record.min_buyout,
+                            'icon': record.item.icon,
+                            'overridenPrice': record.overriden_min_buyout,
+                        })
+                
+                price_group['entries'] = price_entries
+                PRICE_GROUPS.append(price_group)
+            
+            return Response({'groups':PRICE_GROUPS}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        
+            

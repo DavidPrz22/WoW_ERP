@@ -1,1 +1,5 @@
 django
+psycopg2-binary
+djangorestframework
+drf-spectacular
+django-cors-headers

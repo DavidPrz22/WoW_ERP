@@ -97,8 +97,19 @@ export const qualityColor: Record<Quality, string> = {
   Legendary: "hsl(var(--quality-legendary))",
 };
 
-export type PriceEntry = { name: string; price: number; image?: string };
-export type PriceGroup = { title: string; entries: PriceEntry[] };
+export type PriceEntry = { 
+  recordId: string;
+  itemId: string;  
+  name: string; 
+  price: number; 
+  icon?: string 
+  overridenPrice?: number;
+};
+
+export type PriceGroup = { 
+  title: string; 
+  entries: PriceEntry[] 
+};
 
 export const priceGroups: PriceGroup[] = [
   {
