@@ -1,14 +1,9 @@
 import apiClient from '@/api';
 import type { PaginatedResponse, SystemRecord } from '../types';
+import { type TGetRecordDataParams, type TGetRecordsParams } from '../schemas';
 
-export interface GetRecordsParams {
-  realm?: string;
-  faction?: string;
-  page?: number;
-  page_size?: number;
-}
 
-export const getRecords = async (params: GetRecordsParams): Promise<PaginatedResponse<SystemRecord>> => {
+export const getRecords = async (params: TGetRecordsParams): Promise<PaginatedResponse<SystemRecord>> => {
   try {
     const { data } = await apiClient.get<PaginatedResponse<SystemRecord>>('registros/records/', {
       params,
@@ -30,13 +25,7 @@ export const getRealms = async (): Promise<{ realm_name: string }[]> => {
   return response.data;
 };
 
-export interface GetRecordDataParams {
-  realm: string;
-  faction: string;
-  selected_record: string;
-}
-
-export const getRecordData = async (params: GetRecordDataParams): Promise<any> => {
+export const getRecordData = async (params: TGetRecordDataParams): Promise<any> => {
   const response = await apiClient.get('registros/records/data/', { params });
   return response.data;
 };

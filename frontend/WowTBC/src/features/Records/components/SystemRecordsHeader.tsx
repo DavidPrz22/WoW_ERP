@@ -17,11 +17,15 @@ export function SystemRecordsHeader() {
 
   const [page, setPage] = useState(1);
   const { data, isLoading } = useRecords({
-    faction: faction === "all" ? undefined : faction,
     page: page,
   });
 
-  const records = data?.results || [];
+  const rawRecords = data?.results || [];
+  const records = rawRecords.filter((r) => {
+    const matchesFaction = faction === "all" || r.faction === faction;
+    const matchesSearch = !recordsQuery || r.realm_name.toLowerCase().includes(recordsQuery.toLowerCase()) || r.id.toString().includes(recordsQuery);
+    return matchesFaction && matchesSearch;
+  });
 
   const { mutate: generateRecord, isPending: generating } = useGenerateRecordMutation();
 
