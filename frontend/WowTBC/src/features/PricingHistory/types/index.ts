@@ -1,22 +1,5 @@
 import type { Quality } from "@/types/types";
 
-export interface TItemSubclass {
-  id: number;
-  name: string;
-}
-
-
-export interface TItemClass {
-  id: number;
-  name: string;
-  subclasses: TItemSubclass[];
-}
-
-
-export interface TRealm {
-  realm_name: string;
-}
-
 
 export type ItemSearchResult = {
   id_ingame: string;

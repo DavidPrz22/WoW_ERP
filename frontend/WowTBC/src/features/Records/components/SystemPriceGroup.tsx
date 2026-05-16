@@ -4,6 +4,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Check, X, Pencil, RotateCcw } from "lucide-react";
+import { IconImg } from "@/components/IconImg";
 import { type PriceGroup } from "./SystemRecordsTable";
 
 export function PriceGroupSection({
@@ -30,6 +31,7 @@ export function PriceGroupSection({
   formatPrice: (g: number) => string;
 }) {
   const overriddenCount = group.entries.filter((e) => overrides[e.name]).length;
+  console.log(group)
   return (
     <AccordionItem value={group.title} className="border border-border rounded-md bg-secondary/20 px-3">
       <AccordionTrigger className="hover:no-underline py-3">
@@ -63,8 +65,8 @@ export function PriceGroupSection({
                     <TableCell className="py-2">
                       <div className="flex items-center gap-2">
                         <div className="h-8 w-8 rounded border border-border bg-secondary/40 flex items-center justify-center overflow-hidden shrink-0">
-                          {entry.image ? (
-                            <img src={entry.image} alt={entry.name} className="h-full w-full object-cover" />
+                          {entry.icon ? (
+                            <IconImg src={entry.icon} alt={entry.name} />
                           ) : (
                             <ImageIcon className="h-4 w-4 text-muted-foreground" />
                           )}

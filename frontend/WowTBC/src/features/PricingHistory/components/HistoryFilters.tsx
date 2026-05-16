@@ -7,7 +7,7 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller, type Control } from "react-hook-form";
-import { useFactionOptions, useRealmOptions } from "../hooks/queries/queries";
+import { useFactionOptions, useRealmOptions } from "@/hooks/useQueryHooks";
 import type { TPricingHistoryInput } from "../schemas";
 import { type DateRange } from "react-day-picker";
 

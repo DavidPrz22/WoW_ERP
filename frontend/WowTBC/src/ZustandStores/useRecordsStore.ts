@@ -6,8 +6,12 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
   faction: "all",
   showPrices: false,
   priceQuery: "",
-  showGold: false,
+  showGold: true,
   overrides: {},
+
+  dataFaction: "",
+  dataRealm: "",
+  dataRecordId: "",
 
   setRecordsQuery: (recordsQuery) => set({ recordsQuery }),
   setFaction: (faction) => set({ faction }),
@@ -27,4 +31,8 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
       delete newOverrides[key];
       return { overrides: newOverrides };
     }),
+
+  setDataFaction: (dataFaction) => set({ dataFaction, dataRealm: "", dataRecordId: "" }),
+  setDataRealm: (dataRealm) => set({ dataRealm, dataRecordId: "" }),
+  setDataRecordId: (dataRecordId) => set({ dataRecordId }),
 }));

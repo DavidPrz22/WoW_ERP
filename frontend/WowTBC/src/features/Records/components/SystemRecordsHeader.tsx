@@ -1,22 +1,22 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { X, TableProperties, RefreshCw, Search } from "lucide-react";
+import { TableProperties, RefreshCw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { PriceTablePanel } from "./SystemRecordsTable";
+import { SystemPriceTable } from "./SystemPriceTable";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
-import { useRecordsQuery } from "../hooks/useRecords";
+import { useRecords } from "../hooks/useRecords";
 import { useGenerateRecordMutation } from "../hooks/mutations/useGenerateRecord";
 
 export function SystemRecordsHeader() {
   const { recordsQuery, faction, showPrices, setRecordsQuery, setFaction, setShowPrices } = useRecordsStore();
 
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useRecordsQuery({
+  const { data, isLoading } = useRecords({
     faction: faction === "all" ? undefined : faction,
     page: page,
   });
@@ -31,24 +31,7 @@ export function SystemRecordsHeader() {
   };
 
   if (showPrices) {
-    return (
-      <div className="px-6 md:px-12 py-10 space-y-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="font-display text-4xl text-gold">Price Table</h1>
-            <p className="text-muted-foreground text-sm">Reagent prices grouped by category. Override values inline.</p>
-          </div>
-          <Button variant="outline" className="border-primary/40" onClick={() => setShowPrices(false)}>
-            <X className="mr-2 h-4 w-4" /> Close
-          </Button>
-        </div>
-        <Card className="bg-card/60 border-border shadow-panel">
-          <CardContent className="pt-6">
-            <PriceTablePanel />
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <SystemPriceTable />;
   }
 
   return (

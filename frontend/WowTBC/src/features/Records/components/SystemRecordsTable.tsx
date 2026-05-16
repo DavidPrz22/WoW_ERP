@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,37 +8,24 @@ import { toast } from "sonner";
 import { formatGold } from "@/data/mock";
 import { PriceGroupSection } from "./SystemPriceGroup";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
+import { RecordSelects } from "./RecordSelects";
+import { useRecordData } from "../hooks/useRecords";
 
 export type PriceGroup = {
   title: string;
-  entries: { name: string; price: number; image?: string }[];
+  entries: { name: string; price: number; icon?: string; recordId?: string; itemId?: string; overridenPrice?: number }[];
 };
 
-type Override = { value: number; previous: number };
-
-const priceGroups: PriceGroup[] = [
-  {
-    title: "Potions & Flasks",
-    entries: [
-      { name: "Super Mana Potion", price: 2.5 },
-      { name: "Super Healing Potion", price: 1.5 },
-    ]
-  },
-  {
-    title: "Primals",
-    entries: [
-      { name: "Primal Might", price: 120 },
-      { name: "Primal Mana", price: 22 },
-      { name: "Primal Earth", price: 3 },
-    ]
-  }
-];
+// type Override = { value: number; previous: number };
 
 export function PriceTablePanel() {
   const { 
     priceQuery, 
     showGold, 
     overrides, 
+    dataRealm,
+    dataFaction,
+    dataRecordId,
     setPriceQuery, 
     setShowGold, 
     setOverride, 
@@ -47,9 +34,30 @@ export function PriceTablePanel() {
   const [editing, setEditing] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
 
+  const { data } = useRecordData({
+    realm: dataRealm,
+    faction: dataFaction,
+    selected_record: dataRecordId,
+  });
+
+  const priceGroups: PriceGroup[] = useMemo(() => data?.groups || [], [data]);
+
+  // Load existing overrides from the backend data
+  useEffect(() => {
+    if (priceGroups.length > 0) {
+      priceGroups.forEach(group => {
+        group.entries.forEach(entry => {
+          if (entry.overridenPrice && !overrides[entry.name]) {
+            setOverride(entry.name, entry.overridenPrice, entry.price);
+          }
+        });
+      });
+    }
+  }, [priceGroups]);
+
   const totalItems = useMemo(
     () => priceGroups.reduce((sum, g) => sum + g.entries.length, 0),
-    []
+    [priceGroups]
   );
 
   const filteredGroups = useMemo(() => {
@@ -58,7 +66,7 @@ export function PriceTablePanel() {
     return priceGroups
       .map((g) => ({ ...g, entries: g.entries.filter((e) => e.name.toLowerCase().includes(q)) }))
       .filter((g) => g.entries.length > 0);
-  }, [priceQuery]);
+  }, [priceQuery, priceGroups]);
 
   const startEdit = (key: string, current: number) => {
     setEditing(key);
@@ -79,10 +87,13 @@ export function PriceTablePanel() {
   };
 
   const formatPrice = (gold: number) =>
-    showGold ? formatGold(Math.round(gold * 10000)) : `${gold.toFixed(4)}g`;
+    showGold ? formatGold(Math.round(gold)) : `${gold/10000}g`;
 
   return (
     <div className="mt-6 space-y-4">
+      <div className="mb-6">
+        <RecordSelects />
+      </div>
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="text-xs text-muted-foreground">
           {totalItems} items · {Object.keys(overrides).length} overridden

@@ -5,7 +5,7 @@ import { IconImg } from "@/components/IconImg";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, type Control, useWatch } from "react-hook-form";
-import { useClassSubclass, useQualityOptions } from "../hooks/queries/queries";
+import { useClassSubclass, useQualityOptions } from "@/hooks/useQueryHooks";
 import type { TPricingSearchValues } from "../schemas";
 import { qualityColor } from "@/data/ItemsColors";
 import type { ItemSearchResult } from "../types";
@@ -80,7 +80,7 @@ export function SearchFilters({
                     }}
                     className={`w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-accent/30 transition-colors text-[${qualityColor[i.quality]}]`}
                   >
-                    <IconImg src={`/icons/${i.icon}`} alt={i.name} className="size-8 rounded-lg" />
+                    <IconImg src={i.icon} alt={i.name} className="size-8 rounded-lg" />
                     <span className="text-sm font-medium">{i.name}</span>
                     <span className="ml-auto text-xs text-muted-foreground">{i.itemClass || i.subClass}</span>
                   </button>

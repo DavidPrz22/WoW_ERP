@@ -7,7 +7,8 @@ from .views import (
     FilterRealmView,
     ItemSearchView,
     RecordsView,
-    GenerateRecordView
+    GenerateRecordView,
+    GenerateRecordsDataView
 )
 
 urlpatterns = [
@@ -19,4 +20,5 @@ urlpatterns = [
     path('items/search/', ItemSearchView.as_view(), name='item-search'),
     path('records/', RecordsView.as_view(), name='records'),
     path('records/generate/', GenerateRecordView.as_view(), name='generate-record'),
+    path('records/data/', GenerateRecordsDataView.as_view(), name='records-data'),
 ]

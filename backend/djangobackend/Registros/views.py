@@ -222,8 +222,8 @@ class GenerateRecordsDataView(GenericAPIView):
                 items_map[title] = ItemRecord.objects.filter(
                     item__name__in=items, 
                     record_id=selected_record_id,
-                    auction_house__realm_name__iexact=realm,
-                    auction_house__faction__iexact=faction,
+                    record__auction_house__realm_name__iexact=realm,
+                    record__auction_house__faction__iexact=faction,
                 )
             
             PRICE_GROUPS = []
