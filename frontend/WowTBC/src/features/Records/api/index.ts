@@ -20,10 +20,6 @@ export const generateRecord = async (): Promise<{ message: string }> => {
   return response.data;
 };
 
-export const getRealms = async (): Promise<{ realm_name: string }[]> => {
-  const response = await apiClient.get<{ realm_name: string }[]>('registros/filters/realm/');
-  return response.data;
-};
 
 export const getRecordData = async (params: TGetRecordDataParams): Promise<any> => {
   const response = await apiClient.get('registros/records/data/', { params });

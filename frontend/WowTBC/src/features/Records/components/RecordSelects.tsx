@@ -2,7 +2,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { useFactionOptions, useRealmOptions } from "@/hooks/useQueryHooks";
-import { useRecords } from "../hooks/useRecords";
+import { useRecordsSelect } from "../hooks/useRecords";
 
 export function RecordSelects() {
   const {
@@ -17,7 +17,7 @@ export function RecordSelects() {
   const { data: factions, isLoading: factionsLoading } = useFactionOptions();
   const { data: realms, isLoading: realmsLoading } = useRealmOptions();
 
-  const { data: recordsData, isLoading: recordsLoading } = useRecords({
+  const { data: recordsData, isLoading: recordsLoading } = useRecordsSelect({
     realm: dataRealm,
     faction: dataFaction,
   });
