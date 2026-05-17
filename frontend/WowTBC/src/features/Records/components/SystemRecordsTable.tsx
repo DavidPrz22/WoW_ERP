@@ -20,15 +20,12 @@ export function PriceTablePanel() {
   const { 
     priceQuery, 
     showGold, 
-    overrides, 
     dataRealm,
     dataFaction,
     dataRecordId,
     setPriceQuery, 
     setShowGold,
   } = useRecordsStore();
-
-
 
   const [editing, setEditing] = useState<string | null>(null);
 
@@ -114,7 +111,7 @@ export function PriceTablePanel() {
       </div>
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="text-xs text-muted-foreground">
-          {totalItems} items · {Object.keys(overrides).length} overridden
+          {totalItems} items
         </div>
         <div className="flex items-center gap-2">
           <Label htmlFor="gold-fmt" className="text-xs text-muted-foreground">Gold format</Label>
@@ -137,7 +134,6 @@ export function PriceTablePanel() {
           <PriceGroupSection
             key={group.title}
             group={group}
-            overrides={overrides}
             editing={editing}
             startEdit={startEdit}
             commit={commit}

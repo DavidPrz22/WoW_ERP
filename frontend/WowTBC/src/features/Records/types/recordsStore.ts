@@ -6,7 +6,6 @@ export interface RecordsStore {
   showPrices: boolean;
   priceQuery: string;
   showGold: boolean;
-  overrides: Record<string, Override>;
   
   // Selection state for RecordSelects
   dataFaction: string;
@@ -18,9 +17,6 @@ export interface RecordsStore {
   setShowPrices: (show: boolean) => void;
   setPriceQuery: (query: string) => void;
   setShowGold: (show: boolean) => void;
-  setOverride: (key: string, value: number, previous: number) => void;
-  removeOverride: (key: string) => void;
-  
   setDataFaction: (faction: string) => void;
   setDataRealm: (realm: string) => void;
   setDataRecordId: (recordId: string) => void;

@@ -9,7 +9,6 @@ import type { PriceEntry, PriceGroup } from "../types";
 
 export function PriceGroupSection({
   group,
-  overrides,
   editing,
   startEdit,
   commit,
@@ -18,7 +17,6 @@ export function PriceGroupSection({
   formatPrice,
 }: {
   group: PriceGroup;
-  overrides: Record<string, { value: number; previous: number }>;
   editing: string | null;
   startEdit: (key: string, current: number) => void;
   commit: (key: string, entry: PriceEntry, newPrice: number) => void;
@@ -27,7 +25,6 @@ export function PriceGroupSection({
   formatPrice: (g: number) => string;
 }) {
 
-  const overriddenCount = group.entries.filter((e) => overrides[e.name]).length;
   const totalItems = group.entries.length;
   const title = group.title;
 
@@ -37,11 +34,6 @@ export function PriceGroupSection({
         <div className="flex items-center gap-3">
           <span className="font-display text-gold tracking-wide uppercase text-sm">{title}</span>
           <Badge variant="outline" className="text-xs border-border">{totalItems}</Badge>
-          {overriddenCount > 0 && (
-            <Badge className="text-xs bg-accent/20 text-accent border-accent/40" variant="outline">
-              {overriddenCount} edited
-            </Badge>
-          )}
         </div>
       </AccordionTrigger>
       <AccordionContent className="pb-3">

@@ -7,7 +7,6 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
   showPrices: false,
   priceQuery: "",
   showGold: true,
-  overrides: {},
 
   dataFaction: "",
   dataRealm: "",
@@ -18,19 +17,6 @@ export const useRecordsStore = create<RecordsStore>((set) => ({
   setShowPrices: (showPrices) => set({ showPrices }),
   setPriceQuery: (priceQuery) => set({ priceQuery }),
   setShowGold: (showGold) => set({ showGold }),
-  setOverride: (key, value, previous) =>
-    set((state) => ({
-      overrides: {
-        ...state.overrides,
-        [key]: { value, previous },
-      },
-    })),
-  removeOverride: (key) =>
-    set((state) => {
-      const newOverrides = { ...state.overrides };
-      delete newOverrides[key];
-      return { overrides: newOverrides };
-    }),
 
   setDataFaction: (dataFaction) => set({ dataFaction, dataRealm: "", dataRecordId: "" }),
   setDataRealm: (dataRealm) => set({ dataRealm, dataRecordId: "" }),
