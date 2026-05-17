@@ -6,12 +6,14 @@ class ItemSubclassSerializer(serializers.ModelSerializer):
         model = ItemSubclass
         fields = ['id', 'name']
 
+
 class ItemClassSerializer(serializers.ModelSerializer):
     subclasses = ItemSubclassSerializer(many=True, read_only=True)
     
     class Meta:
         model = ItemClass
         fields = ['id', 'name', 'subclasses']
+
 
 class ItemSearchSerializer(serializers.ModelSerializer):
     itemClass = serializers.CharField(source='item_subclass.item_class.name', read_only=True)
@@ -20,6 +22,7 @@ class ItemSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['id_ingame', 'name', 'icon', 'quality', 'itemClass', 'subClass']
+
 
 class AuctionHouseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,7 +66,6 @@ class PricingFormattedSerializer(serializers.Serializer):
         }
 
 
-
 class RecordsSerializer(serializers.ModelSerializer):
     realm_name = serializers.CharField(source='auction_house.realm_name', read_only=True)
     faction = serializers.CharField(source='auction_house.faction', read_only=True)
@@ -72,3 +74,9 @@ class RecordsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Records
         fields = ['id', 'realm_name', 'faction', 'item_count', 'timestamp']
+
+
+class OverridePriceSerializer(serializers.Serializer):
+    record_id = serializers.CharField()
+    item_id = serializers.CharField()
+    new_price = serializers.FloatField(allow_null=True)

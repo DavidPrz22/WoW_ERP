@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    OverridePriceView,
     PricingHistoryView,
     FilterClassSubclassView,
     FilterQualityView,
@@ -21,4 +22,5 @@ urlpatterns = [
     path('records/', RecordsView.as_view(), name='records'),
     path('records/generate/', GenerateRecordView.as_view(), name='generate-record'),
     path('records/data/', GenerateRecordsDataView.as_view(), name='records-data'),
+    path('records/override_price/', OverridePriceView.as_view(), name='override-price'),
 ]

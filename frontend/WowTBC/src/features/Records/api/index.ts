@@ -1,5 +1,5 @@
 import apiClient from '@/api';
-import type { PaginatedResponse, SystemRecord } from '../types';
+import type { PaginatedResponse, RecordDataApi, SystemRecord, OverRidePriceParams } from '../types';
 import { type TGetRecordDataParams, type TGetRecordsParams } from '../schemas';
 
 
@@ -21,7 +21,17 @@ export const generateRecord = async (): Promise<{ message: string }> => {
 };
 
 
-export const getRecordData = async (params: TGetRecordDataParams): Promise<any> => {
+export const getRecordData = async (params: TGetRecordDataParams): Promise<RecordDataApi> => {
   const response = await apiClient.get('registros/records/data/', { params });
   return response.data;
 };
+
+
+export const overridePrice = async (params: OverRidePriceParams): Promise<{ message: string }> => {
+  const response = await apiClient.post('registros/records/override_price/', {
+    record_id: params.recordId,
+    item_id: params.itemId,
+    new_price: params.newPrice,
+  });
+  return response.data;
+}

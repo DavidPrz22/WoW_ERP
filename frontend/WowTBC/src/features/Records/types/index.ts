@@ -25,3 +25,27 @@ export interface SystemRecord {
   item_count: number;
   timestamp: string;
 }
+
+export type PriceEntry = {
+  name: string;
+  price: number;
+  recordId: string;
+  itemId: string;
+  icon: string;
+  overridenPrice?: number;
+};
+
+export type PriceGroup = {
+  title: string;
+  entries: PriceEntry[];
+};
+
+export type RecordDataApi = {
+  groups: PriceGroup[];
+}
+
+export type OverRidePriceParams = {
+  recordId: string;
+  itemId: string;
+  newPrice: number | null;
+}

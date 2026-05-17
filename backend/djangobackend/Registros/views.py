@@ -2,7 +2,14 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from .models import Item, Faction, Records, ItemRecord, ItemClass, Quality, AuctionHouse
-from .serializers import PricingHistoryQuerySerializer, ItemClassSerializer, ItemSearchSerializer, PricingFormattedSerializer, RecordsSerializer
+from .serializers import (
+    PricingHistoryQuerySerializer, 
+    ItemClassSerializer, 
+    ItemSearchSerializer, 
+    PricingFormattedSerializer, 
+    RecordsSerializer, 
+    OverridePriceSerializer
+    )
 from django.utils import timezone
 from datetime import datetime
 from rest_framework.pagination import PageNumberPagination
@@ -254,4 +261,25 @@ class GenerateRecordsDataView(GenericAPIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         
+
+class OverridePriceView(GenericAPIView):
+    def post(self, request):
+        try:
+            serializer = OverridePriceSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+
+            record_id = serializer.validated_data.get('record_id')
+            item_id = serializer.validated_data.get('item_id')
+            new_price = serializer.validated_data.get('new_price')
+
+            item_record = ItemRecord.objects.get(id=record_id, item__id_ingame=item_id)
+            item_record.overriden_min_buyout = new_price
+            item_record.save()
+
+            return Response({'message': 'Price overridden successfully'}, status=status.HTTP_200_OK)
+        except ItemRecord.DoesNotExist:
+            return Response({'error': 'ItemRecord not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             

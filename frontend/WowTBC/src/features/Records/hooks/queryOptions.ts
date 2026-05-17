@@ -17,7 +17,7 @@ export const recordsSelectQueryOptions = (params: TGetRecordsSelectParams) => {
   const result = GetRecordsSelectSchema.safeParse(params);
   return queryOptions({
     queryKey: ["records_select", result.data?.realm, result.data?.faction],
-    queryFn: () => getRecords(result.data),
+    queryFn: () => getRecords(result.data!),
     enabled: result.success,
     staleTime: Infinity
   });

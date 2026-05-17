@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { SystemPriceTable } from "./SystemPriceTable";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { useRecords } from "../hooks/useRecords";
-import { useGenerateRecordMutation } from "../hooks/mutations/useGenerateRecord";
+import { useGenerateRecordMutation } from "../hooks/mutations/useMutationRecords";
 
 export function SystemRecordsHeader() {
   const { recordsQuery, faction, showPrices, setRecordsQuery, setFaction, setShowPrices } = useRecordsStore();

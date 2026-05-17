@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,11 +10,9 @@ import { PriceGroupSection } from "./SystemPriceGroup";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { RecordSelects } from "./RecordSelects";
 import { useRecordData } from "../hooks/useRecords";
+import { useOverridePriceMutation } from "../hooks/mutations/useMutationRecords";
+import type { PriceEntry } from "../types";
 
-export type PriceGroup = {
-  title: string;
-  entries: { name: string; price: number; icon?: string; recordId?: string; itemId?: string; overridenPrice?: number }[];
-};
 
 // type Override = { value: number; previous: number };
 
@@ -27,33 +25,26 @@ export function PriceTablePanel() {
     dataFaction,
     dataRecordId,
     setPriceQuery, 
-    setShowGold, 
-    setOverride, 
-    removeOverride 
+    setShowGold,
   } = useRecordsStore();
-  const [editing, setEditing] = useState<string | null>(null);
-  const [draft, setDraft] = useState("");
 
-  const { data } = useRecordData({
+
+
+  const [editing, setEditing] = useState<string | null>(null);
+
+  const { data: { groups = [] } = { groups: [] } } = useRecordData({
     realm: dataRealm,
     faction: dataFaction,
     selected_record: dataRecordId,
   });
 
-  const priceGroups: PriceGroup[] = useMemo(() => data?.groups || [], [data]);
-
-  // Load existing overrides from the backend data
-  useEffect(() => {
-    if (priceGroups.length > 0) {
-      priceGroups.forEach(group => {
-        group.entries.forEach(entry => {
-          if (entry.overridenPrice && !overrides[entry.name]) {
-            setOverride(entry.name, entry.overridenPrice, entry.price);
-          }
-        });
-      });
-    }
-  }, [priceGroups]);
+  const priceGroups = useMemo(() => {
+    if (!groups) return [];
+    return groups.map((g) => ({
+      ...g,
+      entries: [...g.entries].sort((a, b) => a.name.localeCompare(b.name)),
+    }));
+  }, [groups]);
 
   const totalItems = useMemo(
     () => priceGroups.reduce((sum, g) => sum + g.entries.length, 0),
@@ -64,30 +55,57 @@ export function PriceTablePanel() {
     const q = priceQuery.trim().toLowerCase();
     if (!q) return priceGroups;
     return priceGroups
-      .map((g) => ({ ...g, entries: g.entries.filter((e) => e.name.toLowerCase().includes(q)) }))
+      .map((g) => ({ ...g, entries: g.entries.filter((e: PriceEntry) => e.name.toLowerCase().includes(q)) }))
       .filter((g) => g.entries.length > 0);
   }, [priceQuery, priceGroups]);
 
-  const startEdit = (key: string, current: number) => {
+  
+  const startEdit = (key: string) => {
     setEditing(key);
-    setDraft(String(current));
   };
 
-  const commit = (key: string, original: number) => {
-    const v = parseFloat(draft);
-    if (!isNaN(v) && v >= 0) {
-      setOverride(key, v, original);
-      toast.success("Price overwritten", { description: `${key} → ${v.toFixed(4)}g` });
+  const reset = async (entry: PriceEntry, key: string) => {
+    if (!entry.recordId || !entry.itemId) {
+      toast.error('Missing record or item data');
+      return;
     }
-    setEditing(null);
-  };
 
-  const reset = (key: string) => {
-    removeOverride(key);
+    await overridePriceMutation({
+      recordId: entry.recordId.toString(),
+      itemId: entry.itemId.toString(),
+      newPrice: null
+    });
+    toast.success(`Price override for ${key} has been removed`);
   };
 
   const formatPrice = (gold: number) =>
     showGold ? formatGold(Math.round(gold)) : `${gold/10000}g`;
+
+
+  const { mutateAsync: overridePriceMutation } = useOverridePriceMutation();
+
+  const commit = async (key: string, entry: PriceEntry, newPrice: number) => {
+    const prevPrice = entry.overridenPrice ?? entry.price;
+    if (newPrice === prevPrice) {
+      setEditing(null);
+      return;
+    }
+
+    if (!entry.recordId || !entry.itemId) {
+      toast.error('Missing record or item data');
+      setEditing(null);
+      return;
+    }
+
+    await overridePriceMutation({
+        recordId: entry.recordId.toString(),
+        itemId: entry.itemId.toString(),
+        newPrice: newPrice
+      });
+    toast.success(`Price for ${key} updated to ${formatPrice(newPrice)}`);
+    setEditing(null);
+  }
+  
 
   return (
     <div className="mt-6 space-y-4">
@@ -121,8 +139,6 @@ export function PriceTablePanel() {
             group={group}
             overrides={overrides}
             editing={editing}
-            draft={draft}
-            setDraft={setDraft}
             startEdit={startEdit}
             commit={commit}
             reset={reset}
