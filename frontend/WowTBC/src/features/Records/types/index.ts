@@ -32,7 +32,9 @@ export type PriceEntry = {
   recordId: string;
   itemId: string;
   icon: string;
+  marketValuePercent: number;
   overridenPrice?: number;
+
 };
 
 export type PriceGroup = {

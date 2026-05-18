@@ -104,6 +104,14 @@ export function PriceTablePanel() {
   }
   
 
+  const getMarketValuePercentStyles = (percentage: number) => {
+    if (percentage === undefined) return 'N/A';
+    if (percentage <= 79) return 'text-green-400';
+    if (percentage >= 80 && percentage <=109) return 'text-yellow-500';
+    if (percentage >= 110 && percentage <= 134) return 'text-orange-500';
+    return 'text-red-500';
+  }
+
   return (
     <div className="mt-6 space-y-4">
       <div className="mb-6">
@@ -140,6 +148,7 @@ export function PriceTablePanel() {
             reset={reset}
             cancel={() => setEditing(null)}
             formatPrice={formatPrice}
+            getMarketValuePercentStyles={getMarketValuePercentStyles}
           />
         ))}
       </Accordion>

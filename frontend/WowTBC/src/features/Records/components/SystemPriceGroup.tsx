@@ -15,6 +15,7 @@ export function PriceGroupSection({
   reset,
   cancel,
   formatPrice,
+  getMarketValuePercentStyles
 }: {
   group: PriceGroup;
   editing: string | null;
@@ -23,7 +24,9 @@ export function PriceGroupSection({
   reset: (entry: PriceEntry, key: string) => void;
   cancel: () => void;
   formatPrice: (g: number) => string;
+  getMarketValuePercentStyles: (percentage: number) => string;
 }) {
+
 
   const totalItems = group.entries.length;
   const title = group.title;
@@ -42,6 +45,7 @@ export function PriceGroupSection({
             <TableHeader>
               <TableRow>
                 <TableHead className="h-8">Item</TableHead>
+                <TableHead className="h-8 text-right">Maket Value %</TableHead>
                 <TableHead className="h-8 text-right">Price</TableHead>
                 <TableHead className="h-8 w-[110px] text-right">Actions</TableHead>
               </TableRow>
@@ -67,6 +71,11 @@ export function PriceGroupSection({
                       </div>
                     </TableCell>
 
+                    <TableCell className="py-2 text-right">
+                      <div className={getMarketValuePercentStyles(entry.marketValuePercent)}>
+                        {entry.marketValuePercent} %
+                      </div>
+                    </TableCell>
 
                     <TableCell className="py-2 text-right">
                       {isEditing ? (
@@ -128,6 +137,7 @@ export function PriceGroupSection({
                         </div>
                       )}
                     </TableCell>
+
                   </TableRow>
                 );
               })}

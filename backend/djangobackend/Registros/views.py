@@ -243,12 +243,15 @@ class GenerateRecordsDataView(GenericAPIView):
                 price_entries = []
                 for record in items:
                     if record.item:
+
+                        market_value_percent = round((record.min_buyout / record.market_value) * 100) if record.market_value > 0 else 0
                         price_entries.append({
                             'recordId': str(record.id),
                             'itemId': str(record.item.id_ingame) if hasattr(record.item, 'id_ingame') else str(record.item.id),
                             'name': record.item.name,
                             'price': record.min_buyout,
                             'icon': record.item.icon,
+                            'marketValuePercent': market_value_percent,
                             'overridenPrice': record.overriden_min_buyout,
                         })
                 
