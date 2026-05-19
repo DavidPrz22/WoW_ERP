@@ -3,6 +3,8 @@ import { Label } from "@/components/ui/label";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { useFactionOptions, useRealmOptions } from "@/hooks/useQueryHooks";
 import { useRecordsSelect } from "../hooks/useRecords";
+import { useUserDataRecordDetails } from "@/hooks/useQueryHooks";
+import { useEffect } from "react";
 
 export function RecordSelects() {
   const {
@@ -16,6 +18,17 @@ export function RecordSelects() {
 
   const { data: factions, isLoading: factionsLoading } = useFactionOptions();
   const { data: realms, isLoading: realmsLoading } = useRealmOptions();
+
+  const { data: userDataRecordDetails } = useUserDataRecordDetails();
+
+  useEffect(() => {
+    if (userDataRecordDetails) {
+      const { recordDetails } = userDataRecordDetails;
+      setDataFaction(recordDetails.faction);
+      setDataRealm(recordDetails.realm);
+    }
+  }, [userDataRecordDetails, setDataFaction, setDataRealm]);
+
 
   const { data: recordsData, isLoading: recordsLoading } = useRecordsSelect({
     realm: dataRealm,

@@ -15,3 +15,9 @@ export interface TItemClass {
 export interface TRealm {
   realm_name: string;
 }
+
+export type RecordDetails = {
+  recordId: number;
+  realm: string;
+  faction: Faction;
+}

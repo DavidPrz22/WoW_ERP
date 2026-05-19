@@ -1,7 +1,16 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
-from .models import Item, Faction, Records, ItemRecord, ItemClass, Quality, AuctionHouse
+from .models import( 
+    Item, 
+    Faction, 
+    Records, 
+    ItemRecord, 
+    ItemClass, 
+    Quality, 
+    AuctionHouse, 
+    Userdata
+    )
 from .serializers import (
     PricingHistoryQuerySerializer, 
     ItemClassSerializer, 
@@ -257,7 +266,13 @@ class GenerateRecordsDataView(GenericAPIView):
                 
                 price_group['entries'] = price_entries
                 PRICE_GROUPS.append(price_group)
-            
+
+            user_data = Userdata.objects.filter(id_user=request.user.id or 'davidprz').first()
+
+            if user_data:
+                user_data.dynamic_data ['last_record_selected'] = selected_record_id
+                user_data.save()
+
             return Response({'groups':PRICE_GROUPS}, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -286,3 +301,26 @@ class OverridePriceView(GenericAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
+
+
+class UserDataRecordView(GenericAPIView):
+    def get(self, request):
+        user_data = Userdata.objects.filter(id_user=request.user.id or 'davidprz').first()
+        return_data = {}
+        
+        if user_data and user_data.dynamic_data['last_record_selected']:
+            
+            last_record_id = user_data.dynamic_data['last_record_selected']
+            last_record = Records.objects.filter(id=last_record_id).first()
+            
+            if last_record:
+                return_data['recordDetails'] = {
+                    'recordId': last_record.id,
+                    'realm': last_record.auction_house.realm_name,
+                    'faction': last_record.auction_house.faction
+                }
+    
+        if user_data:
+            return Response(return_data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'User data not found'}, status=status.HTTP_404_NOT_FOUND)

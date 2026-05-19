@@ -3,5 +3,18 @@
     "python.analysis.extraPaths": [
         "./backend/djangobackend"
     ],
-    "python.languageServer": "Pylance"
+    "python.languageServer": "Pylance",
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 100,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "TBC_DB",
+            "database": "wowtbc_db",
+            "username": "davidprz",
+            "password": "David3412"
+        }
+    ]
 }

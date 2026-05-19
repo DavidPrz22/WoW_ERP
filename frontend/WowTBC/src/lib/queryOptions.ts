@@ -4,6 +4,7 @@ import {
     fetchQuality,
     fetchFaction,
     fetchRealm,
+    fetchUserdataRecordDetails,
 } from "../api/api";
 
 export const classSubclassQueryOptions = () => queryOptions({
@@ -27,5 +28,12 @@ export const factionQueryOptions = () => queryOptions({
 export const realmQueryOptions = () => queryOptions({
     queryKey: ['realm'],
     queryFn: fetchRealm,
+    staleTime: Infinity
+});
+
+
+export const userDataQueryOptions = () => queryOptions({
+    queryKey: ['userdatarecorddetails'],
+    queryFn: fetchUserdataRecordDetails,
     staleTime: Infinity
 });

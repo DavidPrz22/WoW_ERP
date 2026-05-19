@@ -1,19 +1,19 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Accordion } from "@/components/ui/accordion";
 import { toast } from "sonner";
-import { formatGold } from "@/data/mock";
 import { PriceGroupSection } from "./SystemPriceGroup";
+import { formatPrice, getMarketValuePercentStyles } from "../utils/utils";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { RecordSelects } from "./RecordSelects";
 import { useRecordData } from "../hooks/useRecords";
 import { useOverridePriceMutation } from "../hooks/mutations/useMutationRecords";
 import type { PriceEntry } from "../types";
-
-
+import { useUserDataRecordDetails } from "@/hooks/useQueryHooks";
+import { useRecordsSelect } from "../hooks/useRecords";
 // type Override = { value: number; previous: number };
 
 export function PriceTablePanel() {
@@ -25,6 +25,7 @@ export function PriceTablePanel() {
     dataRecordId,
     setPriceQuery, 
     setShowGold,
+    setDataRecordId
   } = useRecordsStore();
 
   const [editing, setEditing] = useState<string | null>(null);
@@ -34,6 +35,26 @@ export function PriceTablePanel() {
     faction: dataFaction,
     selected_record: dataRecordId,
   });
+
+  const { data: userDataRecordDetails } = useUserDataRecordDetails();
+  const { data: recordsSelectData } = useRecordsSelect({
+    realm: dataRealm,
+    faction: dataFaction,
+  });
+
+  useEffect(() => {
+    if (userDataRecordDetails) {
+      
+      const { recordDetails } = userDataRecordDetails;
+      const recordId = recordDetails.recordId;
+      
+      const matchingRecord = recordsSelectData?.results.find(r => r.id === recordId);
+
+      if (matchingRecord) {
+          setDataRecordId(recordId.toString());
+      }
+    }
+  }, [userDataRecordDetails, setDataRecordId, recordsSelectData]);
 
   const priceGroups = useMemo(() => {
     if (!groups) return [];
@@ -75,10 +96,6 @@ export function PriceTablePanel() {
     toast.success(`Price override for ${key} has been removed`);
   };
 
-  const formatPrice = (gold: number) =>
-    showGold ? formatGold(Math.round(gold)) : `${gold/10000}g`;
-
-
   const { mutateAsync: overridePriceMutation } = useOverridePriceMutation();
 
   const commit = async (key: string, entry: PriceEntry, newPrice: number) => {
@@ -99,17 +116,8 @@ export function PriceTablePanel() {
         itemId: entry.itemId.toString(),
         newPrice: newPrice
       });
-    toast.success(`Price for ${key} updated to ${formatPrice(newPrice)}`);
+    toast.success(`Price for ${key} updated to ${formatPrice(newPrice, showGold)}`);
     setEditing(null);
-  }
-  
-
-  const getMarketValuePercentStyles = (percentage: number) => {
-    if (percentage === undefined) return 'N/A';
-    if (percentage <= 79) return 'text-green-400';
-    if (percentage >= 80 && percentage <=109) return 'text-yellow-500';
-    if (percentage >= 110 && percentage <= 134) return 'text-orange-500';
-    return 'text-red-500';
   }
 
   return (
@@ -147,7 +155,7 @@ export function PriceTablePanel() {
             commit={commit}
             reset={reset}
             cancel={() => setEditing(null)}
-            formatPrice={formatPrice}
+            formatPrice={(gold) => formatPrice(gold, showGold)}
             getMarketValuePercentStyles={getMarketValuePercentStyles}
           />
         ))}
