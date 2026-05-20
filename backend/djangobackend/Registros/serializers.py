@@ -21,7 +21,7 @@ class ItemSearchSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Item
-        fields = ['id_ingame', 'name', 'icon', 'quality', 'itemClass', 'subClass']
+        fields = ['id', 'id_ingame', 'name', 'icon', 'quality', 'itemClass', 'subClass']
 
 
 class AuctionHouseSerializer(serializers.ModelSerializer):

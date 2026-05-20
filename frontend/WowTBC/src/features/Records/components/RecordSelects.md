@@ -1,39 +1,88 @@
-## Implementation Plan: Record Selectors for System Records Table
+## Create a "Alchemy" Page for profession to calculate costs, margins and profits
 
-### Objective
-Implement a tiered selection system (Faction -> Realm -> Record) that allows users to fetch and display specific auction house records in the `SystemRecordsTable`.
+# Context: 
 
-### Data Models Reference
-Backend models in `backend/djangobackend/Registros/models.py`:
-- `Faction` (Choices: Horde, Alliance)
-- `AuctionHouse` (Contains `realm_id`, `realm_name`, `faction`)
-- `Records` (Contains `timestamp`, linked to `AuctionHouse`)
+  - Alchemy page is a module to calculate operation of the profession
+  - Within it, there's 3 groups of consumes for the profession: Flasks, Elixirs and Potions
+  - The page will calculate casting costs, expected profits, roi %, break even points and sell price,
+  - The page will show different items for each group though tables
+  - The page will have total profits, costs and quality for crafting each item
+  - The page will have a modal to view total amounts of each crafting reagent needed for each group and the total group
+  - Each item of each group has reagents needed for crafting so there will be a total to use/buy for each reagent
 
-### Implementation Steps
 
-#### 1. UI Components (Selectors)
-- **Faction Selector:** Create a select dropdown for Faction (Horde/Alliance).
-- **Realm Selector:** Create a select dropdown for Realms. This should be disabled until a Faction is selected. The options should be filtered based on the selected Faction.
-- **Record Selector:** Create a select dropdown for specific Records (timestamps). This should be disabled until a Realm is selected. The options should show the available `Records` for the selected `AuctionHouse`.
+# Requirements:
+  - The page should have 3 different sections for Flask, Elixirs and Potions
+  - Each section is a table with the following headers in order:
+    * Name
+    * Crafting Cost
+    * Breakeven
+    * AH Price
+    * Profit/Item
+    * ROI%
+    * QTY
+    * Cost
+    * Expected Profit
+  - The last row each table will be:
+    * Instead of name of the item it shows "Total"
+    * "Cost", "QTY" and "Expected Profit" will be summed up and calculate a total for that column
+  - QTY and AH Price should be values as inputs that can be modified
+  - Add a modal with a trigger button to view the Shopping list for each group 
+  - Make a Shopping list for each group (Flask, Elixirs and Potions)
+  - Make a shooping list that shows the total reagents for all groups
+  - This list should be tables too
+    * Item
+    * Amount to Buy
+    * In Inventory
+    * Difference
+  - The colum  "In Inventory" should have an inpu to input the reagent that the user has and then a "Difference" Column to show the amount needed or exceeded.
+  
 
-#### 2. Data Fetching & State Management (React Query)
-- **Queries:**
-  - `useRealms(faction)`: Fetch `AuctionHouse` entries filtered by `faction`. Cache with React Query using keys like `['realms', faction]`.
-  - `useRecords(realmId)`: Fetch available `Records` for a specific `realmId`. Cache with React Query using keys like `['records', realmId]`.
-  - `useRecordData(recordId)`: Fetch the actual pricing data for the selected `recordId`. Cache using `['recordData', recordId]`.
 
-#### 3. Interaction Flow
-- User selects a **Faction**.
-- The **Realm** selector becomes active and populates with realms for that faction via React Query.
-- User selects a **Realm**.
-- The **Record** selector becomes active and populates with timestamps for that realm.
-- User selects a **Record**.
-- This selection triggers the `useRecordData` query to fetch the actual record data.
+DATA MODELS:
 
-#### 4. Form and Mutations
-- Wrap the selectors in a form to handle submission, or trigger the data fetch automatically when a record is selected.
-- Create a `useMutation` (or lazy `useQuery`) to fetch the requested Record Data. Ensure the fetched data is cached by React Query.
+  - I need a record for groups
 
-#### 5. Integration
-- Store the selected filters and the resulting `recordId` in the `useRecordsStore` (Zustand) so it can be accessed globally by the `SystemRecordsTable`.
-- Update the table to consume the dynamically fetched data instead of mock data.
+  Alchemy Groups Schema
+  {
+    GroupName: "string",
+    GroupItems: [],
+  }
+
+  GroupItem Schema
+  {
+    Item_id,
+    Craft_OP
+  }
+
+  Crafting OP
+  {
+    item_id,
+    item_qty,
+  }
+
+  GroupItem - one to many - 
+  Item Schema
+  {
+    ItemName: "string",
+    ItemReagents: 
+      {
+      itemId: "string",
+      itemName: "string",
+      itemQty: "number",
+      itemCost: "number",
+    }[],
+    ItemMinBuyout: number,
+  }
+
+  To calculate crafting cost: itemReagents
+    cost = Suma total de (itemqty * itemscost) 
+
+  To calculate shoppints: itemReagents
+    {'itemname', 'tota' } = Suma total de itemQty
+  
+
+
+  - I need list of crafting items
+  - Price of each item for that record
+ 

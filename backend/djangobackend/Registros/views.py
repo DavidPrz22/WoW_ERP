@@ -14,11 +14,12 @@ from .models import(
 from .serializers import (
     PricingHistoryQuerySerializer, 
     ItemClassSerializer, 
-    ItemSearchSerializer, 
+    ItemSearchSerializer,
     PricingFormattedSerializer, 
     RecordsSerializer, 
     OverridePriceSerializer
     )
+
 from django.utils import timezone
 from datetime import datetime
 from rest_framework.pagination import PageNumberPagination
@@ -127,28 +128,29 @@ class ItemSearchView(GenericAPIView):
     Query Params: searchterm, class, subclass, quality
     """
     def get(self, request):
-        searchterm = request.query_params.get('searchTerm', '')
-        item_class = request.query_params.get('class', '')
-        item_subclass = request.query_params.get('subclass', '')
-        quality = request.query_params.get('quality', '')
+
+        searchterm = request.query_params.get('searchTerm', '').strip()
+        item_class = request.query_params.get('class', '').strip()
+        item_subclass = request.query_params.get('subclass', '').strip()
+        quality = request.query_params.get('quality', '').strip()
 
         queryset = Item.objects.select_related('item_subclass', 'item_subclass__item_class').all()
 
         if searchterm:
             queryset = queryset.filter(name__icontains=searchterm)
-        
+
         if item_class and item_class != 'all':
-            queryset = queryset.filter(item_subclass__item_class__name=item_class)
-            
+            queryset = queryset.filter(item_subclass__item_class__name__iexact=item_class)
+
         if item_subclass and item_subclass != 'all':
-            queryset = queryset.filter(item_subclass__name=item_subclass)
-            
+            queryset = queryset.filter(item_subclass__name__iexact=item_subclass)
+
         if quality and quality != 'all':
             queryset = queryset.filter(quality=quality)
-            
+
         # Limit to 50 results to prevent massive responses
-        queryset = queryset[:50]
-        
+        queryset = queryset.order_by('name')[:50]
+
         serializer = ItemSearchSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

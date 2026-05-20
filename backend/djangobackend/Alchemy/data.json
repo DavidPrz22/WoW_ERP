@@ -1,0 +1,226 @@
+
+{
+  "Flasks": [
+    {
+      "name": "Flask of Pure Death",
+      "reagents": [
+        { "name": "Fel Lotus", "quantity": 1 },
+        { "name": "Mana Thistle", "quantity": 3 },
+        { "name": "Nightmare Vine", "quantity": 7 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Flask of Blinding Light",
+      "reagents": [
+        { "name": "Fel Lotus", "quantity": 1 },
+        { "name": "Mana Thistle", "quantity": 3 },
+        { "name": "Netherbloom", "quantity": 7 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Flask of Relentless Assault",
+      "reagents": [
+        { "name": "Fel Lotus", "quantity": 1 },
+        { "name": "Mana Thistle", "quantity": 3 },
+        { "name": "Terocone", "quantity": 7 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Flask of Fortification",
+      "reagents": [
+        { "name": "Fel Lotus", "quantity": 1 },
+        { "name": "Mana Thistle", "quantity": 3 },
+        { "name": "Ancient Lichen", "quantity": 7 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Flask of Mighty Restoration",
+      "reagents": [
+        { "name": "Fel Lotus", "quantity": 1 },
+        { "name": "Mana Thistle", "quantity": 3 },
+        { "name": "Dreaming Glory", "quantity": 7 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Flask of Distilled Wisdom",
+      "reagents": [
+        { "name": "Dreamfoil", "quantity": 30 },
+        { "name": "Icecap", "quantity": 10 },
+        { "name": "Black Lotus", "quantity": 1 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Flask of Supreme Power",
+      "reagents": [
+        { "name": "Dreamfoil", "quantity": 30 },
+        { "name": "Mountain Silversage", "quantity": 10 },
+        { "name": "Black Lotus", "quantity": 1 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    }
+  ],
+  "Elixirs": [
+    {
+      "name": "Elixir of Major Agility",
+      "type": "Battle",
+      "reagents": [
+        { "name": "Terocone", "quantity": 1 },
+        { "name": "Felweed", "quantity": 2 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Elixir of Healing Power",
+      "type": "Battle",
+      "reagents": [
+        { "name": "Golden Sansam", "quantity": 1 },
+        { "name": "Dreaming Glory", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Elixir of Major Strength",
+      "type": "Battle",
+      "reagents": [
+        { "name": "Mountain Silversage", "quantity": 1 },
+        { "name": "Felweed", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Adept's Elixir",
+      "type": "Battle",
+      "reagents": [
+        { "name": "Dreamfoil", "quantity": 1 },
+        { "name": "Felweed", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Greater Arcane Elixir",
+      "type": "Battle",
+      "reagents": [
+        { "name": "Dreamfoil", "quantity": 3 },
+        { "name": "Mountain Silversage", "quantity": 1 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Elixir of the Mongoose",
+      "type": "Battle",
+      "reagents": [
+        { "name": "Mountain Silversage", "quantity": 2 },
+        { "name": "Plaguebloom", "quantity": 2 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Elixir of Draenic Wisdom",
+      "type": "Guardian",
+      "reagents": [
+        { "name": "Terocone", "quantity": 1 },
+        { "name": "Felweed", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Elixir of Major Defense",
+      "type": "Guardian",
+      "reagents": [
+        { "name": "Ancient Lichen", "quantity": 3 },
+        { "name": "Terocone", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Elixir of Major Mageblood",
+      "type": "Guardian",
+      "reagents": [
+        { "name": "Ancient Lichen", "quantity": 1 },
+        { "name": "Netherbloom", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Elixir of Major Fortitude",
+      "type": "Guardian",
+      "reagents": [
+        { "name": "Earthroot", "quantity": 2 },
+        { "name": "Gromsblood", "quantity": 1 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Gift of Arthas",
+      "type": "Guardian",
+      "reagents": [
+        { "name": "Arthas' Tears", "quantity": 1 },
+        { "name": "Blindweed", "quantity": 1 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    }
+  ],
+  "Potions": [
+    {
+      "name": "Haste Potion",
+      "reagents": [
+        { "name": "Netherbloom", "quantity": 2 },
+        { "name": "Terocone", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Destruction Potion",
+      "reagents": [
+        { "name": "Nightmare Vine", "quantity": 2 },
+        { "name": "Netherbloom", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Ironshield Potion",
+      "reagents": [
+        { "name": "Felweed", "quantity": 2 },
+        { "name": "Primal Earth", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Heroic Potion",
+      "reagents": [
+        { "name": "Terocone", "quantity": 2 },
+        { "name": "Nightmare Vine", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Super Mana Potion",
+      "reagents": [
+        { "name": "Dreaming Glory", "quantity": 2 },
+        { "name": "Felweed", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Super Healing Potion",
+      "reagents": [
+        { "name": "Netherbloom", "quantity": 2 },
+        { "name": "Felweed", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Mana Potion Injector",
+      "reagents": [
+        { "name": "Super Mana Potion", "quantity": 20 },
+        { "name": "Adamantite Frame", "quantity": 1 }
+      ]
+    }
+  ]
+}
