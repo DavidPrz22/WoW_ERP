@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { registerGroupAlchemyItem } from '../../api/items';
+import { registerGroupAlchemyItem } from '../../api';
 import type { TCreateAlchemyItemPayload } from '../../types/index';
 
 export const useCreateAlchemyItemMutation = () => {

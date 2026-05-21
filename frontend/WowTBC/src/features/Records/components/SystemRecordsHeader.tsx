@@ -9,7 +9,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Badge } from "@/components/ui/badge";
 import { SystemPriceTable } from "./SystemPriceTable";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
-import { useRecords } from "../hooks/useRecords";
+import { useRecords } from "../hooks/queries/useRecords";
 import { useGenerateRecordMutation } from "../hooks/mutations/useMutationRecords";
 
 export function SystemRecordsHeader() {

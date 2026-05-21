@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { FlaskConical, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 import type { Group, Recipe, RowState } from "../types";
 import { GROUPS, AH_CUT } from "../utils/constants";
 import { craftingCost, fmt } from "../utils/helpers";
+import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
+import { useRecordData } from "@/features/Records/hooks/queries/useRecords";
+import { AlchemyRecordSelects } from "./AlchemyRecordSelects";
 
 export function AlchemyFeature() {
   const [state, setStateMap] = useState<Record<string, RowState>>(() => {
@@ -21,6 +24,25 @@ export function AlchemyFeature() {
     Elixirs: [],
     Potions: [],
   });
+
+  const { dataRealm, dataFaction, dataRecordId } = useRecordsStore();
+
+  const { data: recordData } = useRecordData({
+    realm: dataRealm,
+    faction: dataFaction,
+    selected_record: dataRecordId,
+  });
+
+  const customPriceMap = useMemo(() => {
+    if (!recordData?.groups) return undefined;
+    const map: Record<string, number> = {};
+    for (const g of recordData.groups) {
+      for (const e of g.entries) {
+        map[e.name] = e.overridenPrice ?? e.price;
+      }
+    }
+    return map;
+  }, [recordData]);
   const [inventory, setInventoryMap] = useState<Record<string, number>>({});
   const [openShopping, setOpenShopping] = useState(false);
 
@@ -63,12 +85,36 @@ export function AlchemyFeature() {
     return r;
   }, [needsByGroup, mergedGroups]);
 
+  useEffect(() => {
+    if (customPriceMap) {
+      setStateMap((prevState) => {
+        const newState = { ...prevState };
+        let updated = false;
+        for (const g of mergedGroups) {
+          for (const r of g.recipes) {
+            if (r.name in customPriceMap) {
+              const recordPrice = customPriceMap[r.name];
+              if (prevState[r.name]?.ahPrice !== recordPrice) {
+                newState[r.name] = {
+                  ...newState[r.name],
+                  ahPrice: recordPrice,
+                };
+                updated = true;
+              }
+            }
+          }
+        }
+        return updated ? newState : prevState;
+      });
+    }
+  }, [customPriceMap, mergedGroups]);
+
   const grand = useMemo(() => {
     let cost = 0;
     let profit = 0;
     for (const g of mergedGroups) {
       for (const r of g.recipes) {
-        const c = craftingCost(r);
+        const c = craftingCost(r, customPriceMap);
         const s = state[r.name];
         if (!s) continue;
         cost += c * s.qty;
@@ -76,7 +122,7 @@ export function AlchemyFeature() {
       }
     }
     return { cost, profit };
-  }, [state, mergedGroups]);
+  }, [state, mergedGroups, customPriceMap]);
 
   return (
     <div className="px-6 md:px-12 py-10 space-y-8">
@@ -121,6 +167,8 @@ export function AlchemyFeature() {
         </Dialog>
       </div>
 
+      <AlchemyRecordSelects />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="border border-border/70 bg-card/40 px-5 py-4 flex items-center justify-between">
           <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">Total Cost</span>
@@ -147,6 +195,7 @@ export function AlchemyFeature() {
             state={state} 
             setState={setRow} 
             onAddRecipe={addRecipe} 
+            customPriceMap={customPriceMap}
             />
         ))}
       </div>

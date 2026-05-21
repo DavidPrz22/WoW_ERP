@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import AlchemyItem, AlchemyGroup
 from .serializers import AlchemyItemSerializer
 from Registros.models import Item
+
 class CreateAlchemyItemView(generics.CreateAPIView):
     queryset = AlchemyItem.objects.all()
     serializer_class = AlchemyItemSerializer
@@ -35,3 +36,11 @@ class CreateAlchemyItemView(generics.CreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class GetAlchemyGroupsDataView(generics.ListAPIView):
+    serializer_class = AlchemyItemSerializer
+
+    def get_queryset(self):
+        queryset = AlchemyItem.objects.all()
+        return queryset

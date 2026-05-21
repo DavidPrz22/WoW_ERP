@@ -9,11 +9,10 @@ import { PriceGroupSection } from "./SystemPriceGroup";
 import { formatPrice, getMarketValuePercentStyles } from "../utils/utils";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { RecordSelects } from "./RecordSelects";
-import { useRecordData } from "../hooks/useRecords";
+import { useRecordData } from "../hooks/queries/useRecords";
 import { useOverridePriceMutation } from "../hooks/mutations/useMutationRecords";
 import type { PriceEntry } from "../types";
-import { useUserDataRecordDetails } from "@/hooks/useQueryHooks";
-import { useRecordsSelect } from "../hooks/useRecords";
+import { useUserDataRecordDetails, useRecordsSelect} from "@/hooks/useQueryHooks";
 // type Override = { value: number; previous: number };
 
 export function PriceTablePanel() {

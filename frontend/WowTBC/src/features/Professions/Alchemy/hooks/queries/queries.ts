@@ -1,5 +1,5 @@
 import { useQuery, queryOptions, keepPreviousData } from '@tanstack/react-query';
-import { fetchItemSearch } from '../../api/items';
+import { fetchItemSearch } from '../../api';
 import type { TItemSearchParams } from '../../types/index';
 
 export const itemSearchQueryOptions = (params: TItemSearchParams) => queryOptions({

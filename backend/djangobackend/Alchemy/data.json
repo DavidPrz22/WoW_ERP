@@ -224,3 +224,19 @@
     }
   ]
 }
+
+[
+  {
+    "group": "Flasks",
+    "items": [
+      {
+        "name": "Flask of Pure Death",
+        "craftingCost": 100,
+        "breakeven": 150,
+        "ahPrice": 120,
+        "profitPerItem": 20,
+        "ROI": 0.2,
+      }
+    ]
+  }
+]

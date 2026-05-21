@@ -1,7 +1,7 @@
 import apiClient from '@/api';
 import type { PaginatedResponse, RecordDataApi, SystemRecord, OverRidePriceParams } from '../types';
-import { type TGetRecordDataParams, type TGetRecordsParams } from '../schemas';
-
+import { type TGetRecordsParams } from '../schemas';
+import { type TGetRecordDataParams } from '@/schemas/schemas';
 
 export const getRecords = async (params: TGetRecordsParams): Promise<PaginatedResponse<SystemRecord>> => {
   try {

@@ -24,11 +24,13 @@ export function GroupTable({
   state,
   setState,
   onAddRecipe,
+  customPriceMap,
 }: {
   group: Group;
   state: Record<string, RowState>;
   setState: (name: string, s: RowState) => void;
   onAddRecipe: (groupKey: Group["key"], recipe: Recipe) => void;
+  customPriceMap?: Record<string, number>;
 }) {
   const [draft, setDraft] = useState<DraftRow | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export function GroupTable({
 
 
   const rows = group.recipes.map((r) => {
-    const cost = craftingCost(r);
+    const cost = craftingCost(r, customPriceMap);
     const breakeven = cost / (1 - AH_CUT);
     const s = state[r.name];
     const ah = s.ahPrice;
@@ -96,7 +98,7 @@ export function GroupTable({
     saveDraft();
   }
 
-  const draftCost = draft ? priceMap[draft.name] ?? 0 : 0;
+  const draftCost = draft ? (customPriceMap?.[draft.name] ?? priceMap[draft.name] ?? 0) : 0;
   const draftBreakeven = draftCost / (1 - AH_CUT);
   const draftProfit = draft ? draft.ahPrice * (1 - AH_CUT) - draftCost : 0;
   const draftRoi = draftCost > 0 ? (draftProfit / draftCost) * 100 : 0;
