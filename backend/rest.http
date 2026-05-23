@@ -1,0 +1,14 @@
+### Variables
+@baseUrl = http://localhost:8000/api
+@authToken = your_jwt_token_here
+
+
+###
+POST {{baseUrl}}/alchemy/groups/data/
+Content-Type: application/json
+
+{
+    "faction": "Alliance",
+    "realm": "Nightslayer",
+    "selected_record": 8593
+}

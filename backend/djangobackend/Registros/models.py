@@ -60,8 +60,7 @@ class Records(models.Model):
         unique_together = ('auction_house', 'timestamp')
 
     def __str__(self):
-        ah_name = self.auction_house.name if self.auction_house else "All"
-        return f"{ah_name} Record - {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
+        return f"Record - {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
 
 
 class ItemRecord(models.Model):

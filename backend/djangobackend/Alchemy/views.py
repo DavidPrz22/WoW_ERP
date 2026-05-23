@@ -2,8 +2,25 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import AlchemyItem, AlchemyGroup
-from .serializers import AlchemyItemSerializer
-from Registros.models import Item
+from .serializers import AlchemyGroupDataResponseSerializer, AlchemyGroupDataSerializer, AlchemyItemSerializer
+from Registros.models import Item, ItemRecord
+from .services.alchemy_calculations_service import AlchemyCalculationsService
+
+# [
+#   {
+#     "group": "Flasks",
+#     "items": [
+#       {
+#         "name": "Flask of Pure Death",
+#         "craftingCost": 100,
+#         "breakeven": 150,
+#         "ahPrice": 120,
+#         "profitPerItem": 20,
+#         "ROI": 0.2,
+#       }
+#     ]
+#   }
+# ]
 
 class CreateAlchemyItemView(generics.CreateAPIView):
     queryset = AlchemyItem.objects.all()
@@ -39,8 +56,37 @@ class CreateAlchemyItemView(generics.CreateAPIView):
 
 
 class GetAlchemyGroupsDataView(generics.ListAPIView):
-    serializer_class = AlchemyItemSerializer
+    serializer_class = AlchemyGroupDataSerializer
 
     def get_queryset(self):
-        queryset = AlchemyItem.objects.all()
+        queryset = AlchemyGroup.objects.all()
         return queryset
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        faction = serializer.validated_data.get('faction')
+        realm = serializer.validated_data.get('realm')
+        selected_record = serializer.validated_data.get('selected_record')
+
+        groups = AlchemyGroup.objects.prefetch_related('items__reagent_for__reagent').all()
+        groups_data = AlchemyGroupDataResponseSerializer(groups, many=True).data
+
+        records_data = ItemRecord.objects.filter(record__id=selected_record, record__auction_house__faction__iexact=faction, record__auction_house__realm_name__iexact=realm)
+        if not records_data:
+            return Response({'error': f"Record with id_ingame '{selected_record}' not found for faction '{faction}' and realm '{realm}'."}, status=status.HTTP_404_NOT_FOUND)
+        records_map = {}
+
+        for data in records_data:
+            records_map[data.item.id_ingame] = {
+                "market_value": data.market_value,
+                "min_buyout": data.min_buyout,
+                "overriden_min_buyout": data.overriden_min_buyout,
+            }
+        
+        GROUP_CALCULATIONS, TOTAL_REAGENTS_USED = AlchemyCalculationsService.calculate_groups_data(groups_data, records_map)
+        return Response({
+            "groups": GROUP_CALCULATIONS,
+            "total_reagents_used": TOTAL_REAGENTS_USED
+        }, status=status.HTTP_200_OK)
