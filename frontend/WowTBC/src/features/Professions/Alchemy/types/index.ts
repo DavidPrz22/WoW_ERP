@@ -1,18 +1,11 @@
-export type Recipe = {
+export type AlchemyItemCalculation = {
   name: string;
-  reagents: { name: string; qty: number }[];
-  yieldPerCraft?: number;
-  defaultAHPrice: number;
-  defaultQty: number;
+  AHPrice: number;
+  craftingCost: number;
+  breakeven: number;
+  profitPerItem: number;
+  ROI: number;
 };
-
-export type Group = { 
-  key: "Flasks" | "Elixirs" | "Potions"; 
-  title: string; 
-  recipes: Recipe[];
-  searchGroup?: "Flask" | "Elixir" | "Potion";
-};
-
 export type RowState = { ahPrice: number; qty: number };
 
 export type DraftRow = { id: number; name: string; ahPrice: number; qty: number };
@@ -37,4 +30,16 @@ export type TItemSearchResponse = {
 export type TCreateAlchemyItemPayload = {
   group: string;
   item_id: number;
+};
+
+
+export type AlchemyGroup = {
+  group: "Flasks" | "Elixirs" | "Potions";
+  items: AlchemyItemCalculation[];
+  search_group: "Flask" | "Elixir" | "Potion";
+};
+
+export type AlchemyCalculationsResponse = {
+  groups_data: Record<string, AlchemyGroup>;
+  total_reagents_used: Record<string, number>;
 };

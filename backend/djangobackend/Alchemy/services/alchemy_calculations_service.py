@@ -12,7 +12,8 @@ class AlchemyCalculationsService:
         total_reagents_used = {}
 
         for group in groups_data:
-            group_name = group['group']
+            group_name = group.get('group')
+            search_group = group.get('search_group')
             items_data = []
             
             for item in group['items']:
@@ -21,6 +22,7 @@ class AlchemyCalculationsService:
 
             group_calculations[group_name] = {
                 "group": group_name,
+                "search_group": search_group,
                 "items": items_data
             }
             

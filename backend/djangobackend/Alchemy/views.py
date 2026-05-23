@@ -87,6 +87,6 @@ class GetAlchemyGroupsDataView(generics.ListAPIView):
         
         GROUP_CALCULATIONS, TOTAL_REAGENTS_USED = AlchemyCalculationsService.calculate_groups_data(groups_data, records_map)
         return Response({
-            "groups": GROUP_CALCULATIONS,
+            "groups_data": GROUP_CALCULATIONS,
             "total_reagents_used": TOTAL_REAGENTS_USED
         }, status=status.HTTP_200_OK)

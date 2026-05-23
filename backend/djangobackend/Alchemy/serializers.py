@@ -22,7 +22,8 @@ class AlchemyItemSerializer(serializers.ModelSerializer):
         fields = ['group', 'item_id', 'yield_quantity']
 
     def to_representation(self, instance):
-
+        data = super().to_representation(instance)
+        
         return {
             'item_id_ingame': instance.item_id.id_ingame,
             'name': instance.item_id.name,
@@ -44,4 +45,4 @@ class AlchemyGroupDataResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AlchemyGroup
-        fields = ['group', 'items']
+        fields = ['group', 'search_group', 'items']

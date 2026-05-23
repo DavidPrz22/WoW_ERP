@@ -1,5 +1,5 @@
 import apiClient from '@/api/index';
-import type { TItemSearchParams, TItemSearchResponse, TCreateAlchemyItemPayload } from '../types/index';
+import type { TItemSearchParams, TItemSearchResponse, TCreateAlchemyItemPayload, AlchemyCalculationsResponse } from '../types/index';
 import { type TGetRecordDataParams } from '@/schemas/schemas';
 
 export const fetchItemSearch = async (params: TItemSearchParams): Promise<TItemSearchResponse[]> => {
@@ -23,7 +23,7 @@ export const registerGroupAlchemyItem = async (payload: TCreateAlchemyItemPayloa
     }
 };
 
-export const getAlchemyGroupsData = async (params: TGetRecordDataParams) => {
+export const getAlchemyGroupsData = async (params: TGetRecordDataParams): Promise<AlchemyCalculationsResponse> => {
     try {
         const res = await apiClient.post('alchemy/groups/data/', { params });
         return res.data;

@@ -8,11 +8,17 @@ class AlchemyGroupsList(models.TextChoices):
     ELIXIRS = 'Elixirs'
     POTIONS = 'Potions'
 
+class AlchemyGroupsListSearch(models.TextChoices):
+    FLASKS = 'Flask'
+    ELIXIRS = 'Elixir'
+    POTIONS = 'Potion'
+
 class AlchemyGroup(models.Model):
     name = models.CharField(max_length=50, choices=AlchemyGroupsList.choices, unique=True)
-
+    search_group = models.CharField(max_length=50, choices=AlchemyGroupsListSearch.choices, default=AlchemyGroupsListSearch.FLASKS)
+    
     def __str__(self):
-        return self.name
+        return self.name + " (" + self.search_group + ")"
 
 class AlchemyItem(models.Model):
     group = models.ForeignKey(AlchemyGroup, on_delete=models.CASCADE, related_name='items')

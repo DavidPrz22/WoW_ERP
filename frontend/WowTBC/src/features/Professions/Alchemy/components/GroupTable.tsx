@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ItemCombobox } from "./ItemCombobox";
 import { cn } from "@/lib/utils";
-import type { Group, Recipe, RowState, DraftRow } from "../types";
+import type { AlchemyGroup, Recipe, RowState, DraftRow } from "../types";
 import { AH_CUT, priceMap } from "../utils/constants";
 import { craftingCost, fmt } from "../utils/helpers";
 import { useCreateAlchemyItemMutation } from "../hooks/mutations/mutations";
