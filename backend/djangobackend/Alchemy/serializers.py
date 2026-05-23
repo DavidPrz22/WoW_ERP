@@ -10,7 +10,7 @@ class AlchemyItemSerializer(serializers.ModelSerializer):
 class AlchemyGroupDataSerializer(serializers.Serializer):
     faction = serializers.CharField()
     realm = serializers.CharField()
-    selected_record = serializers.IntegerField()
+    selected_record = serializers.CharField()
 
 
 class AlchemyItemSerializer(serializers.ModelSerializer):

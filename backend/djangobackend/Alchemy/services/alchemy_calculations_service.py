@@ -8,7 +8,7 @@ class AlchemyCalculationsService:
     @classmethod
     def calculate_groups_data(cls, groups_data: List[Dict], records_map: Dict) -> Tuple[Dict, Dict]:
         """Calculates profitability metrics for all alchemy groups."""
-        group_calculations = {}
+        group_calculations = []
         total_reagents_used = {}
 
         for group in groups_data:
@@ -20,11 +20,12 @@ class AlchemyCalculationsService:
                 item_data = cls._process_item(item, records_map, total_reagents_used)
                 items_data.append(item_data)
 
-            group_calculations[group_name] = {
+            group_calc = {
                 "group": group_name,
                 "search_group": search_group,
                 "items": items_data
             }
+            group_calculations.append(group_calc)
             
         return group_calculations, total_reagents_used
 

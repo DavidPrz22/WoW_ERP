@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useItemSearch } from "../hooks/queries/queries";
 import { useDebounce } from "@/hooks/useDebounce";
-import type { Group } from "../types";
+import type { AlchemyGroup } from "../types";
 import { IconImg } from "@/components/IconImg";
 
 export function ItemCombobox({
@@ -22,7 +22,7 @@ export function ItemCombobox({
   onChange,
 }: {
   value: string;
-  groupClass: Group["searchGroup"];
+  groupClass: AlchemyGroup["search_group"];
   onChange: (name: string, id: number) => void;
 }) {
   const [open, setOpen] = useState(false);

@@ -25,7 +25,8 @@ export const registerGroupAlchemyItem = async (payload: TCreateAlchemyItemPayloa
 
 export const getAlchemyGroupsData = async (params: TGetRecordDataParams): Promise<AlchemyCalculationsResponse> => {
     try {
-        const res = await apiClient.post('alchemy/groups/data/', { params });
+        const res = await apiClient.post('alchemy/groups/data/', params);
+        console.log('Alchemy groups data:', res.data);
         return res.data;
     } catch (error) {
         console.error('Error fetching alchemy groups data:', error);

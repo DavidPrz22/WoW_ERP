@@ -1,31 +1,25 @@
 import { GroupTable } from "./GroupTable";
-import type { Group, Recipe, RowState } from "../types";
+import type { AlchemyGroup } from "../types";
 
 export interface GroupTableListProps {
-  mergedGroups: Group[];
-  state: Record<string, RowState>;
-  setRow: (name: string, s: RowState) => void;
-  addRecipe: (key: Group["key"], recipe: Recipe) => void;
-  customPriceMap?: Record<string, number>;
+  groups: AlchemyGroup[];
+  qtys: Record<string, number>;
+  setQty: (name: string, q: number) => void;
 }
 
 export function GroupTableList({
-  mergedGroups,
-  state,
-  setRow,
-  addRecipe,
-  customPriceMap,
+  groups,
+  qtys,
+  setQty,
 }: GroupTableListProps) {
   return (
     <div className="space-y-6">
-      {mergedGroups.map((g) => (
+      {groups.map((g) => (
         <GroupTable 
-          key={g.key} 
+          key={g.group} 
           group={g} 
-          state={state} 
-          setState={setRow} 
-          onAddRecipe={addRecipe} 
-          customPriceMap={customPriceMap}
+          qtys={qtys} 
+          setQty={setQty} 
         />
       ))}
     </div>

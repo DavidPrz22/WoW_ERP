@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingTable } from "./ShoppingTable";
-import type { Group } from "../types";
+import type { AlchemyGroup } from "../types";
 
 interface ShoppingListDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  mergedGroups: Group[];
+  mergedGroups: AlchemyGroup[];
   totalNeeds: Record<string, number>;
   needsByGroup: Record<string, Record<string, number>>;
   inventory: Record<string, number>;
@@ -47,8 +47,8 @@ export function ShoppingListDialog({
             <ShoppingTable needs={totalNeeds} inventory={inventory} setInventory={setInventory} />
           </TabsContent>
           {mergedGroups.map((g) => (
-            <TabsContent key={g.key} value={g.key} className="mt-4">
-              <ShoppingTable needs={needsByGroup[g.key]} inventory={inventory} setInventory={setInventory} />
+            <TabsContent key={g.group} value={g.group} className="mt-4">
+              <ShoppingTable needs={needsByGroup[g.group]} inventory={inventory} setInventory={setInventory} />
             </TabsContent>
           ))}
         </Tabs>
