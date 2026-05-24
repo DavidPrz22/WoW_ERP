@@ -2,15 +2,11 @@ import {History } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { fmt } from "../utils/helpers";
 import { cn } from "@/lib/utils";
+import { useQueryClient } from '@tanstack/react-query';
+import { ALCHEMY_GROUP_DATA } from "../hooks/queries/queryOptions";
+import { useAlchemyStore } from "@/ZustandStores/useAlchemyStore";
 
-const SAMPLE_RECORDS = [
-  { id: "REC-1042", label: "Snapshot · Gehennas-Horde", time: "2h ago", value: 114.98 },
-  { id: "REC-1039", label: "Snapshot · Gehennas-Horde", time: "8h ago", value: 112.50 },
-  { id: "REC-1031", label: "Snapshot · Firemaw-Alliance", time: "1d ago", value: 118.75 },
-  { id: "REC-1024", label: "Snapshot · Mograine-Horde", time: "2d ago", value: 109.20 },
-  { id: "REC-1018", label: "Snapshot · Golemagg-Horde", time: "3d ago", value: 121.40 },
-  { id: "REC-1007", label: "Snapshot · Pyrewood-Alliance", time: "5d ago", value: 116.05 },
-];
+
 
 export function HeaderPickerDialog({
   column,
@@ -22,6 +18,42 @@ export function HeaderPickerDialog({
   className?: string;
 }) {
   const alignCls = align === "right" ? "justify-end" : align === "center" ? "justify-center" : "justify-start";
+  const { dataRealm, dataFaction, dataRecordId } = useAlchemyStore();
+  const queryClient = useQueryClient();
+  
+  const cachedRecordsRaw = queryClient.getQueriesData({
+    queryKey: [ALCHEMY_GROUP_DATA]
+  });
+
+  const availableRecords = Array.from(
+    new Map(
+      cachedRecordsRaw
+        .map(([queryKey]) => {
+          const params = queryKey[1] as { realm?: string; faction?: string; record?: string };
+          if (params?.record) {
+            return [
+              params.record,
+              {
+                id: params.record,
+                realm: params.realm || "Unknown",
+                faction: params.faction || "Unknown",
+              },
+            ] as const;
+          }
+          return null;
+        })
+        .filter((item): item is [string, { id: string; realm: string; faction: string }] => item !== null)
+    ).values()
+  );
+
+
+  const handleUpdateData = () => {
+    const data = queryClient.getQueryData([ALCHEMY_GROUP_DATA, 
+    { realm: dataRealm, faction: dataFaction, selected_record: dataRecordId }
+  ]);
+  if (data) console.log(data);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -48,7 +80,7 @@ export function HeaderPickerDialog({
           Select a record to populate <span className="text-gold">{column}</span> for every row.
         </p>
         <div className="border border-border/70 bg-background/60 divide-y divide-border/50 max-h-[360px] overflow-auto">
-          {SAMPLE_RECORDS.map((rec) => (
+          {availableRecords.map((rec) => (
             <button
               key={rec.id}
               type="button"
@@ -57,16 +89,11 @@ export function HeaderPickerDialog({
               <div className="min-w-0">
                 <div className="text-xs font-mono text-muted-foreground tracking-wide">{rec.id}</div>
                 <div className="text-sm text-gold truncate group-hover:text-primary transition-colors">
-                  {rec.label}
+                  {rec.realm} - {rec.faction}
                 </div>
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
-                  {rec.time}
-                </div>
+                
               </div>
-              <div className="text-right">
-                <div className="text-sm font-mono tabular-nums text-gold">{fmt(rec.value, 2)}</div>
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">value</div>
-              </div>
+            
             </button>
           ))}
         </div>

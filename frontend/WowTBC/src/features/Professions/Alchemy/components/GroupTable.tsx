@@ -12,6 +12,8 @@ import type { AlchemyGroup } from "../types";
 import { fmt } from "../utils/helpers";
 import { QtyInput } from "./QtyInput";
 
+
+
 export function GroupTable({
   group,
   qtys,
@@ -21,7 +23,7 @@ export function GroupTable({
   qtys: Record<string, number>;
   setQty: (name: string, q: number) => void;
 }) {
-  const rows = group.items.map((item) => {
+    const rows = group.items.map((item) => {
     const qty = qtys[item.name] || 0;
     const totalCost = item.craftingCost * qty;
     const expected = item.profitPerItem * qty;
@@ -32,6 +34,7 @@ export function GroupTable({
     (a, b) => ({ cost: a.cost + b.totalCost, expected: a.expected + b.expected }),
     { cost: 0, expected: 0 },
   );
+
   const qtySum = rows.reduce((a, b) => a + b.qty, 0);
 
   return (

@@ -7,6 +7,7 @@ import { useAlchemyStore } from "@/ZustandStores/useAlchemyStore";
 import { AlchemyRecordSelects } from "./AlchemyRecordSelects";
 import type { AlchemyRecord } from "../types";
 import { ShoppingListDialog } from "./ShoppingListDialog";
+import { HeaderPickerDialog } from "./AlchemyHeaderPicker";
 
 export function AlchemyFeature() {
   const [qtys, setQtys] = useState<AlchemyRecord>({});
@@ -57,7 +58,7 @@ export function AlchemyFeature() {
           qtys={qtys}
           />
       </div>
-
+      <HeaderPickerDialog column="Price"/>
       <AlchemyRecordSelects />
 
       <AlchemySummaryCards grand={grand} />
