@@ -70,10 +70,10 @@ class GetAlchemyGroupsDataView(generics.ListAPIView):
         realm = serializer.validated_data.get('realm')
         selected_record = serializer.validated_data.get('selected_record')
 
-        groups = AlchemyGroup.objects.prefetch_related('items__reagent_for__reagent').all()
+        groups = AlchemyGroup.objects.prefetch_related('items__item_id', 'items__reagent_for__reagent').all()
         groups_data = AlchemyGroupDataResponseSerializer(groups, many=True).data
 
-        records_data = ItemRecord.objects.filter(record__id=selected_record, record__auction_house__faction__iexact=faction, record__auction_house__realm_name__iexact=realm)
+        records_data = ItemRecord.objects.select_related('item').filter(record__id=selected_record, record__auction_house__faction__iexact=faction, record__auction_house__realm_name__iexact=realm)
         if not records_data:
             return Response({'error': f"Record with id_ingame '{selected_record}' not found for faction '{faction}' and realm '{realm}'."}, status=status.HTTP_404_NOT_FOUND)
         records_map = {}

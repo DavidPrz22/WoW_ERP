@@ -43,3 +43,6 @@ export type AlchemyCalculationsResponse = {
   groups_data: AlchemyGroup[];
   total_reagents_used: Record<string, number>;
 };
+
+
+export type AlchemyRecord = Record<string, number>

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { AlchemyGroup } from "../types";
 import { fmt } from "../utils/helpers";
+import { QtyInput } from "./QtyInput";
 
 export function GroupTable({
   group,
@@ -72,11 +73,9 @@ export function GroupTable({
                     {fmt(item.ROI, 2)}%
                   </TableCell>
                   <TableCell className="py-2">
-                    <Input
-                      type="number"
-                      step="1"
+                    <QtyInput
                       value={qty}
-                      onChange={(e) => setQty(item.name, parseInt(e.target.value) || 0)}
+                      onChange={(val) => setQty(item.name, val)}
                       className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
                     />
                   </TableCell>

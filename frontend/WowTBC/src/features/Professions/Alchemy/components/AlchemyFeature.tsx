@@ -5,10 +5,11 @@ import { AlchemySummaryCards } from "./AlchemySummaryCards";
 import { useAlchemyGroupData } from "../hooks/queries/queries";
 import { useAlchemyStore } from "@/ZustandStores/useAlchemyStore";
 import { AlchemyRecordSelects } from "./AlchemyRecordSelects";
+import type { AlchemyRecord } from "../types";
 
 export function AlchemyFeature() {
-  const [qtys, setQtys] = useState<Record<string, number>>({});
-  
+  const [qtys, setQtys] = useState<AlchemyRecord>({});
+
   const { dataRealm, dataFaction, dataRecordId } = useAlchemyStore();
 
   const { data: recordData } = useAlchemyGroupData({
