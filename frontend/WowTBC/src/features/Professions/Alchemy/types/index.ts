@@ -39,10 +39,23 @@ export type AlchemyGroup = {
   search_group: "Flask" | "Elixir" | "Potion";
 };
 
-export type AlchemyCalculationsResponse = {
-  groups_data: AlchemyGroup[];
-  total_reagents_used: Record<string, number>;
+export type AlchemyReagent = {
+  name: string;
+  id: number;
+  qty: number;
 };
 
+export type ReagentListbyGroup = Record<string, Record<string, AlchemyReagent[]>>;
+
+export type AlchemyCalculationsResponse = {
+  groups_data: AlchemyGroup[];
+  total_reagents_used: ReagentListbyGroup;
+};
 
 export type AlchemyRecord = Record<string, number>
+
+export type GroupNeeds = Record<string, 
+  {
+    qty: number;
+    reagentName: string
+  }[]>;

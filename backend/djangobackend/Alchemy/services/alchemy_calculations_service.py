@@ -16,9 +16,15 @@ class AlchemyCalculationsService:
             search_group = group.get('search_group')
             items_data = []
             
+            if group_name not in total_reagents_used:
+                total_reagents_used[group_name] = {}
+            
             for item in group['items']:
-                item_data = cls._process_item(item, records_map, total_reagents_used)
+                item_name = item.get('name', 'Unknown Item')
+                item_reagents = []
+                item_data = cls._process_item(item, records_map, item_reagents)
                 items_data.append(item_data)
+                total_reagents_used[group_name][item_name] = item_reagents
 
             group_calc = {
                 "group": group_name,
@@ -30,12 +36,12 @@ class AlchemyCalculationsService:
         return group_calculations, total_reagents_used
 
     @classmethod
-    def _process_item(cls, item: Dict, records_map: Dict, total_reagents: Dict) -> Dict:
+    def _process_item(cls, item: Dict, records_map: Dict, item_reagents: List) -> Dict:
         """Processes a single item, computing its crafting cost and profit margins."""
         item_id = item.get('item_id_ingame')
         ah_price = cls._get_ah_price(item_id, records_map)
         
-        crafting_cost = cls._calculate_reagents_cost(item.get('reagents', []), records_map, total_reagents)
+        crafting_cost = cls._calculate_reagents_cost(item.get('reagents', []), records_map, item_reagents)
         
         profit_per_item = (ah_price * cls.AH_CUT_MULTIPLIER) - crafting_cost
         roi = (profit_per_item / crafting_cost * 100) if crafting_cost > 0 else 0
@@ -55,7 +61,7 @@ class AlchemyCalculationsService:
         return records_map.get(item_id, {}).get('min_buyout') or 0
 
     @staticmethod
-    def _calculate_reagents_cost(reagents: List[Dict], records_map: Dict, total_reagents: Dict) -> float:
+    def _calculate_reagents_cost(reagents: List[Dict], records_map: Dict, item_reagents: List) -> float:
         """Calculates total cost of reagents and updates the total reagents tracker."""
         total_cost = 0.0
         
@@ -71,7 +77,11 @@ class AlchemyCalculationsService:
             buyout = overriden_buyout if overriden_buyout is not None else (min_buyout or 0)
             total_cost += buyout * quantity
             
-            total_reagents[reagent_name] = total_reagents.get(reagent_name, 0) + quantity
+            item_reagents.append({
+                "name": reagent_name,
+                "id": reagent_id,
+                "qty": quantity
+            })
         
         total_cost_with_proc = total_cost / AlchemyCalculationsService.PROC_MULTIPLIER
         return total_cost_with_proc

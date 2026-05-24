@@ -6,10 +6,11 @@ import { useAlchemyGroupData } from "../hooks/queries/queries";
 import { useAlchemyStore } from "@/ZustandStores/useAlchemyStore";
 import { AlchemyRecordSelects } from "./AlchemyRecordSelects";
 import type { AlchemyRecord } from "../types";
+import { ShoppingListDialog } from "./ShoppingListDialog";
 
 export function AlchemyFeature() {
   const [qtys, setQtys] = useState<AlchemyRecord>({});
-
+  const [shoppingListOpen, setShoppingListOpen] = useState(false);
   const { dataRealm, dataFaction, dataRecordId } = useAlchemyStore();
 
   const { data: recordData } = useAlchemyGroupData({
@@ -23,6 +24,12 @@ export function AlchemyFeature() {
     return recordData.groups_data;
   }, [recordData]);
 
+  const reagentList = useMemo(() => {
+    if (!recordData?.total_reagents_used) return {};
+    return recordData.total_reagents_used;
+  }, [recordData]);
+
+    
   const setQty = (name: string, v: number) => setQtys((p) => ({ ...p, [name]: v }));
 
   const grand = useMemo(() => {
@@ -37,11 +44,18 @@ export function AlchemyFeature() {
     }
     return { cost, profit };
   }, [qtys, mergedGroups]);
+  
 
   return (
     <div className="px-6 md:px-12 py-10 space-y-8">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <AlchemyHeader />
+        <ShoppingListDialog 
+          open={shoppingListOpen} 
+          onOpenChange={setShoppingListOpen} 
+          reagentList={reagentList}
+          qtys={qtys}
+          />
       </div>
 
       <AlchemyRecordSelects />
@@ -53,6 +67,7 @@ export function AlchemyFeature() {
         qtys={qtys}
         setQty={setQty}
       />
+      
     </div>
   );
 }

@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { AlchemyGroup } from "../types";
 import { fmt } from "../utils/helpers";

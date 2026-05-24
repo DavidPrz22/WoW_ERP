@@ -1,29 +1,53 @@
 import { ShoppingCart } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingTable } from "./ShoppingTable";
-import type { AlchemyGroup } from "../types";
+import type { AlchemyRecord, ReagentListbyGroup } from "../types";
 
 interface ShoppingListDialogProps {
   open: boolean;
+  qtys: AlchemyRecord;
   onOpenChange: (open: boolean) => void;
-  mergedGroups: AlchemyGroup[];
-  totalNeeds: Record<string, number>;
-  needsByGroup: Record<string, Record<string, number>>;
-  inventory: Record<string, number>;
-  setInventory: (name: string, v: number) => void;
+  reagentList: ReagentListbyGroup;
 }
 
 export function ShoppingListDialog({
   open,
   onOpenChange,
-  mergedGroups,
-  totalNeeds,
-  needsByGroup,
-  inventory,
-  setInventory,
+  reagentList,
+  qtys,
 }: ShoppingListDialogProps) {
+
+  const [inventory, setInventoryState] = useState<Record<string, number>>({});
+  const setInventory = (name: string, v: number) => setInventoryState((p) => ({ ...p, [name]: v }));
+
+  const { totalNeeds, needsByGroup, mergedGroups } = useMemo(() => {
+    const totalNeeds: Record<string, number> = {};
+    const needsByGroup: Record<string, Record<string, number>> = {};
+    const mergedGroups: { group: string }[] = [];
+
+    for (const group in reagentList) {
+      needsByGroup[group] = {};
+      mergedGroups.push({ group });
+
+      for (const item in reagentList[group]) {
+        const itemQty = qtys[item] || 0;
+        if (itemQty <= 0) continue;
+
+        for (const reagent of reagentList[group][item]) {
+          const requiredQty = reagent.qty * itemQty;
+          
+          needsByGroup[group][reagent.name] = (needsByGroup[group][reagent.name] || 0) + requiredQty;
+          totalNeeds[reagent.name] = (totalNeeds[reagent.name] || 0) + requiredQty;
+        }
+      }
+    }
+
+    return { totalNeeds, needsByGroup, mergedGroups };
+  }, [reagentList, qtys]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
@@ -37,11 +61,13 @@ export function ShoppingListDialog({
           <DialogTitle className="font-display text-2xl text-gold">Shopping List</DialogTitle>
         </DialogHeader>
         <Tabs defaultValue="total" className="w-full">
-          <TabsList className="grid grid-cols-4 w-full">
-            <TabsTrigger value="total">Total</TabsTrigger>
-            <TabsTrigger value="flasks">Flasks</TabsTrigger>
-            <TabsTrigger value="elixirs">Elixirs</TabsTrigger>
-            <TabsTrigger value="potions">Potions</TabsTrigger>
+          <TabsList className="flex w-full overflow-x-auto">
+            <TabsTrigger value="total" className="flex-1">Total</TabsTrigger>
+            {mergedGroups.map((g) => (
+              <TabsTrigger key={g.group} value={g.group} className="flex-1">
+                {g.group}
+              </TabsTrigger>
+            ))}
           </TabsList>
           <TabsContent value="total" className="mt-4">
             <ShoppingTable needs={totalNeeds} inventory={inventory} setInventory={setInventory} />

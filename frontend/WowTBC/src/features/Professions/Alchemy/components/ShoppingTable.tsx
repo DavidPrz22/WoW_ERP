@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+import { QtyInput } from "./QtyInput";
 import {
   Table,
   TableBody,
@@ -41,10 +41,9 @@ export function ShoppingTable({
               <TableCell className="font-medium">{name}</TableCell>
               <TableCell className="text-right tabular-nums">{Math.ceil(need)}</TableCell>
               <TableCell className="text-right">
-                <Input
-                  type="number"
+                <QtyInput
                   value={have}
-                  onChange={(e) => setInventory(name, parseInt(e.target.value) || 0)}
+                  onChange={(val) => setInventory(name, val)}
                   className="h-8 w-24 ml-auto text-right tabular-nums"
                 />
               </TableCell>
@@ -54,7 +53,7 @@ export function ShoppingTable({
                   diff > 0 ? "text-destructive" : "text-[hsl(var(--quality-uncommon))]",
                 )}
               >
-                {diff > 0 ? `Need ${Math.ceil(diff)}` : diff < 0 ? `+${Math.abs(diff)}` : "0"}
+                {diff > 0 ? `${Math.ceil(diff)}` : diff < 0 ? `+${Math.abs(diff)}` : "0"}
               </TableCell>
             </TableRow>
           );
