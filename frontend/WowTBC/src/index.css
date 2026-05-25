@@ -56,6 +56,10 @@
     --shadow-gold: 0 10px 40px -10px hsl(42 78% 55% / 0.35);
     --shadow-panel: 0 8px 32px -12px hsl(0 0% 0% / 0.6);
 
+    --money-gold: 51 100% 50%;
+    --money-silver: 240 4% 94%;
+    --money-copper: 30 83% 66%;
+
     --sidebar-background: 30 22% 6%;
     --sidebar-foreground: 40 25% 78%;
     --sidebar-primary: 42 78% 55%;
@@ -64,6 +68,7 @@
     --sidebar-accent-foreground: 42 78% 65%;
     --sidebar-border: 36 28% 18%;
     --sidebar-ring: 42 78% 55%;
+
   }
 }
 
@@ -90,6 +95,15 @@
 @layer utilities {
   .text-gold {
     color: hsl(var(--primary));
+  }
+  .text-money-gold {
+    color: hsl(var(--money-gold));
+  }
+  .text-money-silver {
+    color: hsl(var(--money-silver));
+  }
+  .text-money-copper {
+    color: hsl(var(--money-copper));
   }
   .bg-gradient-gold {
     background: var(--gradient-gold);

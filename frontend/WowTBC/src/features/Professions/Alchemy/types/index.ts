@@ -2,9 +2,6 @@ export type AlchemyItemCalculation = {
   name: string;
   AHPrice: number;
   craftingCost: number;
-  breakeven: number;
-  profitPerItem: number;
-  ROI: number;
 };
 export type RowState = { ahPrice: number; qty: number };
 
@@ -65,4 +62,7 @@ export type AlchemyGroupTableRow = {
   qty: number;
   totalCost: number;
   expected: number;
+  breakeven: number;
+  profitPerItem: number;
+  ROI: number;
 };

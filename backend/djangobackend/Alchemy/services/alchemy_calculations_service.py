@@ -43,16 +43,10 @@ class AlchemyCalculationsService:
         
         crafting_cost = cls._calculate_reagents_cost(item.get('reagents', []), records_map, item_reagents)
         
-        profit_per_item = (ah_price * cls.AH_CUT_MULTIPLIER) - crafting_cost
-        roi = (profit_per_item / crafting_cost * 100) if crafting_cost > 0 else 0
-        
         return {
             'name': item.get('name', 'Unknown Item'),
-            'AHPrice': round(ah_price / 10000, 4),
-            'craftingCost': round(crafting_cost / 10000, 4),
-            'breakeven': round((crafting_cost / cls.AH_CUT_MULTIPLIER) / 10000, 4),
-            'profitPerItem': round(profit_per_item / 10000, 4),
-            'ROI': round(roi, 4)
+            'AHPrice': ah_price,
+            'craftingCost': crafting_cost
         }
 
     @staticmethod

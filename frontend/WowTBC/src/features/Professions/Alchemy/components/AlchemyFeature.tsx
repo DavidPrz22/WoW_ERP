@@ -7,6 +7,7 @@ import { useAlchemyStore } from "@/ZustandStores/useAlchemyStore";
 import { AlchemyRecordSelects } from "./AlchemyRecordSelects";
 import type { AlchemyRecord } from "../types";
 import { ShoppingListDialog } from "./ShoppingListDialog";
+import { calculateProfitPerItem } from "../utils/helpers";
 
 export function AlchemyFeature() {
   const [qtys, setQtys] = useState<AlchemyRecord>({});
@@ -40,7 +41,8 @@ export function AlchemyFeature() {
       for (const item of g.items) {
         const qty = qtys[item.name] ?? 0;
         cost += item.craftingCost * qty;
-        profit += item.profitPerItem * qty;
+        const profitPerItem = calculateProfitPerItem(item.AHPrice, item.craftingCost);
+        profit += profitPerItem * qty;
       }
     }
     return { cost, profit };

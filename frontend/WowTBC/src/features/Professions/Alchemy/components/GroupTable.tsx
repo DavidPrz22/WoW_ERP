@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import type { AlchemyGroup } from "../types";
-import { fmt } from "../utils/helpers";
+import { fmt, calculateBreakeven, calculateProfitPerItem, calculateROI, calculateTotalCost, calculateExpectedProfit } from "../utils/helpers";
 import { QtyInput } from "./QtyInput";
 import type { AlchemyGroupTableRow } from "../types";
 import { HeaderPickerDialog } from "./AlchemyHeaderPicker";
+import { WowCurrency } from "./WowCurrency";
 
 
 export function GroupTable({
@@ -26,9 +27,13 @@ export function GroupTable({
 }) {
     const rows: AlchemyGroupTableRow[] = group.items.map((item) => {
     const qty = qtys[item.name] || 0;
-    const totalCost = item.craftingCost * qty;
-    const expected = item.profitPerItem * qty;
-    return { item, qty, totalCost, expected };
+    const profitPerItem = calculateProfitPerItem(item.AHPrice, item.craftingCost);
+    const breakeven = calculateBreakeven(item.craftingCost);
+    const ROI = calculateROI(profitPerItem, item.craftingCost);
+    const totalCost = calculateTotalCost(item.craftingCost, qty);
+    const expected = calculateExpectedProfit(profitPerItem, qty);
+    
+    return { item, qty, totalCost, expected, profitPerItem, breakeven, ROI };
   });
 
   const totals = rows.reduce(
@@ -63,21 +68,21 @@ export function GroupTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {rows.map(({ item, qty, totalCost, expected }) => {
-              const positive = item.profitPerItem >= 0;
+            {rows.map(({ item, qty, totalCost, expected, profitPerItem, breakeven, ROI }) => {
+              const positive = profitPerItem >= 0;
               return (
                 <TableRow key={item.name} className="border-b border-border/40 hover:bg-secondary/30">
                   <TableCell className="py-2 font-medium text-gold">{item.name}</TableCell>
-                  <TableCell className="py-2 text-right tabular-nums font-mono">{fmt(item.craftingCost, 3)}</TableCell>
-                  <TableCell className="py-2 text-right tabular-nums font-mono text-muted-foreground">{fmt(item.breakeven, 3)}</TableCell>
-                  <TableCell className="py-2 text-center tabular-nums font-mono text-gold">
-                    {fmt(item.AHPrice, 3)}
+                  <TableCell className="py-2 text-right"><WowCurrency value={item.craftingCost} /></TableCell>
+                  <TableCell className="py-2 text-right text-muted-foreground"><WowCurrency value={breakeven} /></TableCell>
+                  <TableCell className="py-2 text-center text-gold">
+                    <WowCurrency value={item.AHPrice} />
                   </TableCell>
-                  <TableCell className={cn("py-2 text-right tabular-nums font-mono font-medium", positive ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
-                    {positive ? "+" : ""}{fmt(item.profitPerItem, 3)}
+                  <TableCell className={cn("py-2 text-right font-medium", positive ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
+                    <WowCurrency value={profitPerItem} isProfit={true} />
                   </TableCell>
-                  <TableCell className={cn("py-2 text-right tabular-nums font-mono", item.ROI >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
-                    {fmt(item.ROI, 2)}%
+                  <TableCell className={cn("py-2 text-right tabular-nums font-mono", ROI >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
+                    {fmt(ROI, 2)}%
                   </TableCell>
                   <TableCell className="py-2">
                     <QtyInput
@@ -86,9 +91,9 @@ export function GroupTable({
                       className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
                     />
                   </TableCell>
-                  <TableCell className="py-2 text-right tabular-nums font-mono">{fmt(totalCost)}</TableCell>
-                  <TableCell className={cn("py-2 text-right tabular-nums font-mono font-medium", expected >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
-                    {fmt(expected)}
+                  <TableCell className="py-2 text-right"><WowCurrency value={totalCost} /></TableCell>
+                  <TableCell className={cn("py-2 text-right font-medium", expected >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
+                    <WowCurrency value={expected} isProfit={true} />
                   </TableCell>
                 </TableRow>
               );
@@ -99,9 +104,9 @@ export function GroupTable({
               <TableCell className="py-3 font-display uppercase tracking-widest text-gold">Total</TableCell>
               <TableCell colSpan={5} />
               <TableCell className="py-3 text-center tabular-nums font-mono text-gold">{qtySum}</TableCell>
-              <TableCell className="py-3 text-right tabular-nums font-mono text-gold">{fmt(totals.cost)}</TableCell>
-              <TableCell className={cn("py-3 text-right tabular-nums font-mono", totals.expected >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
-                {fmt(totals.expected)}
+              <TableCell className="py-3 text-right text-gold"><WowCurrency value={totals.cost} /></TableCell>
+              <TableCell className={cn("py-3 text-right", totals.expected >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
+                <WowCurrency value={totals.expected} isProfit={true} />
               </TableCell>
             </TableRow>
           </TableFooter>
