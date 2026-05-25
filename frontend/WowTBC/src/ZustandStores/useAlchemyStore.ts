@@ -5,9 +5,10 @@ export const useAlchemyStore = create<AlchemyStore>((set) => ({
   dataFaction: "",
   dataRealm: "",
   dataRecordId: "",
-
-
+  alchemyGroupsData: null,
+  
   setDataFaction: (dataFaction) => set({ dataFaction, dataRealm: "", dataRecordId: "" }),
   setDataRealm: (dataRealm) => set({ dataRealm, dataRecordId: "" }),
   setDataRecordId: (dataRecordId) => set({ dataRecordId }),
+  setAlchemyGroupsData: (groupsData) => set({ alchemyGroupsData: groupsData }),
 }));

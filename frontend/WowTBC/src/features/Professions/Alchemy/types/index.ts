@@ -59,3 +59,10 @@ export type GroupNeeds = Record<string,
     qty: number;
     reagentName: string
   }[]>;
+
+export type AlchemyGroupTableRow = {
+  item: AlchemyItemCalculation;
+  qty: number;
+  totalCost: number;
+  expected: number;
+};

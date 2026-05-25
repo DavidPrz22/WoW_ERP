@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils";
 import type { AlchemyGroup } from "../types";
 import { fmt } from "../utils/helpers";
 import { QtyInput } from "./QtyInput";
-
+import type { AlchemyGroupTableRow } from "../types";
+import { HeaderPickerDialog } from "./AlchemyHeaderPicker";
 
 
 export function GroupTable({
@@ -23,7 +24,7 @@ export function GroupTable({
   qtys: Record<string, number>;
   setQty: (name: string, q: number) => void;
 }) {
-    const rows = group.items.map((item) => {
+    const rows: AlchemyGroupTableRow[] = group.items.map((item) => {
     const qty = qtys[item.name] || 0;
     const totalCost = item.craftingCost * qty;
     const expected = item.profitPerItem * qty;
@@ -47,9 +48,13 @@ export function GroupTable({
           <TableHeader>
             <TableRow className="bg-secondary/40 border-b border-border/70 hover:bg-secondary/40">
               <TableHead className="h-10 text-muted-foreground uppercase tracking-wider text-xs">Name</TableHead>
-              <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">Crafting Cost</TableHead>
+              <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">
+                <HeaderPickerDialog column="craftingCost" group={group.group} />
+              </TableHead>
               <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">Breakeven</TableHead>
-              <TableHead className="h-10 text-center w-28 text-muted-foreground uppercase tracking-wider text-xs">AH Price</TableHead>
+              <TableHead className="h-10 text-center w-28 text-muted-foreground uppercase tracking-wider text-xs">
+                <HeaderPickerDialog column="AHPrice" group={group.group} />
+              </TableHead>
               <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">Profit/Item</TableHead>
               <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">ROI%</TableHead>
               <TableHead className="h-10 text-center w-24 text-muted-foreground uppercase tracking-wider text-xs">QTY</TableHead>

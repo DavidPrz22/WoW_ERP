@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { GroupTableList } from "./GroupTableList";
 import { AlchemyHeader } from "./AlchemyHeader";
 import { AlchemySummaryCards } from "./AlchemySummaryCards";
@@ -7,12 +7,11 @@ import { useAlchemyStore } from "@/ZustandStores/useAlchemyStore";
 import { AlchemyRecordSelects } from "./AlchemyRecordSelects";
 import type { AlchemyRecord } from "../types";
 import { ShoppingListDialog } from "./ShoppingListDialog";
-import { HeaderPickerDialog } from "./AlchemyHeaderPicker";
 
 export function AlchemyFeature() {
   const [qtys, setQtys] = useState<AlchemyRecord>({});
   const [shoppingListOpen, setShoppingListOpen] = useState(false);
-  const { dataRealm, dataFaction, dataRecordId } = useAlchemyStore();
+  const { dataRealm, dataFaction, dataRecordId, alchemyGroupsData, setAlchemyGroupsData } = useAlchemyStore();
 
   const { data: recordData } = useAlchemyGroupData({
     realm: dataRealm,
@@ -20,10 +19,11 @@ export function AlchemyFeature() {
     selected_record: dataRecordId,
   });
 
-  const mergedGroups = useMemo(() => {
-    if (!recordData?.groups_data) return [];
-    return recordData.groups_data;
-  }, [recordData]);
+  useEffect(() => {
+    if (!recordData?.groups_data) return;
+    setAlchemyGroupsData(recordData.groups_data);
+
+  }, [recordData, setAlchemyGroupsData]);
 
   const reagentList = useMemo(() => {
     if (!recordData?.total_reagents_used) return {};
@@ -36,7 +36,7 @@ export function AlchemyFeature() {
   const grand = useMemo(() => {
     let cost = 0;
     let profit = 0;
-    for (const g of mergedGroups) {
+    for (const g of alchemyGroupsData || []) {
       for (const item of g.items) {
         const qty = qtys[item.name] ?? 0;
         cost += item.craftingCost * qty;
@@ -44,7 +44,7 @@ export function AlchemyFeature() {
       }
     }
     return { cost, profit };
-  }, [qtys, mergedGroups]);
+  }, [qtys, alchemyGroupsData]);
   
 
   return (
@@ -58,13 +58,12 @@ export function AlchemyFeature() {
           qtys={qtys}
           />
       </div>
-      <HeaderPickerDialog column="Price"/>
       <AlchemyRecordSelects />
 
       <AlchemySummaryCards grand={grand} />
 
       <GroupTableList
-        groups={mergedGroups}
+        groups={alchemyGroupsData || []}
         qtys={qtys}
         setQty={setQty}
       />
