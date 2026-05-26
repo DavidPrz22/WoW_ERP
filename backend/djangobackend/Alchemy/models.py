@@ -13,6 +13,11 @@ class AlchemyGroupsListSearch(models.TextChoices):
     ELIXIRS = 'Elixir'
     POTIONS = 'Potion'
 
+
+VIALS_PRICES = {
+    "CRYSTAL_VIAL": 400,
+    "IMBUED_VIAL": 3200,
+}
 class AlchemyGroup(models.Model):
     name = models.CharField(max_length=50, choices=AlchemyGroupsList.choices, unique=True)
     search_group = models.CharField(max_length=50, choices=AlchemyGroupsListSearch.choices, default=AlchemyGroupsListSearch.FLASKS)

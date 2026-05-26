@@ -5,22 +5,8 @@ from .models import AlchemyItem, AlchemyGroup
 from .serializers import AlchemyGroupDataResponseSerializer, AlchemyGroupDataSerializer, AlchemyItemSerializer
 from Registros.models import Item, ItemRecord
 from .services.alchemy_calculations_service import AlchemyCalculationsService
+from .models import VIALS_PRICES
 
-# [
-#   {
-#     "group": "Flasks",
-#     "items": [
-#       {
-#         "name": "Flask of Pure Death",
-#         "craftingCost": 100,
-#         "breakeven": 150,
-#         "ahPrice": 120,
-#         "profitPerItem": 20,
-#         "ROI": 0.2,
-#       }
-#     ]
-#   }
-# ]
 
 class CreateAlchemyItemView(generics.CreateAPIView):
     queryset = AlchemyItem.objects.all()
@@ -79,11 +65,19 @@ class GetAlchemyGroupsDataView(generics.ListAPIView):
         records_map = {}
 
         for data in records_data:
-            records_map[data.item.id_ingame] = {
-                "market_value": data.market_value,
-                "min_buyout": data.min_buyout,
-                "overriden_min_buyout": data.overriden_min_buyout,
-            }
+            if data.item.id_ingame == "18256" or data.item.id_ingame == "8925":  # --- IGNORE ---
+                item_key = data.item.name.upper().replace(" ", "_")
+                market_data = {
+                    "market_value": VIALS_PRICES.get(item_key),
+                    "min_buyout": VIALS_PRICES.get(item_key),
+                }
+            else:
+                market_data = {
+                    "market_value": data.market_value,
+                    "min_buyout": data.min_buyout,
+                    "overriden_min_buyout": data.overriden_min_buyout,
+                }
+            records_map[data.item.id_ingame] = market_data
         
         GROUP_CALCULATIONS, TOTAL_REAGENTS_USED = AlchemyCalculationsService.calculate_groups_data(groups_data, records_map)
         return Response({

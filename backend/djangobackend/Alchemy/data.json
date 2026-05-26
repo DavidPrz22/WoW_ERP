@@ -49,8 +49,8 @@
     {
       "name": "Flask of Distilled Wisdom",
       "reagents": [
-        { "name": "Dreamfoil", "quantity": 30 },
-        { "name": "Icecap", "quantity": 10 },
+        { "name": "Dreamfoil", "quantity": 7 },
+        { "name": "Icecap", "quantity": 3 },
         { "name": "Black Lotus", "quantity": 1 },
         { "name": "Crystal Vial", "quantity": 1 }
       ]
@@ -58,8 +58,8 @@
     {
       "name": "Flask of Supreme Power",
       "reagents": [
-        { "name": "Dreamfoil", "quantity": 30 },
-        { "name": "Mountain Silversage", "quantity": 10 },
+        { "name": "Dreamfoil", "quantity": 7 },
+        { "name": "Mountain Silversage", "quantity": 3 },
         { "name": "Black Lotus", "quantity": 1 },
         { "name": "Crystal Vial", "quantity": 1 }
       ]
@@ -151,9 +151,9 @@
       "name": "Elixir of Major Fortitude",
       "type": "Guardian",
       "reagents": [
-        { "name": "Earthroot", "quantity": 2 },
-        { "name": "Gromsblood", "quantity": 1 },
-        { "name": "Crystal Vial", "quantity": 1 }
+        { "name": "Felweed", "quantity": 1 },
+        { "name": "Ragveil", "quantity": 2 },
+        { "name": "Imbued Vial", "quantity": 1 }
       ]
     },
     {
@@ -170,8 +170,8 @@
     {
       "name": "Haste Potion",
       "reagents": [
-        { "name": "Netherbloom", "quantity": 2 },
-        { "name": "Terocone", "quantity": 1 },
+        { "name": "Netherbloom", "quantity": 1 },
+        { "name": "Terocone", "quantity": 2 },
         { "name": "Imbued Vial", "quantity": 1 }
       ]
     },
@@ -186,16 +186,8 @@
     {
       "name": "Ironshield Potion",
       "reagents": [
-        { "name": "Felweed", "quantity": 2 },
-        { "name": "Primal Earth", "quantity": 1 },
-        { "name": "Imbued Vial", "quantity": 1 }
-      ]
-    },
-    {
-      "name": "Heroic Potion",
-      "reagents": [
-        { "name": "Terocone", "quantity": 2 },
-        { "name": "Nightmare Vine", "quantity": 1 },
+        { "name": "Ancient Lichen", "quantity": 2 },
+        { "name": "Mote of Earth", "quantity": 3 },
         { "name": "Imbued Vial", "quantity": 1 }
       ]
     },
@@ -219,7 +211,9 @@
       "name": "Mana Potion Injector",
       "reagents": [
         { "name": "Super Mana Potion", "quantity": 20 },
-        { "name": "Adamantite Frame", "quantity": 1 }
+        { "name": "Fel Iron Casing", "quantity": 1 },
+        { "name": "Handful of Fel Iron Bolts", "quantity": 1 },
+        { "name": "Knothide Leather", "quantity": 2 }
       ]
     }
   ]
