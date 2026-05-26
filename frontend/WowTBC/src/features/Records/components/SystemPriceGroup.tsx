@@ -6,6 +6,125 @@ import { Button } from "@/components/ui/button";
 import { ImageIcon, Check, X, Pencil, RotateCcw } from "lucide-react";
 import { IconImg } from "@/components/IconImg";
 import type { PriceEntry, PriceGroup } from "../types";
+import { useState } from "react";
+
+function PriceRow({
+  entry,
+  isEditing,
+  commit,
+  cancel,
+  startEdit,
+  reset,
+  formatPrice,
+  getMarketValuePercentStyles
+}: {
+  entry: PriceEntry;
+  isEditing: boolean;
+  commit: (key: string, entry: PriceEntry, newPrice: number) => void;
+  cancel: () => void;
+  startEdit: (key: string, current: number) => void;
+  reset: (entry: PriceEntry, key: string) => void;
+  formatPrice: (g: number) => string;
+  getMarketValuePercentStyles: (percentage: number) => string;
+}) {
+  const current = entry.price;
+  const [localOverride, setLocalOverride] = useState(entry.overridenPrice);
+
+  const handleCommit = (val: number) => {
+    setLocalOverride(val);
+    commit(entry.name, entry, val);
+  };
+
+  const handleReset = () => {
+    setLocalOverride(undefined);
+    reset(entry, entry.name);
+  };
+
+  return (
+    <TableRow>
+      <TableCell className="py-2">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded border border-border bg-secondary/40 flex items-center justify-center overflow-hidden shrink-0">
+            {entry.icon ? (
+              <IconImg src={entry.icon} alt={entry.name} />
+            ) : (
+              <ImageIcon className="h-4 w-4 text-muted-foreground" />
+            )}
+          </div>
+          <span>{entry.name}</span>
+        </div>
+      </TableCell>
+
+      <TableCell className="py-2 text-right">
+        <div className={getMarketValuePercentStyles(entry.marketValuePercent)}>
+          {entry.marketValuePercent} %
+        </div>
+      </TableCell>
+
+      <TableCell className="py-2 text-right">
+        {isEditing ? (
+          <Input
+            autoFocus
+            type="number"
+            step="0.0001"
+            defaultValue={localOverride ? localOverride : current}
+            id={`edit-input-${entry.name}`}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const val = Number(e.currentTarget.value);
+                handleCommit(val);
+              }
+              if (e.key === "Escape") cancel();
+            }}
+            className="h-8 w-28 ml-auto bg-secondary/60 text-right font-mono"
+          />
+        ) : (
+          <div className="flex flex-col items-end">
+            {localOverride ? (
+              <>
+                <span className="text-md text-gold font-mono">
+                  {formatPrice(localOverride)}
+                </span>
+                <span className="text-xs line-through font-mono text-accent">
+                  {formatPrice(current)}
+                </span>
+              </>
+            ) : (
+              <span className="font-mono text-gold">{formatPrice(current)}</span>
+            )}
+          </div>
+        )}
+      </TableCell>
+
+      <TableCell className="py-2 text-right">
+        {isEditing ? (
+          <div className="flex justify-end gap-1">
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => {
+              const val = (document.getElementById(`edit-input-${entry.name}`) as HTMLInputElement)?.value;
+              handleCommit(Number(val));
+            }}>
+              <Check className="h-3.5 w-3.5" />
+            </Button>
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={cancel}>
+              <X className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        ) : (
+          <div className="flex justify-end gap-1">
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(entry.name, current)}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+            {localOverride && (
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleReset}>
+                <RotateCcw className="h-3.5 w-3.5" />
+              </Button>
+            )}
+          </div>
+        )}
+      </TableCell>
+    </TableRow>
+  );
+}
 
 export function PriceGroupSection({
   group,
@@ -26,6 +145,7 @@ export function PriceGroupSection({
   formatPrice: (g: number) => string;
   getMarketValuePercentStyles: (percentage: number) => string;
 }) {
+
 
 
   const totalItems = group.entries.length;
@@ -52,93 +172,20 @@ export function PriceGroupSection({
             </TableHeader>
             <TableBody>
               {group.entries.map((entry: PriceEntry) => {
-                const override = entry.overridenPrice;
-                const current = entry.price;
                 const isEditing = editing === entry.name;
 
                 return (
-                  <TableRow key={entry.name}>
-                    <TableCell className="py-2">
-                      <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded border border-border bg-secondary/40 flex items-center justify-center overflow-hidden shrink-0">
-                          {entry.icon ? (
-                            <IconImg src={entry.icon} alt={entry.name} />
-                          ) : (
-                            <ImageIcon className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </div>
-                        <span>{entry.name}</span>
-                      </div>
-                    </TableCell>
-
-                    <TableCell className="py-2 text-right">
-                      <div className={getMarketValuePercentStyles(entry.marketValuePercent)}>
-                        {entry.marketValuePercent} %
-                      </div>
-                    </TableCell>
-
-                    <TableCell className="py-2 text-right">
-                      {isEditing ? (
-                        <Input
-                          autoFocus
-                          type="number"
-                          step="0.0001"
-                          defaultValue={override ? override : current}
-                          id={`edit-input-${entry.name}`}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") commit(entry.name, entry, Number(e.currentTarget.value));
-                            if (e.key === "Escape") cancel();
-                          }}
-                          className="h-8 w-28 ml-auto bg-secondary/60 text-right font-mono"
-                        />
-                      ) : (
-                        <div className="flex flex-col items-end">
-                          {override ? (
-                            <>
-                              <span className="text-md text-gold font-mono">
-                                {formatPrice(override)}
-                              </span>
-                              <span className="text-xs line-through font-mono text-accent">
-                                {formatPrice(current)}
-                              </span>
-                            </>
-                          ) : 
-                          <span className="font-mono text-gold">
-                            {formatPrice(current)}
-                          </span>}
-                        </div>
-                      )}
-                    </TableCell>
-
-
-                    <TableCell className="py-2 text-right">
-                      {isEditing ? (
-                        <div className="flex justify-end gap-1">
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => {
-                            const val = (document.getElementById(`edit-input-${entry.name}`) as HTMLInputElement)?.value;
-                            commit(entry.name, entry, Number(val));
-                          }}>
-                            <Check className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={cancel}>
-                            <X className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex justify-end gap-1">
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(entry.name, current)}>
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          {override && (
-                            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => reset(entry, entry.name)}>
-                              <RotateCcw className="h-3.5 w-3.5" />
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </TableCell>
-
-                  </TableRow>
+                  <PriceRow
+                    key={entry.name}
+                    entry={entry}
+                    isEditing={isEditing}
+                    commit={commit}
+                    cancel={cancel}
+                    startEdit={startEdit}
+                    reset={reset}
+                    formatPrice={formatPrice}
+                    getMarketValuePercentStyles={getMarketValuePercentStyles}
+                  />
                 );
               })}
             </TableBody>

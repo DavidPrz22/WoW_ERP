@@ -117,6 +117,7 @@ export function PriceTablePanel() {
       });
     toast.success(`Price for ${key} updated to ${formatPrice(newPrice, showGold)}`);
     setEditing(null);
+
   }
 
   return (
