@@ -18,10 +18,14 @@ export function HeaderPickerDialog({
   column,
   group,
   className,
+  importData,
+  setImportData,
 }: {
   column: string;
   group: string;
   className?: string;
+  importData: { [key: string]: string } | null;
+  setImportData: (column: string, recordId: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -32,7 +36,7 @@ export function HeaderPickerDialog({
     dataFaction, 
     dataRecordId, 
     alchemyGroupsData, 
-    setAlchemyGroupsData 
+    setAlchemyGroupsData,
   } = useAlchemyStore()
   ;
   const queryClient = useQueryClient();
@@ -99,6 +103,7 @@ export function HeaderPickerDialog({
     description: `Updated ${labelMap[column] || column} for ${group} from selected record!`, 
     duration: 3000,
   });
+  setImportData(column, recordId);
   };
   const displayName = labelMap[column] || column;
 
@@ -142,6 +147,12 @@ export function HeaderPickerDialog({
                 <div className="text-sm text-gold truncate group-hover:text-primary transition-colors">
                   {rec.realm} - {rec.faction}
                 </div>
+                {importData && importData[column] === rec.id && (
+                  <div className="text-xs text-green-400 mt-0.5 flex items-center gap-1">
+                    <History className="h-3 w-3" />
+                    Currently Imported
+                  </div>
+                )}
               </div>
             </button>
           ))}

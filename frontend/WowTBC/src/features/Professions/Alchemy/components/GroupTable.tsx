@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Table,
   TableBody,
@@ -8,13 +9,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import type { AlchemyGroup } from "../types";
+import type { AlchemyGroup, AlchemyImportRecord, AlchemyItemCalculation } from "../types";
 import { fmt, calculateBreakeven, calculateProfitPerItem, calculateROI, calculateTotalCost, calculateExpectedProfit } from "../utils/helpers";
 import { QtyInput } from "./QtyInput";
 import type { AlchemyGroupTableRow } from "../types";
 import { HeaderPickerDialog } from "./AlchemyHeaderPicker";
 import { WowCurrency } from "./WowCurrency";
-
+import { useAlchemyStore } from '@/ZustandStores/useAlchemyStore';
 
 export function GroupTable({
   group,
@@ -25,15 +26,23 @@ export function GroupTable({
   qtys: Record<string, number>;
   setQty: (name: string, q: number) => void;
 }) {
-    const rows: AlchemyGroupTableRow[] = group.items.map((item) => {
-    const qty = qtys[item.name] || 0;
-    const profitPerItem = calculateProfitPerItem(item.AHPrice, item.craftingCost);
-    const breakeven = calculateBreakeven(item.craftingCost);
-    const ROI = calculateROI(profitPerItem, item.craftingCost);
-    const totalCost = calculateTotalCost(item.craftingCost, qty);
-    const expected = calculateExpectedProfit(profitPerItem, qty);
+
+  const [alchemyImportData, setAlchemyImportData] = useState<AlchemyImportRecord | null>(null);
+  const { dataRecordId } = useAlchemyStore();
+
+  const handleSetImportData = (column: string, recordId: string) => {
+    setAlchemyImportData((prev) => ({ ...prev, [column]: recordId }));
+  };
+
+  const rows: AlchemyGroupTableRow[] = group.items.map((item) => {
+      const qty = qtys[item.name] || 0;
+      const profitPerItem = calculateProfitPerItem(item.AHPrice, item.craftingCost);
+      const breakeven = calculateBreakeven(item.craftingCost);
+      const ROI = calculateROI(profitPerItem, item.craftingCost);
+      const totalCost = calculateTotalCost(item.craftingCost, qty);
+      const expected = calculateExpectedProfit(profitPerItem, qty);
     
-    return { item, qty, totalCost, expected, profitPerItem, breakeven, ROI };
+      return { item, qty, totalCost, expected, profitPerItem, breakeven, ROI };
   });
 
   const totals = rows.reduce(
@@ -43,6 +52,13 @@ export function GroupTable({
 
   const qtySum = rows.reduce((a, b) => a + b.qty, 0);
 
+  const checkImportedId = (column: string) => {
+    if (!alchemyImportData) return false;
+    const ImportedColumns: (keyof Pick<AlchemyItemCalculation, "AHPrice" | "craftingCost">)[] = Object.keys(alchemyImportData || {}) as ("AHPrice" | "craftingCost")[];
+    
+    const importedRecordId = alchemyImportData[column as keyof AlchemyImportRecord];
+    return ImportedColumns.includes(column as keyof Pick<AlchemyItemCalculation, "AHPrice" | "craftingCost">) && importedRecordId !== dataRecordId;
+  };
   return (
     <section className="space-y-4">
       <h2 className="font-display text-xl text-gold uppercase tracking-[0.2em] border-l-4 border-primary pl-4">
@@ -54,11 +70,11 @@ export function GroupTable({
             <TableRow className="bg-secondary/40 border-b border-border/70 hover:bg-secondary/40">
               <TableHead className="h-10 text-muted-foreground uppercase tracking-wider text-xs">Name</TableHead>
               <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">
-                <HeaderPickerDialog column="craftingCost" group={group.group} />
+                <HeaderPickerDialog column="craftingCost" group={group.group} importData={alchemyImportData} setImportData={handleSetImportData}/>
               </TableHead>
               <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">Breakeven</TableHead>
               <TableHead className="h-10 text-center w-28 text-muted-foreground uppercase tracking-wider text-xs">
-                <HeaderPickerDialog column="AHPrice" group={group.group} />
+                <HeaderPickerDialog column="AHPrice" group={group.group} importData={alchemyImportData} setImportData={handleSetImportData}/>
               </TableHead>
               <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">Profit/Item</TableHead>
               <TableHead className="h-10 text-right text-muted-foreground uppercase tracking-wider text-xs">ROI%</TableHead>
@@ -73,9 +89,9 @@ export function GroupTable({
               return (
                 <TableRow key={item.name} className="border-b border-border/40 hover:bg-secondary/30">
                   <TableCell className="py-2 font-medium text-gold">{item.name}</TableCell>
-                  <TableCell className="py-2 text-right"><WowCurrency value={item.craftingCost} /></TableCell>
+                  <TableCell className={cn("py-2 text-right", checkImportedId("craftingCost") && "bg-primary/10")}><WowCurrency value={item.craftingCost} /></TableCell>
                   <TableCell className="py-2 text-right text-muted-foreground"><WowCurrency value={breakeven} /></TableCell>
-                  <TableCell className="py-2 text-center text-gold">
+                  <TableCell className={cn("py-2 text-center text-gold", checkImportedId("AHPrice") && "bg-primary/10")}>
                     <WowCurrency value={item.AHPrice} />
                   </TableCell>
                   <TableCell className={cn("py-2 text-right font-medium", positive ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>

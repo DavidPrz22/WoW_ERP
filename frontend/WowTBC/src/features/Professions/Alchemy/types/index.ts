@@ -66,3 +66,5 @@ export type AlchemyGroupTableRow = {
   profitPerItem: number;
   ROI: number;
 };
+
+export type AlchemyImportRecord = Record<string, string>;
