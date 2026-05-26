@@ -1,9 +1,12 @@
 from typing import Dict, List, Tuple, Any
 
+from Alchemy.models import VIALS_PRICES
+
 class AlchemyCalculationsService:
     # Constants for Alchemy specifics (e.g., Elixir Master procs, AH cut)
     PROC_MULTIPLIER = 1.2
     AH_CUT_MULTIPLIER = 0.95
+    ENGINES_PROC_MULTIPLIER = 20  # No proc multiplier for Engine of the Makers recipes
     
     @classmethod
     def calculate_groups_data(cls, groups_data: List[Dict], records_map: Dict) -> Tuple[Dict, Dict]:
@@ -40,9 +43,12 @@ class AlchemyCalculationsService:
         """Processes a single item, computing its crafting cost and profit margins."""
         item_id = item.get('item_id_ingame')
         ah_price = cls._get_ah_price(item_id, records_map)
-        
-        crafting_cost = cls._calculate_reagents_cost(item.get('reagents', []), records_map, item_reagents)
-        
+
+        if item_id == "33093" or item_id == "33092":
+            crafting_cost = cls._calculate_reagents_cost(item.get('reagents', []), records_map, item_reagents, useEngineProc=True)
+        else:
+            crafting_cost = cls._calculate_reagents_cost(item.get('reagents', []), records_map, item_reagents)
+
         return {
             'name': item.get('name', 'Unknown Item'),
             'AHPrice': ah_price,
@@ -55,7 +61,7 @@ class AlchemyCalculationsService:
         return records_map.get(item_id, {}).get('min_buyout') or 0
 
     @staticmethod
-    def _calculate_reagents_cost(reagents: List[Dict], records_map: Dict, item_reagents: List) -> float:
+    def _calculate_reagents_cost(reagents: List[Dict], records_map: Dict, item_reagents: List, useEngineProc: bool = False) -> float:
         """Calculates total cost of reagents and updates the total reagents tracker."""
         total_cost = 0.0
         
@@ -77,5 +83,5 @@ class AlchemyCalculationsService:
                 "qty": quantity
             })
         
-        total_cost_with_proc = total_cost / AlchemyCalculationsService.PROC_MULTIPLIER
+        total_cost_with_proc = total_cost / (AlchemyCalculationsService.PROC_MULTIPLIER if not useEngineProc else AlchemyCalculationsService.ENGINES_PROC_MULTIPLIER)
         return total_cost_with_proc
