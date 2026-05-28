@@ -19,10 +19,12 @@ import { IconImg } from "@/components/IconImg";
 export function ItemCombobox({
   value,
   groupClass,
+  excluded,
   onChange,
 }: {
   value: string;
   groupClass: AlchemyGroup["search_group"];
+  excluded?: Set<string>;
   onChange: (name: string, id: number) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -74,6 +76,7 @@ export function ItemCombobox({
             {items && items.length > 0 && (
               <CommandGroup heading="Results">
                 {items
+                  .filter((e) => !excluded?.has(e.name))
                   .map((e, idx) => (
                     <CommandItem
                       key={idx}

@@ -1,6 +1,5 @@
 from django.db import models
 from Registros.models import Item, AuctionHouse, Records
-# Create your models here.
 
 
 class AlchemyGroupsList(models.TextChoices):
@@ -18,6 +17,7 @@ VIALS_PRICES = {
     "CRYSTAL_VIAL": 400,
     "IMBUED_VIAL": 3200,
 }
+
 class AlchemyGroup(models.Model):
     name = models.CharField(max_length=50, choices=AlchemyGroupsList.choices, unique=True)
     search_group = models.CharField(max_length=50, choices=AlchemyGroupsListSearch.choices, default=AlchemyGroupsListSearch.FLASKS)
@@ -25,22 +25,31 @@ class AlchemyGroup(models.Model):
     def __str__(self):
         return self.name + " (" + self.search_group + ")"
 
+
+class Recipe(models.Model):
+    item = models.OneToOneField(Item, on_delete=models.CASCADE, related_name='recipe_output')
+
+    def __str__(self):
+        return f"Recipe: {self.item.name}"
+
+
 class AlchemyItem(models.Model):
     group = models.ForeignKey(AlchemyGroup, on_delete=models.CASCADE, related_name='items')
     item_id = models.OneToOneField(Item, on_delete=models.CASCADE, related_name='alchemy_item')
-    yield_quantity = models.IntegerField(default=1) 
+    recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE, null=True)
+    yield_quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return f"{self.item_id.name} ({self.group.name}) x{self.yield_quantity}"
-    
+
 
 class ItemReagent(models.Model):
-    alchemy_item = models.ForeignKey(AlchemyItem, on_delete=models.CASCADE, related_name='reagent_for')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='reagents', null=True)
     reagent = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='used_as_reagent_in')
     quantity = models.IntegerField(default=1)
 
     class Meta:
-        unique_together = ('alchemy_item', 'reagent')
+        unique_together = ('recipe', 'reagent')
 
     def __str__(self):
-        return f"{self.quantity} x {self.reagent.name} for {self.alchemy_item.name}"
+        return f"{self.quantity} x {self.reagent.name} for {self.recipe}"

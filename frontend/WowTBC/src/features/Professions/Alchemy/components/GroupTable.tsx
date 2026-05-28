@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { Plus, X, Check, Loader2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -16,6 +17,9 @@ import type { AlchemyGroupTableRow } from "../types";
 import { HeaderPickerDialog } from "./AlchemyHeaderPicker";
 import { WowCurrency } from "./WowCurrency";
 import { useAlchemyStore } from '@/ZustandStores/useAlchemyStore';
+import { ItemCombobox } from "./ItemCombobox";
+import { Button } from "@/components/ui/button";
+import { useCreateAlchemyItemMutation } from "../hooks/mutations/mutations";
 
 export function GroupTable({
   group,
@@ -29,6 +33,46 @@ export function GroupTable({
 
   const [alchemyImportData, setAlchemyImportData] = useState<AlchemyImportRecord | null>(null);
   const { dataRecordId } = useAlchemyStore();
+
+  const [draft, setDraft] = useState<{ name: string; id: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const existingNames = useMemo(
+    () => new Set(group.items.map((r) => r.name)),
+    [group],
+  );
+
+  const { mutate: createItem, isPending } = useCreateAlchemyItemMutation();
+
+  const startDraft = () => {
+    setError(null);
+    setDraft({ name: "", id: 0 });
+  };
+  const cancelDraft = () => {
+    setError(null);
+    setDraft(null);
+  };
+  const saveDraft = () => {
+    if (!draft) return;
+    if (!draft.name.trim() || draft.id === 0) {
+      setError("Please select an item.");
+      return;
+    }
+    if (existingNames.has(draft.name)) {
+      setError("Item already in table.");
+      return;
+    }
+
+    createItem({ group: group.group, item_id: draft.id }, {
+      onSuccess: () => {
+        setDraft(null);
+        setError(null);
+      },
+      onError: () => {
+        setError("Failed to add item.");
+      }
+    });
+  };
 
   const handleSetImportData = (column: string, recordId: string) => {
     setAlchemyImportData((prev) => ({ ...prev, [column]: recordId }));
@@ -114,6 +158,59 @@ export function GroupTable({
                 </TableRow>
               );
             })}
+            {draft ? (
+              <>
+                <TableRow className="bg-primary/5 border-b border-primary/30 hover:bg-primary/5">
+                  <TableCell className="py-2">
+                    <ItemCombobox
+                      value={draft.name}
+                      groupClass={group.search_group}
+                      onChange={(name, id) => {
+                        setError(null);
+                        setDraft({ name, id });
+                      }}
+                      excluded={existingNames}
+                    />
+                  </TableCell>
+                  <TableCell className="py-2 text-right text-muted-foreground">-</TableCell>
+                  <TableCell className="py-2 text-right text-muted-foreground">-</TableCell>
+                  <TableCell className="py-2 text-center text-muted-foreground">-</TableCell>
+                  <TableCell className="py-2 text-right text-muted-foreground">-</TableCell>
+                  <TableCell className="py-2 text-right tabular-nums font-mono text-muted-foreground">-</TableCell>
+                  <TableCell className="py-2 text-center text-muted-foreground">-</TableCell>
+                  <TableCell colSpan={2} className="py-2">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button size="sm" variant="ghost" onClick={cancelDraft} className="h-8 gap-1">
+                        <X className="h-3.5 w-3.5" /> Cancel
+                      </Button>
+                      <Button size="sm" onClick={saveDraft} disabled={!draft.name || isPending} className="h-8 gap-1">
+                        {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />} Save
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+                {error && (
+                  <TableRow className="bg-destructive/10 hover:bg-destructive/10">
+                    <TableCell colSpan={9} className="py-1.5 text-xs text-destructive text-center">
+                      {error}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
+            ) : (
+              <TableRow className="group/add border-b-0 hover:bg-transparent">
+                <TableCell colSpan={9} className="p-0">
+                  <button
+                    type="button"
+                    onClick={startDraft}
+                    className="w-full h-7 flex items-center justify-center gap-2 text-xs text-muted-foreground opacity-0 group-hover/table:opacity-100 hover:bg-primary/10 hover:text-primary transition-all border-t border-dashed border-border/50"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Add row
+                  </button>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
           <TableFooter>
             <TableRow className="bg-secondary/50 border-t-2 border-primary/40 font-bold hover:bg-secondary/50">

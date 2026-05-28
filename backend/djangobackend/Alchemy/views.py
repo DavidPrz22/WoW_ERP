@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import AlchemyItem, AlchemyGroup
+from .models import AlchemyItem, AlchemyGroup, Recipe, VIALS_PRICES
 from .serializers import AlchemyGroupDataResponseSerializer, AlchemyGroupDataSerializer, AlchemyItemSerializer
 from Registros.models import Item, ItemRecord
 from .services.alchemy_calculations_service import AlchemyCalculationsService
-from .models import VIALS_PRICES
 
 
 class CreateAlchemyItemView(generics.CreateAPIView):
@@ -20,9 +19,10 @@ class CreateAlchemyItemView(generics.CreateAPIView):
         if isinstance(group_name, str):
             try:
                 group = AlchemyGroup.objects.get(name__iexact=group_name)
-                data['group'] = group.id
             except AlchemyGroup.DoesNotExist:
                 return Response({'error': f"Group '{group_name}' not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            group = None
 
         if not id_ingame:
             return Response({'error': f"Item id_ingame not provided."}, status=status.HTTP_400_BAD_REQUEST)
@@ -30,15 +30,20 @@ class CreateAlchemyItemView(generics.CreateAPIView):
         item = Item.objects.filter(id_ingame=id_ingame).first()
         if not item:
             return Response({'error': f"Item with id_ingame '{id_ingame}' not found."}, status=status.HTTP_404_NOT_FOUND)
-        
-        data['item_id'] = item.id
 
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        recipe = Recipe.objects.filter(item=item).first()
+        if not recipe:
+            return Response({'error': f"No recipe found for '{item.name}'. Run register_reagents first."}, status=status.HTTP_404_NOT_FOUND)
 
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        alchemy_item = AlchemyItem.objects.create(
+            group=group,
+            item_id=item,
+            recipe=recipe,
+            yield_quantity=data.get('yield_quantity', 1)
+        )
+
+        serializer = self.get_serializer(alchemy_item)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class GetAlchemyGroupsDataView(generics.ListAPIView):
@@ -56,7 +61,7 @@ class GetAlchemyGroupsDataView(generics.ListAPIView):
         realm = serializer.validated_data.get('realm')
         selected_record = serializer.validated_data.get('selected_record')
 
-        groups = AlchemyGroup.objects.prefetch_related('items__item_id', 'items__reagent_for__reagent').all()
+        groups = AlchemyGroup.objects.prefetch_related('items__item_id', 'items__recipe__reagents__reagent').all()
         groups_data = AlchemyGroupDataResponseSerializer(groups, many=True).data
 
         records_data = ItemRecord.objects.select_related('item').filter(record__id=selected_record, record__auction_house__faction__iexact=faction, record__auction_house__realm_name__iexact=realm)

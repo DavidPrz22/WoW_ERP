@@ -215,6 +215,15 @@
         { "name": "Handful of Fel Iron Bolts", "quantity": 1 },
         { "name": "Knothide Leather", "quantity": 2 }
       ]
+    },
+    {
+      "name": "Mana Potion Injector",
+      "reagents": [
+        { "name": "Super Healing Potion", "quantity": 20 },
+        { "name": "Fel Iron Casing", "quantity": 1 },
+        { "name": "Handful of Fel Iron Bolts", "quantity": 1 },
+        { "name": "Knothide Leather", "quantity": 2 }
+      ]
     }
   ]
 }

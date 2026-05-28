@@ -1,11 +1,6 @@
 from rest_framework import serializers
-from .models import AlchemyGroup, AlchemyItem
+from .models import AlchemyGroup, AlchemyItem, Recipe, ItemReagent
 
-
-class AlchemyItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AlchemyItem
-        fields = ['group', 'item_id']
 
 class AlchemyGroupDataSerializer(serializers.Serializer):
     faction = serializers.CharField()
@@ -14,30 +9,32 @@ class AlchemyGroupDataSerializer(serializers.Serializer):
 
 
 class AlchemyItemSerializer(serializers.ModelSerializer):
-    group = serializers.CharField(source='group.name')
-    item_id = serializers.CharField(source='item_id.id_ingame')
+    group = serializers.CharField(source='group.name', read_only=True)
 
     class Meta:
         model = AlchemyItem
         fields = ['group', 'item_id', 'yield_quantity']
 
     def to_representation(self, instance):
-        data = super().to_representation(instance)
-        
-        return {
-            'item_id_ingame': instance.item_id.id_ingame,
-            'name': instance.item_id.name,
-            'reagents': [
+        recipe = getattr(instance, 'recipe', None)
+        reagents = []
+        if recipe:
+            reagents = [
                 {
                     'id_ingame': item.reagent.id_ingame,
                     'name': item.reagent.name,
                     'quantity': item.quantity
                 }
-                for item in instance.reagent_for.all()
-            ],
+                for item in recipe.reagents.all()
+            ]
+        
+        return {
+            'item_id_ingame': instance.item_id.id_ingame,
+            'name': instance.item_id.name,
+            'reagents': reagents,
             'yield_quantity': instance.yield_quantity
         }
-    
+
 
 class AlchemyGroupDataResponseSerializer(serializers.ModelSerializer):
     group = serializers.CharField(source='name')

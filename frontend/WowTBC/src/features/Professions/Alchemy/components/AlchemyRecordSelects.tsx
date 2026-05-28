@@ -13,20 +13,21 @@ export function AlchemyRecordSelects() {
     setDataFaction,
     setDataRealm,
     setDataRecordId,
+    alchemyGroupsData,
   } = useAlchemyStore();
+  const initialDataRecordId = alchemyGroupsData ? dataRecordId : "";
 
+  const { data: userDataRecordDetails } = useUserDataRecordDetails();
   const { data: factions, isLoading: factionsLoading } = useFactionOptions();
   const { data: realms, isLoading: realmsLoading } = useRealmOptions();
 
-  const { data: userDataRecordDetails } = useUserDataRecordDetails();
-
   useEffect(() => {
-    if (userDataRecordDetails) {
+    if (userDataRecordDetails && !dataRecordId) {
       const { recordDetails } = userDataRecordDetails;
       setDataFaction(recordDetails.faction);
       setDataRealm(recordDetails.realm);
     }
-  }, [userDataRecordDetails, setDataFaction, setDataRealm]);
+  }, [userDataRecordDetails, setDataFaction, setDataRealm, dataRecordId]);
 
   const { data: recordsData, isLoading: recordsLoading } = useRecordsSelect({
     realm: dataRealm,
@@ -78,7 +79,7 @@ export function AlchemyRecordSelects() {
       <div className="space-y-2">
         <Label className="text-xs text-gold/80 font-medium">Record</Label>
         <Select 
-          value={dataRecordId} 
+          value={initialDataRecordId || dataRecordId} 
           onValueChange={setDataRecordId}
           disabled={!dataRealm || !dataFaction || recordsLoading}
         >
