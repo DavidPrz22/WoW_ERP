@@ -10,7 +10,8 @@ from .views import (
     RecordsView,
     GenerateRecordView,
     GenerateRecordsDataView,
-    UserDataRecordView
+    UserDataRecordView,
+    DeleteRecordView
 )
 
 urlpatterns = [
@@ -24,5 +25,6 @@ urlpatterns = [
     path('records/generate/', GenerateRecordView.as_view(), name='generate-record'),
     path('records/data/', GenerateRecordsDataView.as_view(), name='records-data'),
     path('records/override_price/', OverridePriceView.as_view(), name='override-price'),
+    path('records/<int:record_id>/', DeleteRecordView.as_view(), name='delete-record'),
     path('user/data/', UserDataRecordView.as_view(), name='user-data-record'),
 ]

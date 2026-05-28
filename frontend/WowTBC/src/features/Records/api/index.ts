@@ -34,4 +34,9 @@ export const overridePrice = async (params: OverRidePriceParams): Promise<{ mess
     new_price: params.newPrice,
   });
   return response.data;
-}
+};
+
+export const deleteRecord = async (recordId: number): Promise<{ message: string }> => {
+  const response = await apiClient.delete(`registros/records/${recordId}/`);
+  return response.data;
+};

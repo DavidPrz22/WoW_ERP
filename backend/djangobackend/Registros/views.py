@@ -309,20 +309,32 @@ class UserDataRecordView(GenericAPIView):
     def get(self, request):
         user_data = Userdata.objects.filter(id_user=request.user.id or 'davidprz').first()
         return_data = {}
-        
+
         if user_data and user_data.dynamic_data['last_record_selected']:
-            
+
             last_record_id = user_data.dynamic_data['last_record_selected']
             last_record = Records.objects.filter(id=last_record_id).first()
-            
+
             if last_record:
                 return_data['recordDetails'] = {
                     'recordId': last_record.id,
                     'realm': last_record.auction_house.realm_name,
                     'faction': last_record.auction_house.faction
                 }
-    
+
         if user_data:
             return Response(return_data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'User data not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteRecordView(GenericAPIView):
+    def delete(self, request, record_id):
+        try:
+            record = Records.objects.get(id=record_id)
+            record.delete()
+            return Response({'message': 'Record deleted successfully'}, status=status.HTTP_200_OK)
+        except Records.DoesNotExist:
+            return Response({'error': 'Record not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

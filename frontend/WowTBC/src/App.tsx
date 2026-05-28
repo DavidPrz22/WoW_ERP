@@ -9,11 +9,9 @@ import Home from "@/pages/Home";
 import Records from "@/pages/SystemRecords";
 import PricingHistory from "@/pages/PrincingHistory";
 import Alchemy from "@/pages/Professions/Alchemy";
-import Gemcutting from "@/pages/Professions/Gemcutting";
-import Enchanting from "@/pages/Professions/Enchanting";
+import Jewelcrafting from "@/pages/Professions/Jewelcrafting";
 import Engineering from "@/pages/Professions/Engineering";
 import Cooking from "@/pages/Professions/Cooking";
-import Boes from "@/pages/Professions/Boes";
 
 const queryClient = new QueryClient();
 
@@ -29,11 +27,9 @@ const App = () => (
             <Route path="/records" element={<Records />} />
             <Route path="/pricing" element={<PricingHistory />} />
             <Route path="/professions/alchemy" element={<Alchemy />} />
-            <Route path="/professions/gemcutting" element={<Gemcutting />} />
-            <Route path="/professions/enchanting" element={<Enchanting />} />
+            <Route path="/professions/jewelcrafting" element={<Jewelcrafting />} />
             <Route path="/professions/engineering" element={<Engineering />} />
             <Route path="/professions/cooking" element={<Cooking />} />
-            <Route path="/professions/boes" element={<Boes />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

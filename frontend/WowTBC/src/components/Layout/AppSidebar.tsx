@@ -25,11 +25,9 @@ const main = [
 
 const professions = [
   { title: "Alchemy", url: "/professions/alchemy", icon: FlaskConical },
-  { title: "Gemcutting", url: "/professions/gemcutting", icon: Gem },
-  { title: "Enchanting", url: "/professions/enchanting", icon: Sparkles },
+  { title: "Jewelcrafting", url: "/professions/Jewelcrafting", icon: Gem },
   { title: "Engineering", url: "/professions/engineering", icon: Wrench },
   { title: "Cooking", url: "/professions/cooking", icon: UtensilsCrossed },
-  { title: "BOEs", url: "/professions/boes", icon: Package },
 ];
 
 export function AppSidebar() {

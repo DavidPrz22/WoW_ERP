@@ -1,21 +1,23 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { TableProperties, RefreshCw, Search } from "lucide-react";
+import { TableProperties, RefreshCw, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { SystemPriceTable } from "./SystemPriceTable";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { useRecords } from "../hooks/queries/useRecords";
-import { useGenerateRecordMutation } from "../hooks/mutations/useMutationRecords";
+import { useGenerateRecordMutation, useDeleteRecordMutation } from "../hooks/mutations/useMutationRecords";
 
 export function SystemRecordsHeader() {
   const { recordsQuery, faction, showPrices, setRecordsQuery, setFaction, setShowPrices } = useRecordsStore();
 
   const [page, setPage] = useState(1);
+  const [deleteRecordId, setDeleteRecordId] = useState<number | null>(null);
   const { data, isLoading } = useRecords({
     page: page,
   });
@@ -28,10 +30,18 @@ export function SystemRecordsHeader() {
   });
 
   const { mutate: generateRecord, isPending: generating } = useGenerateRecordMutation();
+  const { mutate: deleteRecord, isPending: deleting } = useDeleteRecordMutation();
 
   const handleGenerate = () => {
     toast.info("Snapshot triggered", { description: "Fetching latest data from TSM API…" });
     generateRecord();
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteRecordId !== null) {
+      deleteRecord(deleteRecordId);
+      setDeleteRecordId(null);
+    }
   };
 
   if (showPrices) {
@@ -87,12 +97,13 @@ export function SystemRecordsHeader() {
                 <TableHead>Faction</TableHead>
                 <TableHead>Items</TableHead>
                 <TableHead className="text-right">Timestamp</TableHead>
+                <TableHead className="w-[80px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-10">
                     Loading records...
                   </TableCell>
                 </TableRow>
@@ -109,11 +120,21 @@ export function SystemRecordsHeader() {
                   <TableCell className="text-right text-muted-foreground text-sm">
                     {new Date(r.timestamp).toLocaleString()}
                   </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => setDeleteRecordId(r.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
               {!isLoading && records.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-10">
                     No records found.
                   </TableCell>
                 </TableRow>
@@ -140,6 +161,23 @@ export function SystemRecordsHeader() {
           </div>
         </CardContent>
       </Card>
+
+      <AlertDialog open={deleteRecordId !== null} onOpenChange={(open) => !open && setDeleteRecordId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Record</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this record? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteRecordId(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} disabled={deleting} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              {deleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
