@@ -1,6 +1,5 @@
-import { Gem } from "lucide-react";
-import ProfessionPage from "./ProfessionPage";
+import { JewelcraftingDashboard } from "@/features/Professions/Jewelcrafting/components/JewelcraftingDashboard";
+
 export default function Jewelcrafting() {
-  return <ProfessionPage title="Jewelcrafting" description="Jewelcrafting cuts for raw gems." icon={Gem}
-    items={["Living Ruby", "Dawnstone", "Star of Elune", "Talasite", "Noble Topaz", "Nightseye"]} />;
+  return <JewelcraftingDashboard />;
 }
