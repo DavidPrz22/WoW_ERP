@@ -3,13 +3,20 @@ import { AxiosError } from 'axios';
 import { generateRecord, overridePrice, deleteRecord } from '../../api';
 import { toast } from 'sonner';
 
+import { recordsQueryOptions, recordDataQueryOptions } from '../queries/queryOptions';
+import { recordsSelectQueryOptions } from '@/lib/queryOptions';
+import { alchemyGroupDataQueryOptions } from '@/features/Professions/Alchemy/hooks/queries/queryOptions';
+
 export const useGenerateRecordMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: generateRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['records'] });
+      queryClient.invalidateQueries({ queryKey: [recordsQueryOptions({}).queryKey[0]] });
+      queryClient.invalidateQueries({ queryKey: [recordDataQueryOptions({}).queryKey[0]] });
+      queryClient.invalidateQueries({ queryKey: [recordsSelectQueryOptions({ realm: '', faction: '' }).queryKey[0]] });
+      queryClient.invalidateQueries({ queryKey: [alchemyGroupDataQueryOptions({ realm: '', faction: '', selected_record: '' }).queryKey[0]] });
       toast.success('Snapshot generated successfully');
     },
     onError: (error: AxiosError<{ error: string }>) => {

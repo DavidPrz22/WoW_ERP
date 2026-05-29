@@ -19,6 +19,7 @@ export const alchemyGroupDataQueryOptions = (params: TGetRecordDataParams) => {
         queryKey: [ALCHEMY_GROUP_DATA, { realm: params.realm, faction: params.faction, record: params.selected_record }],
         queryFn: () => getAlchemyGroupsData(params),
         enabled: !!parsedParams.success, // Only fetch if there is a valid groupId
+        
         staleTime: Infinity, // Data doesn't change often, so we can keep it fresh indefinitely
         })
     };
