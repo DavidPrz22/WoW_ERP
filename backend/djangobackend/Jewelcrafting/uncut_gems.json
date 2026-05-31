@@ -1,0 +1,80 @@
+[
+  {
+    "name": "Azure Moonstone",
+    "id_ingame": 23117,
+    "proc_change": 0.18,
+    "vendor_price": 2500
+  },
+  {
+    "name": "Deep Peridot",
+    "id_ingame": 23079,
+    "proc_change": 0.18,
+    "vendor_price": 2500
+  },
+  {
+    "name": "Flame Spessarite",
+    "id_ingame": 21929,
+    "proc_change": 0.18,
+    "vendor_price": 2500
+  },
+  {
+    "name": "Shadow Draenite",
+    "id_ingame": 23107,
+    "proc_change": 0.18,
+    "vendor_price": 2500
+  },
+  {
+    "name": "Blood Garnet",
+    "id_ingame": 23077,
+    "proc_change": 0.18,
+    "vendor_price": 2500
+  },
+  {
+    "name": "Golden Draenite",
+    "id_ingame": 23112,
+    "proc_change": 0.18,
+    "vendor_price": 2500
+  },
+  {
+    "name": "Living Ruby",
+    "id_ingame": 23436,
+    "proc_change": 0.04,
+    "vendor_price": 30000
+  },
+  {
+    "name": "Noble Topaz",
+    "id_ingame": 23439,
+    "proc_change": 0.04,
+    "vendor_price": 30000
+  },
+  {
+    "name": "Dawnstone",
+    "id_ingame": 23440,
+    "proc_change": 0.04,
+    "vendor_price": 30000
+  },
+  {
+    "name": "Talasite",
+    "id_ingame": 23437,
+    "proc_change": 0.04,
+    "vendor_price": 30000
+  },
+  {
+    "name": "Star of Elune",
+    "id_ingame": 23438,
+    "proc_change": 0.04,
+    "vendor_price": 30000
+  },
+  {
+    "name": "Nightseye",
+    "id_ingame": 23441,
+    "proc_change": 0.04,
+    "vendor_price": 30000
+  },
+  {
+    "name": "Adamantite Powder",
+    "id_ingame": 24243,
+    "proc_change": 1.00,
+    "vendor_price": 2250
+  }
+]

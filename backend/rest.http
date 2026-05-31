@@ -4,11 +4,6 @@
 
 
 ###
-POST {{baseUrl}}/alchemy/groups/data/
+GET {{baseUrl}}/jewelcrafting/items/?faction=Alliance&realm=Nightslayer&selected_record=8629
 Content-Type: application/json
 
-{
-    "faction": "Alliance",
-    "realm": "Nightslayer",
-    "selected_record": 8593
-}

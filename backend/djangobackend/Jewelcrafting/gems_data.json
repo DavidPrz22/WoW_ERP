@@ -1,0 +1,78 @@
+[
+  {
+    "gem_name": "Living Ruby",
+    "Id_ingame": 23436,
+    "cuts": [
+      { "id_ingame": 24027, "gem_name": "Bold Living Ruby" },
+      { "id_ingame": 24031, "gem_name": "Bright Living Ruby" },
+      { "id_ingame": 24028, "gem_name": "Delicate Living Ruby" },
+      { "id_ingame": 24036, "gem_name": "Flashing Living Ruby" },
+      { "id_ingame": 24030, "gem_name": "Runed Living Ruby" },
+      { "id_ingame": 24032, "gem_name": "Subtle Living Ruby" },
+      { "id_ingame": 24029, "gem_name": "Teardrop Living Ruby" }
+    ]
+  },
+  {
+    "gem_name": "Dawnstone",
+    "Id_ingame": 23439,
+    "cuts": [
+      { "id_ingame": 24047, "gem_name": "Brilliant Dawnstone" },
+      { "id_ingame": 24050, "gem_name": "Gleaming Dawnstone" },
+      { "id_ingame": 31861, "gem_name": "Great Dawnstone" },
+      { "id_ingame": 24053, "gem_name": "Mystic Dawnstone" },
+      { "id_ingame": 35315, "gem_name": "Quick Dawnstone" },
+      { "id_ingame": 24051, "gem_name": "Rigid Dawnstone" },
+      { "id_ingame": 24048, "gem_name": "Smooth Dawnstone" },
+      { "id_ingame": 24052, "gem_name": "Thick Dawnstone" }
+    ]
+  },
+  {
+    "gem_name": "Star of Elune",
+    "Id_ingame": 23440,
+    "cuts": [
+      { "id_ingame": 24037, "gem_name": "Lustrous Star of Elune" },
+      { "id_ingame": 24033, "gem_name": "Solid Star of Elune" },
+      { "id_ingame": 24035, "gem_name": "Sparkling Star of Elune" },
+      { "id_ingame": 24039, "gem_name": "Stormy Star of Elune" }
+    ]
+  },
+  {
+    "gem_name": "Noble Topaz",
+    "Id_ingame": 23437,
+    "cuts": [
+      { "id_ingame": 24061, "gem_name": "Glinting Noble Topaz" },
+      { "id_ingame": 24058, "gem_name": "Inscribed Noble Topaz" },
+      { "id_ingame": 24060, "gem_name": "Luminous Noble Topaz" },
+      { "id_ingame": 24059, "gem_name": "Potent Noble Topaz" },
+      { "id_ingame": 35316, "gem_name": "Reckless Noble Topaz" },
+      { "id_ingame": 31867, "gem_name": "Veiled Noble Topaz" },
+      { "id_ingame": 31868, "gem_name": "Wicked Noble Topaz" }
+    ]
+  },
+  {
+    "gem_name": "Talasite",
+    "Id_ingame": 23441,
+    "cuts": [
+      { "id_ingame": 24065, "gem_name": "Dazzling Talasite" },
+      { "id_ingame": 24062, "gem_name": "Enduring Talasite" },
+      { "id_ingame": 35318, "gem_name": "Forceful Talasite" },
+      { "id_ingame": 24067, "gem_name": "Jagged Talasite" },
+      { "id_ingame": 24066, "gem_name": "Radiant Talasite" },
+      { "id_ingame": 33782, "gem_name": "Steady Talasite" },
+      { "id_ingame": 32639, "gem_name": "Unstable Talasite" }
+    ]
+  },
+  {
+    "gem_name": "Nightseye",
+    "Id_ingame": 23438,
+    "cuts": [
+      { "id_ingame": 31863, "gem_name": "Balanced Nightseye" },
+      { "id_ingame": 24056, "gem_name": "Glowing Nightseye" },
+      { "id_ingame": 31865, "gem_name": "Infused Nightseye" },
+      { "id_ingame": 35707, "gem_name": "Regal Nightseye" },
+      { "id_ingame": 24057, "gem_name": "Royal Nightseye" },
+      { "id_ingame": 24055, "gem_name": "Shifting Nightseye" },
+      { "id_ingame": 24054, "gem_name": "Sovereign Nightseye" }
+    ]
+  }
+]

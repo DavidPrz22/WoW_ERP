@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/registros/', include('Registros.urls')),
     path('api/alchemy/', include('Alchemy.urls')),
+    path('api/jewelcrafting/', include('Jewelcrafting.urls')),
 ]

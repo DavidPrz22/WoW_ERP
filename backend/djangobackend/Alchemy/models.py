@@ -7,6 +7,7 @@ class AlchemyGroupsList(models.TextChoices):
     ELIXIRS = 'Elixirs'
     POTIONS = 'Potions'
 
+
 class AlchemyGroupsListSearch(models.TextChoices):
     FLASKS = 'Flask'
     ELIXIRS = 'Elixir'
@@ -17,6 +18,7 @@ VIALS_PRICES = {
     "CRYSTAL_VIAL": 400,
     "IMBUED_VIAL": 3200,
 }
+
 
 class AlchemyGroup(models.Model):
     name = models.CharField(max_length=50, choices=AlchemyGroupsList.choices, unique=True)

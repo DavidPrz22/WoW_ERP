@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'Registros',
     'Alchemy',
+    'Jewelcrafting',
     'corsheaders',
     
 ]
