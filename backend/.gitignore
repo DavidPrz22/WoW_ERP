@@ -1,5 +1,7 @@
 items_data.json
 app.md
 .venv
-.agent
+.agents
 .vscode
+skills-lock.json
+opencode.json

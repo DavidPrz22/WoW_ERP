@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "paths": [".agents/skills"]
+  },
+  "agent": {
+    "backend-architect": {
+      "mode": "subagent",
+      "description": "Design reliable backend systems with focus on data integrity, security, and fault tolerance"
+    },
+    "coder-reviewer": {
+      "mode": "subagent",
+      "description": "Review code changes against a base branch with structured feedback"
+    },
+    "refactoring-expert": {
+      "mode": "subagent",
+      "description": "Improve code quality and reduce technical debt through systematic refactoring"
+    },
+    "root-cause-analyst": {
+      "mode": "subagent",
+      "description": "Systematically investigate complex problems to identify underlying causes"
+    },
+    "system-architect": {
+      "mode": "subagent",
+      "description": "Design scalable system architecture with focus on maintainability"
+    }
+  }
+}
