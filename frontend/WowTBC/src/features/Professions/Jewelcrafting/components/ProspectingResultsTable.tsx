@@ -3,16 +3,15 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { fmt } from "../utils/helpers";
+import type { JewelcraftingRawGem } from "../types/types";
 
-interface ProspectingRow {
-  name: string;
-  chance: number;
-  expected: number;
-  vendor?: number;
+interface ProspectingRow extends JewelcraftingRawGem {
   ah: number;
-  profit: number;
+  vendor: number;
+  subtotal: number;
+  expected: number;
   obtenido: number;
-  precio: number;
+  precioObtenido: number;
   prospectPrice: number;
 }
 
@@ -21,7 +20,7 @@ interface ProspectingResultsTableProps {
   vendorEnabled: boolean;
   setVendorEnabled: (enabled: boolean) => void;
   setAhPrice: (name: string, price: number) => void;
-  setProspectPrices: (updater: (prev: Record<string, number>) => Record<string, number>) => void;
+  setProspectPrice: (name: string, price: number, subtotal?: number) => void;
   setObtenidoOverrides: (updater: (prev: Record<string, number>) => Record<string, number>) => void;
   totalReal: number;
 }
@@ -31,7 +30,7 @@ export function ProspectingResultsTable({
   vendorEnabled,
   setVendorEnabled,
   setAhPrice,
-  setProspectPrices,
+  setProspectPrice,
   setObtenidoOverrides,
   totalReal,
 }: ProspectingResultsTableProps) {
@@ -58,65 +57,70 @@ export function ProspectingResultsTable({
                   />
                 </div>
               </TableHead>
-              <TableHead className="h-10 text-center uppercase tracking-wider text-xs w-32">Prospecting Price</TableHead>
-              <TableHead className="h-10 text-right uppercase tracking-wider text-xs">Profit</TableHead>
+              <TableHead className="h-10 text-right uppercase tracking-wider text-xs">SubTotal</TableHead>
               <TableHead className="h-10 text-center uppercase tracking-wider text-xs w-28">Obtenido</TableHead>
-              <TableHead className="h-10 text-right uppercase tracking-wider text-xs">Precio</TableHead>
+              <TableHead className="h-10 text-right uppercase tracking-wider text-xs">Precio Obtenido</TableHead>
+              <TableHead className="h-10 text-center uppercase tracking-wider text-xs w-32">Prospecting Price</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {rows.map((r) => (
-              <TableRow key={r.name} className="border-b border-border/40 hover:bg-secondary/30">
-                <TableCell className="py-2 font-medium text-gold">{r.name}</TableCell>
-                <TableCell className="py-2 text-right tabular-nums font-mono text-muted-foreground">
-                  {(r.chance * 100).toFixed(0)}%
-                </TableCell>
-                <TableCell className="py-2 text-right tabular-nums font-mono">{fmt(r.expected, 2)}</TableCell>
-                <TableCell className="py-2">
-                  <Input
-                    type="number"
-                    step="0.01"
-                    value={r.ah}
-                    onChange={(e) => setAhPrice(r.name, parseFloat(e.target.value) || 0)}
-                    className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
-                  />
-                </TableCell>
-                <TableCell className={cn("py-2 text-right tabular-nums font-mono", vendorEnabled ? "text-muted-foreground" : "text-muted-foreground/40")}>
-                  {r.vendor ? fmt(r.vendor, 2) : "—"}
-                </TableCell>
-                <TableCell className="py-2">
-                  <Input
-                    type="number"
-                    step="0.01"
-                    value={r.prospectPrice}
-                    onChange={(e) =>
-                      setProspectPrices((p) => ({ ...p, [r.name]: parseFloat(e.target.value) || 0 }))
-                    }
-                    className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
-                  />
-                </TableCell>
-                <TableCell className="py-2 text-right tabular-nums font-mono text-[hsl(var(--quality-uncommon))]">
-                  {fmt(r.profit, 2)}
-                </TableCell>
-                <TableCell className="py-2">
-                  <Input
-                    type="number"
-                    value={r.obtenido}
-                    onChange={(e) =>
-                      setObtenidoOverrides((p) => ({ ...p, [r.name]: parseInt(e.target.value) || 0 }))
-                    }
-                    className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
-                  />
-                </TableCell>
-                <TableCell className="py-2 text-right tabular-nums font-mono text-gold">{fmt(r.precio, 2)}</TableCell>
-              </TableRow>
-            ))}
+            {rows.map((r) => {
+              const ahCopper = r.ah;
+              return (
+                <TableRow key={r.name} className="border-b border-border/40 hover:bg-secondary/30">
+                  <TableCell className="py-2 font-medium text-gold">{r.name}</TableCell>
+                  <TableCell className="py-2 text-right tabular-nums font-mono text-muted-foreground">
+                    {(r.procChance * 100).toFixed(0)}%
+                  </TableCell>
+                  <TableCell className="py-2 text-right tabular-nums font-mono">{fmt(r.expected, 2)}</TableCell>
+                  <TableCell className="py-2">
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={ahCopper === 0 ? "" : ahCopper}
+                      placeholder="—"
+                      onChange={(e) => setAhPrice(r.name, (parseFloat(e.target.value) || 0) * 10000)}
+                      className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
+                    />
+                  </TableCell>
+                  <TableCell className={cn("py-2 text-right tabular-nums font-mono", vendorEnabled ? "text-muted-foreground" : "text-muted-foreground/40")}>
+                    {r.vendor ? fmt(r.vendor, 2) : "—"}
+                  </TableCell>
+                  <TableCell className="py-2 text-right tabular-nums font-mono text-[hsl(var(--quality-uncommon))]">
+                    {fmt(r.subtotal, 2)}
+                  </TableCell>
+                  <TableCell className="py-2">
+                    <Input
+                      type="number"
+                      value={r.obtenido}
+                      onChange={(e) => {
+                        setObtenidoOverrides((p) => ({ ...p, [r.name]: parseInt(e.target.value) || 0 }));
+                        setProspectPrice(r.name, parseFloat(e.target.value) || 0, r.subtotal);
+                        }
+                      }
+                      className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
+                    />
+                  </TableCell>
+                  
+                  <TableCell className="py-2 text-right tabular-nums font-mono text-gold">{fmt(r.precioObtenido, 2)}</TableCell>
+                  <TableCell className="py-2">
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={r.prospectPrice}
+                      onChange={(e) => setProspectPrice(r.name, parseFloat(e.target.value) || 0)}
+                      className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow className="bg-secondary/50 border-t-2 border-primary/40 hover:bg-secondary/50">
-              <TableCell colSpan={6} className="py-3 font-bold text-gold uppercase tracking-wider text-xs">Total</TableCell>
+              <TableCell colSpan={5} className="py-3 font-bold text-gold uppercase tracking-wider text-xs">Total</TableCell>
               <TableCell className="py-3 text-right tabular-nums font-mono font-bold text-gold">
-                {fmt(rows.reduce((a, b) => a + b.profit, 0), 2)}
+                {fmt(rows.reduce((a, b) => a + b.subtotal, 0), 2)}
               </TableCell>
               <TableCell />
               <TableCell className="py-3 text-right tabular-nums font-mono font-bold text-gold">

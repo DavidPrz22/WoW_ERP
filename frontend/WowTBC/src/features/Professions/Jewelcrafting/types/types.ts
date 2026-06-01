@@ -1,26 +1,19 @@
-export type ProspectResult = {
-  name: string;
-  chance: number;
-  expected: number;
-  vendor?: number;
-};
-
-export type Cut = {
-  name: string;
-  ahPrice: number;
-};
-
-export type JewelcraftingItemResponse = {
+export type JewelcraftingRawGem = {
   name: string;
   procChance: number;
   vendorPrice: number;
   ahPrice: number | null;
 };
 
-export type CutSection = {
-  key: string;
-  color: string; // tailwind/custom class for header bar background
-  label: string;
-  gem: string; // raw gem the cut uses
-  cuts: Cut[];
+export type JewelcraftingCutGem = {
+  name: string;
+  color: string;
+  rawGem: string;
+  craftingCost: number;
+  ahPrice: number | null;
+};
+
+export type JewelcraftingItemsResponse = {
+  raw_gems: JewelcraftingRawGem[];
+  cut_gems: JewelcraftingCutGem[];
 };

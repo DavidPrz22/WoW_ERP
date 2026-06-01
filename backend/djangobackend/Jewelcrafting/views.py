@@ -18,7 +18,7 @@ class GetJewelcraftingItemsView(generics.ListAPIView):
 
         faction = serializer.validated_data['faction']
         realm = serializer.validated_data['realm']
-        record_id = serializer.validated_data['selected_record']
+        record_id = serializer.validated_data['record_id']
 
         price_map = {}
         records_qs = ItemRecord.objects.select_related('item').filter(
@@ -26,51 +26,39 @@ class GetJewelcraftingItemsView(generics.ListAPIView):
             record__auction_house__faction__iexact=faction,
             record__auction_house__realm_name__iexact=realm
         )
-
         for rec in records_qs:
             price_map[rec.item.id_ingame] = {
                 'min_buyout': rec.min_buyout,
                 'overriden_min_buyout': rec.overriden_min_buyout,
             }
 
-        gem_cuts = []
-        gem_cuts_qs = GemCuts.objects.select_related('gem_cut', 'gem__item').all()
-        for gc in gem_cuts_qs:
-            cut_price_data = price_map.get(gc.gem_cut.id_ingame)
-            base_price_data = price_map.get(gc.gem.item.id_ingame)
-
-            if cut_price_data is not None:
-                cut_ah_price = cut_price_data['overriden_min_buyout'] or cut_price_data['min_buyout']
-            else:
-                cut_ah_price = None
-
-            if base_price_data is not None:
-                crafting_cost = base_price_data['overriden_min_buyout'] or base_price_data['min_buyout']
-            else:
-                crafting_cost = None
-
-            gem_cuts.append({
-                'name': gc.gem_cut.name,
-                'color': gc.color,
-                'ahPrice': cut_ah_price,
-                'craftingCost': crafting_cost,
-            })
-
-        prospecting = []
+        # Raw gems for Prospecting tab
+        raw_gems = []
         jewel_items = JewelcraftingItems.objects.select_related('item').all()
         for ji in jewel_items:
             price_data = price_map.get(ji.item.id_ingame)
-
-            if price_data is not None:
-                ah_price = price_data['overriden_min_buyout'] or price_data['min_buyout']
-            else:
-                ah_price = None
-
-            prospecting.append({
+            ah_price = (price_data['overriden_min_buyout'] or price_data['min_buyout']) if price_data else None
+            raw_gems.append({
                 'name': ji.item.name,
                 'procChance': ji.proc_chance,
                 'vendorPrice': ji.vendor_price,
                 'ahPrice': ah_price,
             })
 
-        return Response({'Prospecting': prospecting, 'GemCutting': gem_cuts}, status=200)
+        # Cut gems for Gemcutting tab
+        cut_gems = []
+        gem_cuts_qs = GemCuts.objects.select_related('gem_cut', 'gem__item').all()
+        for gc in gem_cuts_qs:
+            cut_price_data = price_map.get(gc.gem_cut.id_ingame)
+            cut_ah_price = (cut_price_data['overriden_min_buyout'] or cut_price_data['min_buyout']) if cut_price_data else None
+            raw_gem_price_data = price_map.get(gc.gem.item.id_ingame)
+            crafting_cost = (raw_gem_price_data['overriden_min_buyout'] or raw_gem_price_data['min_buyout']) if raw_gem_price_data else None
+            cut_gems.append({
+                'name': gc.gem_cut.name,
+                'color': gc.color,
+                'rawGem': gc.gem.item.name,
+                'craftingCost': crafting_cost,
+                'ahPrice': cut_ah_price,
+            })
+
+        return Response({'raw_gems': raw_gems, 'cut_gems': cut_gems}, status=200)

@@ -1,58 +1,61 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useJewelcraftingStore } from "@/ZustandStores/useJewelcraftingStore";
 import {
   AH_CUT,
-  priceMap,
-  PROSPECT_ORE,
   PROSPECT_PER_BATCH,
-  PROSPECT_RESULTS,
 } from "../utils/constants";
 import { fmt } from "../utils/helpers";
 import { MetricCard } from "./MetricCard";
 import { Row } from "./Row";
 import { ProspectingResultsTable } from "./ProspectingResultsTable";
+import type { JewelcraftingRawGem } from "../types/types";
 
 interface ProspectingPanelProps {
+  rawGems: JewelcraftingRawGem[] | null;
   ahPrices: Record<string, number>;
+  prospectPrices: Record<string, number>;
   setAhPrice: (name: string, v: number) => void;
+  setProspectPrice: (name: string, v: number, subtotal?: number) => void;
 }
 
-export function ProspectingPanel({ ahPrices, setAhPrice }: ProspectingPanelProps) {
-  const [oreCost, setOreCost] = useState(priceMap[PROSPECT_ORE] ?? 1.05);
+export function ProspectingPanel({
+  rawGems,
+  ahPrices,
+  prospectPrices,
+  setAhPrice,
+  setProspectPrice,
+}: ProspectingPanelProps) {
+  const [oreCost, setOreCost] = useState(0);
   const [oreOwned, setOreOwned] = useState(1000);
-  const [vendorEnabled, setVendorEnabled] = useState(true);
-  const [obtenidoOverrides, setObtenidoOverrides] = useState<Record<string, number>>({});
-  const [prospectPrices, setProspectPrices] = useState<Record<string, number>>(() => {
-    const m: Record<string, number> = {};
-    for (const r of PROSPECT_RESULTS) {
-      m[r.name] = priceMap[r.name] ?? 0;
-    }
-    return m;
-  });
+  const [vendorEnabled, setVendorEnabled] = useState(false);
+  const { obtenidoOverrides, setObtenidoOverrides } = useJewelcraftingStore();
 
-  const costToCraft = oreCost; // per ore prospected
+  const costToCraft = oreCost;
   const subtotal = oreOwned * costToCraft;
 
-  const rows = PROSPECT_RESULTS.map((r) => {
-    const ah = ahPrices[r.name] ?? 0;
-    const vendor = vendorEnabled ? r.vendor : undefined;
-    const sellPrice = vendor ?? ah * (1 - AH_CUT);
-    const profit = sellPrice * r.expected;
-    const defaultObtenido = Math.round((oreOwned / PROSPECT_PER_BATCH) * r.chance);
-    const obtenido = obtenidoOverrides[r.name] ?? defaultObtenido;
-    const precio = obtenido * (vendor ?? ah);
-    const prospectPrice = prospectPrices[r.name] ?? 0;
-    return { ...r, ah, vendor, profit, obtenido, precio, prospectPrice };
+  const rows = (rawGems ?? []).map((gem) => {
+    const ahCopper = ahPrices[gem.name] ?? gem.ahPrice ?? 0;
+    const ah = ahCopper / 10000;
+
+    const sellPrice = vendorEnabled ? gem.vendorPrice / 10000 : ah * (1 - AH_CUT);
+    const expected = Math.round((oreOwned / PROSPECT_PER_BATCH) * gem.procChance);
+    const subtotal = sellPrice * expected;
+    const defaultObtenido = Math.round((oreOwned / PROSPECT_PER_BATCH) * gem.procChance);
+    const obtenido = obtenidoOverrides[gem.name] ?? defaultObtenido;
+    const precioObtenido = obtenido * (vendorEnabled ? gem.vendorPrice / 10000 : ah);
+    const prospectPrice = (prospectPrices[gem.name] ?? 0) / 10000;
+
+    return { ...gem, ah, vendor: gem.vendorPrice / 10000, subtotal, expected, obtenido, precioObtenido, prospectPrice };
   });
 
-  const totalReal = rows.reduce((a, b) => a + b.precio, 0);
-  const breakEven = subtotal / Math.max(rows.reduce((a, b) => a + b.profit, 0), 0.0001);
+  const totalReal = rows.reduce((a, b) => a + b.precioObtenido, 0);
+  const breakEven = subtotal / Math.max(rows.reduce((a, b) => a + b.subtotal, 0), 0.0001);
   const pl = totalReal - subtotal;
 
   return (
     <div className="space-y-6">
-      {/* Top metrics */}
       <div className="grid gap-4 md:grid-cols-3">
         <MetricCard label="Ore">
           <div className="space-y-2">
@@ -106,7 +109,7 @@ export function ProspectingPanel({ ahPrices, setAhPrice }: ProspectingPanelProps
         vendorEnabled={vendorEnabled}
         setVendorEnabled={setVendorEnabled}
         setAhPrice={setAhPrice}
-        setProspectPrices={setProspectPrices}
+        setProspectPrice={setProspectPrice}
         setObtenidoOverrides={setObtenidoOverrides}
         totalReal={totalReal}
       />

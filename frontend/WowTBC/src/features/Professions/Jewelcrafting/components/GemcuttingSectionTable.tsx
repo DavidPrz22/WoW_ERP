@@ -2,11 +2,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { AH_CUT } from "../utils/constants";
-import { fmt } from "../utils/helpers";
-import type { CutSection } from "../types/types";
+import { fmt, fmtCopper } from "../utils/helpers";
+import type { JewelcraftingCutGem } from "../types/types";
 
 interface GemcuttingSectionTableProps {
-  section: CutSection;
+  color: string;
+  colorClass: string;
+  gem: string;
+  items: JewelcraftingCutGem[];
   cost: number;
   breakeven: number;
   cutPrices: Record<string, number>;
@@ -14,20 +17,23 @@ interface GemcuttingSectionTableProps {
 }
 
 export function GemcuttingSectionTable({
-  section,
+  colorClass,
+  color,
+  gem,
+  items,
   cost,
-  breakeven,
+  breakeven: sectionBreakeven,
   cutPrices,
   setCutPrices,
 }: GemcuttingSectionTableProps) {
   return (
     <section className="space-y-3">
       <div className="flex items-stretch border border-border/70 bg-card/40 shadow-panel overflow-hidden">
-        <div className={cn("w-2", section.color)} />
+        <div className={cn("w-2", colorClass)} />
         <div className="px-4 py-2 font-display text-sm text-gold uppercase tracking-[0.2em]">
-          {section.label}
+          {color}
           <span className="ml-3 text-xs normal-case tracking-normal text-muted-foreground">
-            {section.gem} · {fmt(cost, 4)}g
+            {gem} · {fmt(cost, 4)}g
           </span>
         </div>
       </div>
@@ -44,31 +50,38 @@ export function GemcuttingSectionTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {section.cuts.map((c) => {
-              const ah = cutPrices[c.name] ?? 0;
-              const profit = ah * (1 - AH_CUT) - cost;
-              const roi = cost > 0 ? (profit / cost) * 100 : 0;
+            {items.map((item) => {
+              const ahCopperVal = item.ahPrice;
+              const craftingCostCopperVal = cost * 10000;
+              const rowCost = craftingCostCopperVal / 10000;
+              const rowBreakeven = rowCost / (1 - AH_CUT);
+
+              const ahCopperInput = cutPrices[item.name] ?? ahCopperVal ?? 0;
+              const ah = ahCopperInput / 10000;
+              const profit = ah * (1 - AH_CUT) - rowCost;
+              const roi = rowCost > 0 ? (profit / rowCost) * 100 : 0;
               const positive = profit >= 0;
               return (
-                <TableRow key={c.name} className="border-b border-border/40 hover:bg-secondary/30">
-                  <TableCell className="py-2 font-medium text-gold">{c.name}</TableCell>
-                  <TableCell className="py-2 text-right tabular-nums font-mono">{fmt(cost, 4)}</TableCell>
+                <TableRow key={item.name} className="border-b border-border/40 hover:bg-secondary/30">
+                  <TableCell className="py-2 font-medium text-gold">{item.name}</TableCell>
+                  <TableCell className="py-2 text-right tabular-nums font-mono">{fmtCopper(rowCost)}</TableCell>
                   <TableCell className="py-2 text-right tabular-nums font-mono text-muted-foreground">
-                    {fmt(breakeven, 4)}
+                    {fmtCopper(rowBreakeven)}
                   </TableCell>
                   <TableCell className="py-2">
                     <Input
                       type="number"
                       step="0.01"
-                      value={ah}
+                      value={ahCopperInput === 0 && ahCopperVal === null ? "" : ah}
+                      placeholder={ahCopperVal === null ? "—" : undefined}
                       onChange={(e) =>
-                        setCutPrices((p) => ({ ...p, [c.name]: parseFloat(e.target.value) || 0 }))
+                        setCutPrices((p) => ({ ...p, [item.name]: (parseFloat(e.target.value) || 0) * 10000 }))
                       }
                       className="h-8 w-full text-center tabular-nums font-mono bg-background border-border/70 text-gold focus-visible:border-primary"
                     />
                   </TableCell>
                   <TableCell className={cn("py-2 text-right tabular-nums font-mono font-medium", positive ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
-                    {positive ? "+" : ""}{fmt(profit, 4)}
+                    {positive ? "+" : ""}{fmtCopper(profit)}
                   </TableCell>
                   <TableCell className={cn("py-2 text-right tabular-nums font-mono", roi >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
                     {fmt(roi, 2)}%

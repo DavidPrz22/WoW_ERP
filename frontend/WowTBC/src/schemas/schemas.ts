@@ -11,6 +11,13 @@ export const GetRecordDataSchema = z.object({
     selected_record: z.string().min(1),
 });
 
+export const GetJewelcraftingItemsSchema = z.object({
+    faction: z.string().min(1),
+    realm: z.string().min(1),
+    record_id: z.number().int().positive(),
+});
+
 
 export type TGetRecordsSelectParams = z.infer<typeof GetRecordsSelectSchema>
 export type TGetRecordDataParams = z.infer<typeof GetRecordDataSchema>;
+export type TGetJewelcraftingItemsParams = z.infer<typeof GetJewelcraftingItemsSchema>;
