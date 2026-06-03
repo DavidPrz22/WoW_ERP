@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Home, Database, LineChart, ChevronDown, FlaskConical, Gem, Sparkles, Wrench, UtensilsCrossed, Package } from "lucide-react";
+import { Home, Database, LineChart, ChevronDown, FlaskConical, Gem, Wrench, UtensilsCrossed, Package, PackageIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +28,7 @@ const professions = [
   { title: "Jewelcrafting", url: "/professions/Jewelcrafting", icon: Gem },
   { title: "Engineering", url: "/professions/engineering", icon: Wrench },
   { title: "Cooking", url: "/professions/cooking", icon: UtensilsCrossed },
+  { title: "Boe's" , url: "/professions/BOE", icon: PackageIcon },
 ];
 
 export function AppSidebar() {

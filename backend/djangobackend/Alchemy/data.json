@@ -1,4 +1,3 @@
-
 {
   "Flasks": [
     {
@@ -66,6 +65,15 @@
     }
   ],
   "Elixirs": [
+    {
+      "name": "Elixir of Major Shadow Power",
+      "type": "Battle",
+      "reagents": [
+        { "name": "Ancient Lichen", "quantity": 1 },
+        { "name": "Nightmare Vine", "quantity": 1 },
+        { "name": "Imbued Vial", "quantity": 1 }
+      ]
+    },
     {
       "name": "Elixir of Major Agility",
       "type": "Battle",
@@ -168,6 +176,50 @@
   ],
   "Potions": [
     {
+      "name": "Free Action Potion",
+      "type": "Potion",
+      "reagents": [
+        { "name": "Blackmouth Oil", "quantity": 2 },
+        { "name": "Stranglekelp", "quantity": 1 },
+        { "name": "Leaded Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Swim Speed Potion",
+      "type": "Potion",
+      "reagents": [
+        { "name": "Swiftthistle", "quantity": 1 },
+        { "name": "Blackmouth Oil", "quantity": 1 },
+        { "name": "Empty Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Mighty Rage Potion",
+      "type": "Potion",
+      "reagents": [
+        { "name": "Gromsblood", "quantity": 3 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Invisibility Potion",
+      "type": "Potion",
+      "reagents": [
+        { "name": "Ghost Mushroom", "quantity": 1 },
+        { "name": "Sungrass", "quantity": 1 },
+        { "name": "Crystal Vial", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "Swiftness Potion",
+      "type": "Potion",
+      "reagents": [
+        { "name": "Swiftthistle", "quantity": 1 },
+        { "name": "Briarthorn", "quantity": 1 },
+        { "name": "Empty Vial", "quantity": 1 }
+      ]
+    },
+    {
       "name": "Haste Potion",
       "reagents": [
         { "name": "Netherbloom", "quantity": 1 },
@@ -217,7 +269,7 @@
       ]
     },
     {
-      "name": "Mana Potion Injector",
+      "name": "Healing Potion Injector",
       "reagents": [
         { "name": "Super Healing Potion", "quantity": 20 },
         { "name": "Fel Iron Casing", "quantity": 1 },

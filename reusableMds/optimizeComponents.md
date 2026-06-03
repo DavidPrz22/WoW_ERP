@@ -1,9 +1,7 @@
 ### Migrate the page to a feature based architecture.
 
-1. Optimize the components at \\wsl.localhost\Ubuntu\home\davidprz\projects\WowTBC_ERP\frontend\WowTBC\src\features\Professions\Jewelcrafting\components
-into \\wsl.localhost\Ubuntu\home\davidprz\projects\WowTBC_ERP\frontend\WowTBC\src\features\Professions\Jewelcrafting\components
-2. Create smaller and reusable components present in the page
-3. The page will ony have a single component that groups all the components
-4. If reasable types can be created, place it at frontend\WowTBC\src\features\Professions\Alchemy\types
-
-The point is to use a feature based architecture for this page.
+1. Optimize the components at \\wsl.localhost\Ubuntu\home\davidprz\projects\WowTBC_ERP\frontend\WowTBC\src\features\Professions\BoE\components
+2. Identify reusable components based on section of the page like tables, title, selectors, inputs, buttons, etc.
+3. Create smaller and reusable components present in each page
+4. Use those new components in the pages where they can be used
+5. If reasable types can be created, place it at frontend\WowTBC\src\features\Professions\BoE\types
