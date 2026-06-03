@@ -44,44 +44,55 @@ export function ProspectingPanel({
     const subtotal = sellPrice * expected;
     const defaultObtenido = Math.round((oreOwned / PROSPECT_PER_BATCH) * gem.procChance);
     const obtenido = obtenidoOverrides[gem.name] ?? defaultObtenido;
-    const precioObtenido = obtenido * (vendorEnabled ? gem.vendorPrice / 10000 : ah);
+    const precioObtenido = obtenido * (vendorEnabled ? gem.vendorPrice / 10000 : ah * (1 - AH_CUT));
     const prospectPrice = (prospectPrices[gem.name] ?? 0) / 10000;
 
     return { ...gem, ah, vendor: gem.vendorPrice / 10000, subtotal, expected, obtenido, precioObtenido, prospectPrice };
   });
 
   const totalReal = rows.reduce((a, b) => a + b.precioObtenido, 0);
-  const breakEven = subtotal / Math.max(rows.reduce((a, b) => a + b.subtotal, 0), 0.0001);
-  const pl = totalReal - subtotal;
+  const totalExpected = rows.reduce((a, b) => a + b.subtotal, 0); 
+  const pl_expected = totalExpected - subtotal;
+  const pl_real = totalReal - subtotal;
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-3">
         <MetricCard label="Ore">
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Row label="Cost">
               <Input
                 type="number"
                 step="0.01"
                 value={oreCost}
-                onChange={(e) => setOreCost(parseFloat(e.target.value) || 0)}
+                onChange={(e) => setOreCost(parseFloat(e.target.value))}
                 className="h-8 w-28 text-right tabular-nums font-mono bg-background border-border/70 text-gold"
               />
             </Row>
-            <Row label="Cost to Craft">
-              <span className="font-mono tabular-nums text-gold">{fmt(costToCraft, 2)}</span>
-            </Row>
-            <Row label="Subtotal">
-              <span className="font-mono tabular-nums text-gold">{fmt(subtotal, 2)}</span>
-            </Row>
+            <div className="space-y-1 ">
+              <Row label="Cost to Craft">
+                <span className="font-mono tabular-nums text-gold">{fmt(costToCraft, 2)}</span>
+              </Row>
+              <Row label="Subtotal">
+                <span className="font-mono tabular-nums text-gold">{fmt(subtotal, 2)}</span>
+              </Row>
+            </div>
           </div>
         </MetricCard>
 
-        <MetricCard label="Break Even">
-          <div className="font-display text-3xl text-gold tabular-nums">{fmt(breakEven, 4)}</div>
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-            ore-to-profit ratio
-          </p>
+        <MetricCard label="Profitability">
+          <div className="space-y-5 mt-6">
+            <Row label="P&L Estimate">
+              <span className={cn("font-mono tabular-nums font-medium", pl_expected >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
+                  {pl_expected >= 0 ? "+" : ""}{fmt(pl_expected, 2)}
+                </span>
+            </Row>
+            <Row label="P&L Real">
+              <span className={cn("font-mono tabular-nums font-medium", pl_real >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
+                  {pl_real >= 0 ? "+" : ""}{fmt(pl_real, 2)}
+                </span>
+            </Row>
+          </div>
         </MetricCard>
 
         <MetricCard label="Inventory">
@@ -92,14 +103,6 @@ export function ProspectingPanel({
               onChange={(e) => setOreOwned(parseInt(e.target.value) || 0)}
               className="h-8 w-28 text-right tabular-nums font-mono bg-background border-border/70 text-gold"
             />
-          </Row>
-          <Row label="Total Real">
-            <span className="font-mono tabular-nums text-gold">{fmt(totalReal, 2)}</span>
-          </Row>
-          <Row label="P/L">
-            <span className={cn("font-mono tabular-nums font-medium", pl >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive")}>
-              {pl >= 0 ? "+" : ""}{fmt(pl, 2)}
-            </span>
           </Row>
         </MetricCard>
       </div>

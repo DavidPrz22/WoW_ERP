@@ -11,7 +11,6 @@ interface GemcuttingSectionTableProps {
   gem: string;
   items: JewelcraftingCutGem[];
   cost: number;
-  breakeven: number;
   cutPrices: Record<string, number>;
   setCutPrices: (updater: (prev: Record<string, number>) => Record<string, number>) => void;
 }
@@ -22,7 +21,6 @@ export function GemcuttingSectionTable({
   gem,
   items,
   cost,
-  breakeven: sectionBreakeven,
   cutPrices,
   setCutPrices,
 }: GemcuttingSectionTableProps) {

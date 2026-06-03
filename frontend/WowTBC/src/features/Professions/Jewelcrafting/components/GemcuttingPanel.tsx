@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { AH_CUT } from "../utils/constants";
 import { GemcuttingSectionTable } from "./GemcuttingSectionTable";
 import type { JewelcraftingCutGem } from "../types/types";
+import { COLOR_MAP } from "../utils/constants";
+
 
 interface GemcuttingPanelProps {
   cutGems: JewelcraftingCutGem[] | null;
@@ -11,21 +12,13 @@ interface GemcuttingPanelProps {
   prospectingPrices: Record<string, number>;
 }
 
-const COLOR_MAP: Record<string, string> = {
-  Red: "bg-[hsl(0_72%_45%)]",
-  Yellow: "bg-[hsl(48_90%_55%)]",
-  Blue: "bg-[hsl(214_80%_50%)]",
-  Orange: "bg-[hsl(24_90%_55%)]",
-  Green: "bg-[hsl(142_55%_40%)]",
-  Purple: "bg-[hsl(280_55%_45%)]",
-};
-
 interface CutSection {
   color: string;
   colorClass: string;
   gem: string;
   items: JewelcraftingCutGem[];
 }
+
 
 function groupByColorAndGem(cuts: JewelcraftingCutGem[]): CutSection[] {
   const groups: Record<string, CutSection> = {};
@@ -87,7 +80,6 @@ export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: Gemcut
           : AhPrices[section.gem] ?? fallbackCost;
   
         const gemCost = gemCostCopper / 10000;
-        const breakeven = gemCost / (1 - AH_CUT);
 
         return (
           <GemcuttingSectionTable
@@ -97,7 +89,6 @@ export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: Gemcut
             gem={section.gem}
             items={section.items}
             cost={gemCost}
-            breakeven={breakeven}
             cutPrices={cutPrices}
             setCutPrices={setCutPrices}
           />

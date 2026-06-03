@@ -7,7 +7,7 @@ interface RowProps {
 
 export function Row({ label, children }: RowProps) {
   return (
-    <div className="flex items-center justify-between gap-3 text-xs">
+    <div className="flex items-center justify-between gap-3 text-sm">
       <span className="text-muted-foreground">{label}</span>
       {children}
     </div>

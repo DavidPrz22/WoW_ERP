@@ -42,7 +42,7 @@ export function PriceTablePanel() {
   });
 
   useEffect(() => {
-    if (userDataRecordDetails) {
+    if (userDataRecordDetails?.recordDetails) {
       
       const { recordDetails } = userDataRecordDetails;
       const recordId = recordDetails.recordId;

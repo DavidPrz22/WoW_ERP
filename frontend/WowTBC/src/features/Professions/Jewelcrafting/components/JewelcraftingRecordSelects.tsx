@@ -22,7 +22,7 @@ export function JewelcraftingRecordSelects() {
   const { data: realms, isLoading: realmsLoading } = useRealmOptions();
 
   useEffect(() => {
-    if (userDataRecordDetails && !dataRecordId) {
+    if (userDataRecordDetails?.recordDetails && !dataRecordId) {
       const { recordDetails } = userDataRecordDetails;
       setDataFaction(recordDetails.faction);
       setDataRealm(recordDetails.realm);

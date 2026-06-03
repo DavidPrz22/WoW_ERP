@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { useRecordsStore } from "@/ZustandStores/useRecordsStore";
 import { useFactionOptions, useRealmOptions } from "@/hooks/useQueryHooks";
 import { useUserDataRecordDetails, useRecordsSelect } from "@/hooks/useQueryHooks";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function RecordSelects() {
   const {
@@ -19,12 +19,14 @@ export function RecordSelects() {
   const { data: realms, isLoading: realmsLoading } = useRealmOptions();
 
   const { data: userDataRecordDetails } = useUserDataRecordDetails();
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    if (userDataRecordDetails) {
+    if (userDataRecordDetails?.recordDetails && !hasInitialized.current) {
       const { recordDetails } = userDataRecordDetails;
       setDataFaction(recordDetails.faction);
       setDataRealm(recordDetails.realm);
+      hasInitialized.current = true;
     }
   }, [userDataRecordDetails, setDataFaction, setDataRealm]);
 

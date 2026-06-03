@@ -14,7 +14,7 @@
   },
   {
     "gem_name": "Dawnstone",
-    "Id_ingame": 23439,
+    "Id_ingame": 23440,
     "cuts": [
       { "id_ingame": 24047, "gem_name": "Brilliant Dawnstone" },
       { "id_ingame": 24050, "gem_name": "Gleaming Dawnstone" },
@@ -28,7 +28,7 @@
   },
   {
     "gem_name": "Star of Elune",
-    "Id_ingame": 23440,
+    "Id_ingame": 23438,
     "cuts": [
       { "id_ingame": 24037, "gem_name": "Lustrous Star of Elune" },
       { "id_ingame": 24033, "gem_name": "Solid Star of Elune" },
@@ -38,7 +38,7 @@
   },
   {
     "gem_name": "Noble Topaz",
-    "Id_ingame": 23437,
+    "Id_ingame": 23439,
     "cuts": [
       { "id_ingame": 24061, "gem_name": "Glinting Noble Topaz" },
       { "id_ingame": 24058, "gem_name": "Inscribed Noble Topaz" },
@@ -51,7 +51,7 @@
   },
   {
     "gem_name": "Talasite",
-    "Id_ingame": 23441,
+    "Id_ingame": 23437,
     "cuts": [
       { "id_ingame": 24065, "gem_name": "Dazzling Talasite" },
       { "id_ingame": 24062, "gem_name": "Enduring Talasite" },
@@ -64,7 +64,7 @@
   },
   {
     "gem_name": "Nightseye",
-    "Id_ingame": 23438,
+    "Id_ingame": 23441,
     "cuts": [
       { "id_ingame": 31863, "gem_name": "Balanced Nightseye" },
       { "id_ingame": 24056, "gem_name": "Glowing Nightseye" },

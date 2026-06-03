@@ -57,7 +57,7 @@ export function ProspectingResultsTable({
                   />
                 </div>
               </TableHead>
-              <TableHead className="h-10 text-right uppercase tracking-wider text-xs">SubTotal</TableHead>
+              <TableHead className="h-10 text-right uppercase tracking-wider text-xs">SubTotal Expected</TableHead>
               <TableHead className="h-10 text-center uppercase tracking-wider text-xs w-28">Obtenido</TableHead>
               <TableHead className="h-10 text-right uppercase tracking-wider text-xs">Precio Obtenido</TableHead>
               <TableHead className="h-10 text-center uppercase tracking-wider text-xs w-32">Prospecting Price</TableHead>
