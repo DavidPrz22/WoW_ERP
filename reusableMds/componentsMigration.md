@@ -1,8 +1,8 @@
 ### Migrate the page to a feature based architecture.
 
-1. Migrate the page html and all of its components at `\\wsl.localhost\Ubuntu\home\davidprz\projects\WowTBC_ERP\frontend\WowTBC\src\pages\Professions\Engineering.tsx` into `frontend\WowTBC\src\features\Professions\Engineering\components`
+1. Migrate the page html and all of its components at `\\wsl.localhost\Ubuntu\home\davidprz\projects\WowTBC_ERP\frontend\WowTBC\src\pages\Professions\Cooking.tsx` into `\\wsl.localhost\Ubuntu\home\davidprz\projects\WowTBC_ERP\frontend\WowTBC\src\features\Professions\Cooking\components`
 2. Create smaller and reusable components present in the page
 3. The page will ony have a single component that groups all the components
-4. If reusable types can be created, place it at `frontend\WowTBC\src\features\Professions\Engineering\types`
+4. If reusable types can be created, place it at `frontend\WowTBC\src\features\Professions\Cooking\types`
 
 The point is to use a feature based architecture for this page.
