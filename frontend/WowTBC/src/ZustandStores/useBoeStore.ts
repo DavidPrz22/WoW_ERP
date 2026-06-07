@@ -5,10 +5,8 @@ export const useBoeStore = create<BoeStore>((set) => ({
   dataFaction: "",
   dataRealm: "",
   dataRecordId: "",
-  boeData: null,
 
   setDataFaction: (dataFaction) => set({ dataFaction, dataRealm: "", dataRecordId: "" }),
   setDataRealm: (dataRealm) => set({ dataRealm, dataRecordId: "" }),
   setDataRecordId: (dataRecordId) => set({ dataRecordId }),
-  setBoeData: (data) => set({ boeData: data }),
 }));

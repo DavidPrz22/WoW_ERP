@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Package } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { BoeApiProfession, NetherInput, NetherPrices } from "../types/types";
@@ -11,7 +11,7 @@ import { useBoeData } from "../hooks/queries/queries";
 import { BoeEmptyState } from "./BoeEmptyState";
 
 export function Boes() {
-  const { dataFaction, dataRealm, dataRecordId, setBoeData } = useBoeStore();
+  const { dataFaction, dataRealm, dataRecordId } = useBoeStore();
 
   const { data: apiResponse, isLoading } = useBoeData({
     realm: dataRealm,
@@ -19,27 +19,21 @@ export function Boes() {
     record_id: dataRecordId ? parseInt(dataRecordId, 10) : 0,
   });
 
-  useEffect(() => {
-    if (apiResponse?.data) {
-      setBoeData(apiResponse.data);
-    }
-  }, [apiResponse, setBoeData]);
+
 
   const boeData = useMemo(() => apiResponse?.data ?? [], [apiResponse?.data]);
 
   const netherTypesNeeded = useMemo(() => {
     const types = new Set<NetherInput>();
-    for (const prof of boeData) {
-      for (const cat of prof.items) {
-        for (const item of cat.items) {
-          for (const reagent of item.reagents) {
-            if (reagent.is_nether_input) {
-              types.add(reagent.is_nether_input);
-            }
-          }
+    boeData
+      .flatMap((prof) => prof.items)
+      .flatMap((cat) => cat.items)
+      .flatMap((item) => item.reagents)
+      .forEach((reagent) => {
+        if (reagent.is_nether_input) {
+          types.add(reagent.is_nether_input);
         }
-      }
-    }
+      });
     return types;
   }, [boeData]);
 
