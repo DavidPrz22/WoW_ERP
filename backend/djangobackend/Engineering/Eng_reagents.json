@@ -1,0 +1,238 @@
+[
+    {
+        "name": "Fel Iron Casing",
+        "yieldQty": 1,
+        "itemId": 23782,
+        "type": "part",
+        "reagents": [
+            {
+                "name": "Fel Iron Bar",
+                "quantity": 3,
+                "itemId": 23445
+            }
+        ]
+    },
+    {
+        "name": "Handful of Fel Iron Bolts",
+        "yieldQty": 1,
+        "itemId": 23783,
+        "type": "part",
+        "reagents": [
+            {
+                "name": "Fel Iron Bar",
+                "quantity": 1,
+                "itemId": 23445
+            }
+        ]
+    },
+    {
+        "name": "Elemental Blasting Powder",
+        "yieldQty": 4,
+        "itemId": 23781,
+        "type": "part",
+        "reagents": [
+            {
+                "name": "Mote of Fire",
+                "quantity": 1,
+                "itemId": 22574
+            },
+            {
+                "name": "Mote of Earth",
+                "quantity": 2,
+                "itemId": 22573
+            }
+        ]
+    },
+    {
+        "name": "Adamantite Frame",
+        "yieldQty": 1,
+        "itemId": 23784,
+        "type": "part",
+        "reagents": [
+            {
+                "name": "Adamantite Bar",
+                "quantity": 4,
+                "itemId": 23446
+            },
+            {
+                "name": "Primal Earth",
+                "quantity": 1,
+                "itemId": 22452
+            }
+        ]
+    },
+    {
+        "name": "Icy Blasting Primers",
+        "yieldQty": 10,
+        "itemId": 32423,
+        "type": "part",
+        "reagents": [
+            {
+                "name": "Primal Water",
+                "quantity": 1,
+                "itemId": 21885
+            },
+            {
+                "name": "Elemental Blasting Powder",
+                "quantity": 2,
+                "itemId": 23781
+            },
+            {
+                "name": "Netherweave Cloth",
+                "quantity": 2,
+                "itemId": 21877
+            }
+        ]
+    },
+    {
+        "name": "Solid Blasting Powder",
+        "yieldQty": 1,
+        "itemId": 10505,
+        "type": "part",
+        "reagents": [
+            {
+                "name": "Solid Stone",
+                "quantity": 2,
+                "itemId": 7912
+            }
+        ]
+    },
+    {
+        "name": "Unstable Trigger",
+        "yieldQty": 1,
+        "itemId": 10560,
+        "type": "part",
+        "reagents": [
+            {
+                "name": "Mithril Bar",
+                "quantity": 1,
+                "itemId": 3860
+            },
+            {
+                "name": "Mageweave Cloth",
+                "quantity": 1,
+                "itemId": 4338
+            },
+            {
+                "name": "Solid Blasting Powder",
+                "quantity": 1,
+                "itemId": 10505
+            }
+        ]
+    },
+    {
+        "name": "Super Sapper Charge",
+        "yieldQty": 2,
+        "itemId": 23827,
+        "type": "explosive",
+        "reagents": [
+            {
+                "name": "Netherweave Cloth",
+                "quantity": 4,
+                "itemId": 21877
+            },
+            {
+                "name": "Elemental Blasting Powder",
+                "quantity": 4,
+                "itemId": 23781
+            },
+            {
+                "name": "Primal Mana",
+                "quantity": 1,
+                "itemId": 22457
+            }
+        ]
+    },
+    {
+        "name": "Goblin Sapper Charge",
+        "yieldQty": 1,
+        "itemId": 10646,
+        "type": "explosive",
+        "reagents": [
+            {
+                "name": "Mageweave Cloth",
+                "quantity": 1,
+                "itemId": 4338
+            },
+            {
+                "name": "Solid Blasting Powder",
+                "quantity": 3,
+                "itemId": 10505
+            },
+            {
+                "name": "Unstable Trigger",
+                "quantity": 1,
+                "itemId": 10560
+            }
+        ]
+    },
+    {
+        "name": "Adamantite Grenade",
+        "yieldQty": 3,
+        "itemId": 23737,
+        "type": "explosive",
+        "reagents": [
+            {
+                "name": "Adamantite Bar",
+                "quantity": 4,
+                "itemId": 23446
+            },
+            {
+                "name": "Handful of Fel Iron Bolts",
+                "quantity": 2,
+                "itemId": 23783
+            },
+            {
+                "name": "Elemental Blasting Powder",
+                "quantity": 1,
+                "itemId": 23781
+            }
+        ]
+    },
+    {
+        "name": "Fel Iron Bomb",
+        "yieldQty": 4,
+        "itemId": 23736,
+        "type": "explosive",
+        "reagents": [
+            {
+                "name": "Fel Iron Casing",
+                "quantity": 1,
+                "itemId": 23782
+            },
+            {
+                "name": "Handful of Fel Iron Bolts",
+                "quantity": 2,
+                "itemId": 23783
+            },
+            {
+                "name": "Elemental Blasting Powder",
+                "quantity": 1,
+                "itemId": 23781
+            }
+        ]
+    },
+    {
+        "name": "Frost Grenades",
+        "yieldQty": 5,
+        "itemId": 32413,
+        "type": "explosive",
+        "reagents": [
+            {
+                "name": "Icy Blasting Primers",
+                "quantity": 1,
+                "itemId": 32423
+            },
+            {
+                "name": "Fel Iron Casing",
+                "quantity": 1,
+                "itemId": 23782
+            },
+            {
+                "name": "Handful of Fel Iron Bolts",
+                "quantity": 1,
+                "itemId": 23783
+            }
+        ]
+    }
+]

@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'Alchemy',
     'Jewelcrafting',
     'Boe',
-    
+    'Cooking',
+    'Engineering'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

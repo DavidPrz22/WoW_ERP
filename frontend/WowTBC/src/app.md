@@ -45,3 +45,58 @@ A comprehensive view for exploring item pricing data and trends.
 Simple, browseable pages categorized by profession or item type.
 - Plain pages serving as placeholders for basic browsing, without extensive details for now.
 - Categories: Alchemy, Gemcutting, Enchanting, Engineering, Cooking, BOEs.
+
+
+Acces my database and check the model 'Item' and find a list of in game ids for the following items: 
+
+[
+  {
+    "category": "Agility",
+    "items": [
+      "Warp Burger",
+      "Grilled Mudfish"
+    ]
+  },
+  {
+    "category": "Spell Power",
+    "items": [
+      "Crunchy Serpent",
+      "Poached Bluefish",
+      "Blackened Basilisk"
+    ]
+  },
+  {
+    "category": "Stamina",
+    "items": [
+      "Spicy Crawdad",
+      "Fisherman's Feast"
+    ]
+  },
+  {
+    "category": "Strength",
+    "items": [
+      "Roasted Clefthoof"
+    ]
+  },
+  {
+    "category": "Healing",
+    "items": [
+      "Golden Fish Sticks"
+    ]
+  },
+  {
+    "category": "Pet Buff",
+    "items": [
+      "Kibler's Bits"
+    ]
+  },
+  {
+    "category": "Hit Rating",
+    "items": [
+      "Spicy Hot Talbuk"
+    ]
+  }
+]
+
+
+ Once you find the ids, use those ids and Go to https://www.wowhead.com/tbc/item='itemid'&xml and find reagents needed for crafting each items and register them as json data, include the yield results. consider this format {name: itemName, yieldQty: itemQuantity, itemId: id, category: 'agility' or 'spell power' or 'stamina' or 'strength' or 'healing' or 'pet buff' or 'hit rating', reagents: [{name: reagentName, quantity: reagentQuantity, itemId: id, }]}

@@ -1,0 +1,160 @@
+[
+  {
+    "name": "Warp Burger",
+    "yieldQty": 0,
+    "itemId": "27659",
+    "category": "Agility",
+    "reagents": [
+      {
+        "name": "Warped Flesh",
+        "quantity": 1,
+        "itemId": 27681
+      }
+    ]
+  },
+  {
+    "name": "Grilled Mudfish",
+    "yieldQty": 0,
+    "itemId": "27664",
+    "category": "Agility",
+    "reagents": [
+      {
+        "name": "Figluster's Mudfish",
+        "quantity": 1,
+        "itemId": 27435
+      }
+    ]
+  },
+  {
+    "name": "Crunchy Serpent",
+    "yieldQty": 0,
+    "itemId": "31673",
+    "category": "Spell Power",
+    "reagents": [
+      {
+        "name": "Serpent Flesh",
+        "quantity": 1,
+        "itemId": 31671
+      }
+    ]
+  },
+  {
+    "name": "Poached Bluefish",
+    "yieldQty": 0,
+    "itemId": "27665",
+    "category": "Spell Power",
+    "reagents": [
+      {
+        "name": "Icefin Bluefish",
+        "quantity": 1,
+        "itemId": 27437
+      }
+    ]
+  },
+  {
+    "name": "Blackened Basilisk",
+    "yieldQty": 0,
+    "itemId": "27657",
+    "category": "Spell Power",
+    "reagents": [
+      {
+        "name": "Chunk o' Basilisk",
+        "quantity": 1,
+        "itemId": 27677
+      }
+    ]
+  },
+  {
+    "name": "Spicy Crawdad",
+    "yieldQty": 0,
+    "itemId": "27667",
+    "category": "Stamina",
+    "reagents": [
+      {
+        "name": "Furious Crawdad",
+        "quantity": 1,
+        "itemId": 27439
+      }
+    ]
+  },
+  {
+    "name": "Fisherman's Feast",
+    "yieldQty": 5,
+    "itemId": "33052",
+    "category": "Stamina",
+    "reagents": [
+      {
+        "name": "Huge Spotted Feltail",
+        "quantity": 1,
+        "itemId": 27515
+      },
+      {
+        "name": "Goldenbark Apple",
+        "quantity": 5,
+        "itemId": 4539
+      },
+      {
+        "name": "Soothing Spices",
+        "quantity": 5,
+        "itemId": 3713
+      }
+    ]
+  },
+  {
+    "name": "Roasted Clefthoof",
+    "yieldQty": 0,
+    "itemId": "27658",
+    "category": "Strength",
+    "reagents": [
+      {
+        "name": "Clefthoof Meat",
+        "quantity": 1,
+        "itemId": 27678
+      }
+    ]
+  },
+  {
+    "name": "Golden Fish Sticks",
+    "yieldQty": 0,
+    "itemId": "27666",
+    "category": "Healing",
+    "reagents": [
+      {
+        "name": "Golden Darter",
+        "quantity": 1,
+        "itemId": 27438
+      }
+    ]
+  },
+  {
+    "name": "Kibler's Bits",
+    "yieldQty": 0,
+    "itemId": "33874",
+    "category": "Pet Buff",
+    "reagents": [
+      {
+        "name": "Buzzard Meat",
+        "quantity": 1,
+        "itemId": 27671
+      }
+    ]
+  },
+  {
+    "name": "Spicy Hot Talbuk",
+    "yieldQty": 0,
+    "itemId": "33872",
+    "category": "Hit Rating",
+    "reagents": [
+      {
+        "name": "Talbuk Venison",
+        "quantity": 1,
+        "itemId": 27682
+      },
+      {
+        "name": "Hot Spices",
+        "quantity": 1,
+        "itemId": 2692
+      }
+    ]
+  }
+]
