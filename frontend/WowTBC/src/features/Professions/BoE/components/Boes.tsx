@@ -19,8 +19,6 @@ export function Boes() {
     record_id: dataRecordId ? parseInt(dataRecordId, 10) : 0,
   });
 
-
-
   const boeData = useMemo(() => apiResponse?.data ?? [], [apiResponse?.data]);
 
   const netherTypesNeeded = useMemo(() => {
