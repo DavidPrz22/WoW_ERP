@@ -3,7 +3,7 @@ import { Package } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { BoeApiProfession, NetherInput, NetherPrices } from "../types/types";
 import { ProfessionSection } from "./ProfessionSection";
-import { BoeHeader } from "./BoeHeader";
+import { PageHeader } from "@/components/ui/data-table/PageHeader";
 import { NetherPriceSection } from "./NetherPriceSection";
 import { BoeRecordSelects } from "./BoeRecordSelects";
 import { useBoeStore } from "@/ZustandStores/useBoeStore";
@@ -53,7 +53,7 @@ export function Boes() {
   if (!shouldShowContent) {
     return (
       <div className="px-6 md:px-12 py-10 space-y-8">
-        <BoeHeader
+        <PageHeader
           title="BOEs"
           description="Bind-on-equip crafted gear, enhancements and consumables across professions."
           icon={Package}
@@ -67,7 +67,7 @@ export function Boes() {
   if (isLoading) {
     return (
       <div className="px-6 md:px-12 py-10 space-y-8">
-        <BoeHeader
+        <PageHeader
           title="BOEs"
           description="Bind-on-equip crafted gear, enhancements and consumables across professions."
           icon={Package}
@@ -80,7 +80,7 @@ export function Boes() {
 
   return (
     <div className="px-6 md:px-12 py-10 space-y-8">
-      <BoeHeader
+      <PageHeader
         title="BOEs"
         description="Bind-on-equip crafted gear, enhancements and consumables across professions."
         icon={Package}

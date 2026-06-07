@@ -1,12 +1,12 @@
-import type { ComponentType, SVGProps } from "react";
+import type { LucideIcon } from "lucide-react";
 
-export interface BoeHeaderProps {
+export interface PageHeaderProps {
   title: string;
   description: string;
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon: LucideIcon;
 }
 
-export function BoeHeader({ title, description, icon: Icon }: BoeHeaderProps) {
+export function PageHeader({ title, description, icon: Icon }: PageHeaderProps) {
   return (
     <div className="flex items-center gap-4">
       <div className="h-14 w-14 rounded-md bg-gradient-gold shadow-gold flex items-center justify-center text-primary-foreground">
