@@ -1,8 +1,9 @@
+import type { ComponentType, SVGProps } from "react";
 
 export interface BoeHeaderProps {
   title: string;
   description: string;
-  icon: any;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 export function BoeHeader({ title, description, icon: Icon }: BoeHeaderProps) {

@@ -5,12 +5,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { BoeItem, NetherPrices } from "../types/types";
+import type { BoeApiItem, NetherPrices } from "../types/types";
 import { BoeTableRow } from "./BoeTableRow";
 import { BoeEmptyState } from "./BoeEmptyState";
 
 export interface BoeTableProps {
-  items: BoeItem[];
+  items: BoeApiItem[];
   netherPrices: NetherPrices;
 }
 

@@ -2,37 +2,34 @@ import { useMemo } from "react";
 import { BoeTable } from "./BoeTable";
 import { ProfessionHeader } from "./ProfessionHeader";
 import { CategoryHeader } from "./CategoryHeader";
-import type { BoeItem, Category, Profession, NetherPrices } from "../types/types";
-import { CATEGORIES } from "../utils/constants";
+import type { BoeApiCategory, BoeApiProfession, NetherPrices } from "../types/types";
 
 export interface ProfessionSectionProps {
-  profession: Profession;
-  items: BoeItem[];
+  profession: BoeApiProfession;
   netherPrices: NetherPrices;
 }
 
 export function ProfessionSection({
   profession,
-  items,
   netherPrices,
 }: ProfessionSectionProps) {
-  const grouped = useMemo(() => {
-    const m: Record<Category, BoeItem[]> = { Gear: [], Enhancement: [], Consumable: [], Misc: [] };
-    for (const it of items) m[it.category].push(it);
-    return m;
-  }, [items]);
+  const activeCategories = useMemo(() => {
+    return profession.items.filter((cat: BoeApiCategory) => cat.items.length > 0);
+  }, [profession.items]);
 
-  const activeCategories = CATEGORIES.filter((c) => grouped[c].length > 0);
   if (activeCategories.length === 0) return null;
 
   return (
     <section className="space-y-4">
-      <ProfessionHeader profession={profession} itemCount={items.length} />
+      <ProfessionHeader
+        profession={profession.profession}
+        itemCount={activeCategories.reduce((sum, cat) => sum + cat.items.length, 0)}
+      />
 
-      {activeCategories.map((cat) => (
-        <div key={cat} className="space-y-2">
-          <CategoryHeader category={cat} />
-          <BoeTable items={grouped[cat]} netherPrices={netherPrices} />
+      {activeCategories.map((cat: BoeApiCategory) => (
+        <div key={cat.category} className="space-y-2">
+          <CategoryHeader category={cat.category} />
+          <BoeTable items={cat.items} netherPrices={netherPrices} />
         </div>
       ))}
     </section>

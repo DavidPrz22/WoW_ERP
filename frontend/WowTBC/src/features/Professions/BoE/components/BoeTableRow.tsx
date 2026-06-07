@@ -1,19 +1,19 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import type { BoeItem, NetherPrices } from "../types/types";
+import type { BoeApiItem, NetherPrices } from "../types/types";
 import { useBoeItemMetrics } from "../hooks/useBoeItemMetrics";
-import { fmt } from "../utils/helpers";
+import { WowCurrency } from "./WowCurrency";
 
 export interface BoeTableRowProps {
-  item: BoeItem;
+  item: BoeApiItem;
   netherPrices: NetherPrices;
 }
 
 export function BoeTableRow({ item, netherPrices }: BoeTableRowProps) {
-  const { cost, breakeven, profit, roi, hasAhPrice } = useBoeItemMetrics(item, netherPrices);
+  const { cost, breakeven, profit, roi, hasAhPrice, ahPrice } = useBoeItemMetrics(item, netherPrices);
 
   const positive = profit >= 0;
-  const usesNether = item.reagents.some((r) => r.isNether);
+  const usesNether = item.reagents.some((r) => r.is_nether_input);
 
   return (
     <TableRow className="border-b border-border/30 hover:bg-secondary/40 transition-colors duration-150">
@@ -28,24 +28,22 @@ export function BoeTableRow({ item, netherPrices }: BoeTableRowProps) {
           )}
         </div>
       </TableCell>
-      <TableCell className="py-2 text-right tabular-nums font-mono">{fmt(cost, 4)}</TableCell>
-      <TableCell className="py-2 text-right tabular-nums font-mono text-muted-foreground">
-        {fmt(breakeven, 4)}
-      </TableCell>
-      <TableCell className="py-2 text-center tabular-nums font-mono text-gold">
-        {!hasAhPrice ? <span className="text-muted-foreground/60">—</span> : fmt(item.ahPrice, 2)}
+      <TableCell className="py-2 text-right"><WowCurrency value={cost} /></TableCell>
+      <TableCell className="py-2 text-right text-muted-foreground"><WowCurrency value={breakeven} /></TableCell>
+      <TableCell className="py-2 text-center text-gold">
+        {!hasAhPrice ? <span className="text-muted-foreground/60">—</span> : <WowCurrency value={ahPrice} />}
       </TableCell>
       <TableCell
         className={cn(
-          "py-2 text-right tabular-nums font-mono font-medium",
+          "py-2 text-right font-medium",
           !hasAhPrice ? "text-muted-foreground/60" : positive ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive",
         )}
       >
-        {!hasAhPrice ? "—" : `${positive ? "+" : ""}${fmt(profit, 2)}`}
+        {!hasAhPrice ? "—" : <WowCurrency value={profit} isProfit />}
       </TableCell>
       <TableCell
         className={cn(
-          "py-2 text-right tabular-nums font-mono",
+          "py-2 text-right",
           !hasAhPrice ? "text-muted-foreground/60" : roi >= 0 ? "text-[hsl(var(--quality-uncommon))]" : "text-destructive",
         )}
       >
@@ -53,4 +51,9 @@ export function BoeTableRow({ item, netherPrices }: BoeTableRowProps) {
       </TableCell>
     </TableRow>
   );
+}
+
+function fmt(n: number, d = 2) {
+  if (!isFinite(n)) return "—";
+  return n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
 }
