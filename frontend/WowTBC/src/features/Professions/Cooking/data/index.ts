@@ -1,4 +1,4 @@
-import { BuffType, Recipe } from "../types";
+import type { BuffType, Recipe } from "../types";
 
 export const AH_CUT = 0.05;
 

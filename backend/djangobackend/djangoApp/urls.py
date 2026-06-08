@@ -23,4 +23,6 @@ urlpatterns = [
     path('api/alchemy/', include('Alchemy.urls')),
     path('api/jewelcrafting/', include('Jewelcrafting.urls')),
     path('api/boe/', include('Boe.urls')),
+    path('api/cooking/', include('Cooking.urls')),
+    path('api/engineering/', include('Engineering.urls')),
 ]
