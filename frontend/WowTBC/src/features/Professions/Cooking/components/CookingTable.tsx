@@ -65,6 +65,8 @@ export function CookingTable() {
   return (
     <div className="space-y-6">
       {orderedGroups.map((group) => {
+
+        if (!group) return null;
         const meta = TYPE_META[group.type];
 
         const rows = group.items.map((item) => {
