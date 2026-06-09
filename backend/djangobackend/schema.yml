@@ -1,0 +1,1127 @@
+openapi: 3.0.3
+info:
+  title: Wow TBC Auction House API
+  version: 1.0.0
+  description: API for managing World of Warcraft TBC auction house pricing data and
+    profession profitability calculations
+paths:
+  /api/registros/pricing-history/:
+    get:
+      operationId: registros_pricing_history_retrieve
+      description: Return time-series pricing data for a specific item on a given
+        realm/faction.
+      summary: Get item pricing history
+      parameters:
+      - in: query
+        name: faction
+        schema:
+          type: string
+        description: Faction (Horde or Alliance)
+        required: true
+      - in: query
+        name: from_date
+        schema:
+          type: string
+        description: Start date (ISO format)
+      - in: query
+        name: item_id
+        schema:
+          type: string
+        description: Item ID (id_ingame)
+        required: true
+      - in: query
+        name: realm
+        schema:
+          type: string
+        description: Realm name
+        required: true
+      - in: query
+        name: to_date
+        schema:
+          type: string
+        description: End date (ISO format)
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  quality:
+                    type: string
+                  name:
+                    type: string
+                  icon:
+                    type: string
+                  chartData:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PricingFormatted'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+          description: ''
+  /api/registros/filters/class-subclass/:
+    get:
+      operationId: registros_filters_class_subclass_list
+      description: Returns a structured mapping of item classes and their associated
+        subclasses.
+      summary: Get item class and subclass filters
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemClass'
+          description: ''
+  /api/registros/filters/quality/:
+    get:
+      operationId: registros_filters_quality_retrieve
+      description: Returns available item quality options (Common, Uncommon, Rare,
+        Epic, Legendary).
+      summary: Get quality filter options
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: ''
+  /api/registros/filters/faction/:
+    get:
+      operationId: registros_filters_faction_retrieve
+      description: Returns available faction options (Horde, Alliance).
+      summary: Get faction filter options
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: ''
+  /api/registros/filters/realm/:
+    get:
+      operationId: registros_filters_realm_retrieve
+      description: Returns available realm options from the AuctionHouse model.
+      summary: Get realm filter options
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    realm_name:
+                      type: string
+          description: ''
+  /api/registros/items/search/:
+    get:
+      operationId: registros_items_search_list
+      description: Returns a list of items matching the case-insensitive search and
+        applied filters. Limited to 50 results.
+      summary: Search items
+      parameters:
+      - in: query
+        name: class
+        schema:
+          type: string
+        description: Item class filter
+      - in: query
+        name: quality
+        schema:
+          type: string
+        description: Item quality filter
+      - in: query
+        name: searchTerm
+        schema:
+          type: string
+        description: Case-insensitive search term
+      - in: query
+        name: subclass
+        schema:
+          type: string
+        description: Item subclass filter
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemSearch'
+          description: ''
+  /api/registros/records/:
+    get:
+      operationId: registros_records_list
+      description: List paginated auction house scan snapshots with optional realm,
+        faction, and search filters.
+      summary: List auction scan snapshots
+      parameters:
+      - in: query
+        name: faction
+        schema:
+          type: string
+        description: Filter by faction
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Items per page (max 50)
+      - in: query
+        name: realm
+        schema:
+          type: string
+        description: Filter by realm name
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search by ID or realm name
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Records'
+          description: ''
+  /api/registros/records/generate/:
+    post:
+      operationId: registros_records_generate_create
+      description: Trigger the get_pricing_data management command to fetch a new
+        auction house pricing snapshot.
+      summary: Generate auction record
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/registros/records/data/:
+    get:
+      operationId: registros_records_data_retrieve
+      description: Return pricing data for predefined material categories (herbs,
+        ores, cloth, etc.) for a selected auction record.
+      summary: Get material pricing data
+      parameters:
+      - in: query
+        name: faction
+        schema:
+          type: string
+        description: Faction (Horde or Alliance)
+        required: true
+      - in: query
+        name: realm
+        schema:
+          type: string
+        description: Realm name
+        required: true
+      - in: query
+        name: selected_record
+        schema:
+          type: string
+        description: Auction record ID
+        required: true
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        entries:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              recordId:
+                                type: string
+                              itemId:
+                                type: string
+                              name:
+                                type: string
+                              price:
+                                type: number
+                              icon:
+                                type: string
+                              marketValuePercent:
+                                type: integer
+                              overridenPrice:
+                                type: number
+                                nullable: true
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/registros/records/override_price/:
+    post:
+      operationId: registros_records_override_price_create
+      description: Set or clear a custom price override for a specific ItemRecord.
+      summary: Override item price
+      tags:
+      - Registros
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OverridePriceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OverridePriceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OverridePriceRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/registros/records/{record_id}/:
+    delete:
+      operationId: registros_records_destroy
+      description: Delete an auction house scan snapshot and all its cascading ItemRecord
+        entries.
+      summary: Delete auction record
+      parameters:
+      - in: path
+        name: record_id
+        schema:
+          type: integer
+        description: Record ID to delete
+        required: true
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/registros/user/data/:
+    get:
+      operationId: registros_user_data_retrieve
+      description: Return the authenticated user's last selected auction record details.
+      summary: Get user last selected record
+      tags:
+      - Registros
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recordDetails:
+                    type: object
+                    properties:
+                      recordId:
+                        type: integer
+                      realm:
+                        type: string
+                      faction:
+                        type: string
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/alchemy/items/create/:
+    post:
+      operationId: alchemy_items_create_create
+      description: Create a new AlchemyItem by resolving the group, validating the
+        item, and linking its recipe.
+      summary: Create alchemy item
+      tags:
+      - Alchemy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - group
+              - item_id
+              properties:
+                group:
+                  type: string
+                  description: Alchemy group name (Flasks, Elixirs, Potions)
+                item_id:
+                  type: string
+                  description: Item id_ingame
+                yield_quantity:
+                  type: integer
+                  description: Recipe yield quantity
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlchemyItem'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/alchemy/groups/data/:
+    get:
+      operationId: alchemy_groups_data_list
+      description: GET lists all alchemy groups; POST calculates profit/cost data
+        for each group using auction prices.
+      summary: Get alchemy groups data
+      tags:
+      - Alchemy
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AlchemyGroupDataResponse'
+          description: ''
+    post:
+      operationId: alchemy_groups_data_create
+      description: Calculate profit/cost data for each alchemy group using auction
+        house prices.
+      summary: Calculate alchemy profitability
+      tags:
+      - Alchemy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlchemyGroupDataRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AlchemyGroupDataRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AlchemyGroupDataRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups_data:
+                    type: array
+                    items:
+                      type: object
+                  total_reagents_used:
+                    type: object
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/jewelcrafting/items/:
+    get:
+      operationId: jewelcrafting_items_list
+      description: Return raw gems for prospecting and cut gems for gemcutting, enriched
+        with auction house prices.
+      summary: Get jewelcrafting items
+      parameters:
+      - in: query
+        name: faction
+        schema:
+          type: string
+        description: Faction (Horde or Alliance)
+        required: true
+      - in: query
+        name: realm
+        schema:
+          type: string
+        description: Realm name
+        required: true
+      - in: query
+        name: record_id
+        schema:
+          type: integer
+        description: Auction record ID
+        required: true
+      tags:
+      - Jewelcrafting
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    raw_gems:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          procChance:
+                            type: string
+                          vendorPrice:
+                            type: integer
+                          ahPrice:
+                            type: number
+                            nullable: true
+                    cut_gems:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          color:
+                            type: string
+                          rawGem:
+                            type: string
+                          craftingCost:
+                            type: number
+                            nullable: true
+                          ahPrice:
+                            type: number
+                            nullable: true
+          description: ''
+  /api/boe/data/:
+    post:
+      operationId: boe_data_create
+      description: Return grouped Bind-on-Equip item data with reagent costs and auction
+        pricing.
+      summary: Get BOE item data
+      tags:
+      - Boe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BoeDataQueryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BoeDataQueryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BoeDataQueryRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      by_profession:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            profession:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                type: object
+                      by_category:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            category:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                type: object
+                      total_reagents_used:
+                        type: object
+          description: ''
+  /api/cooking/groups/data/:
+    get:
+      operationId: cooking_groups_data_list
+      description: Lists all cooking items with their types and recipes.
+      summary: List cooking items
+      tags:
+      - Cooking
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CookingItem'
+          description: ''
+    post:
+      operationId: cooking_groups_data_create
+      description: Calculate pricing data grouped by buff type (Agility, Stamina,
+        etc.).
+      summary: Calculate cooking profitability
+      tags:
+      - Cooking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CookingGroupDataRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CookingGroupDataRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CookingGroupDataRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groups_data:
+                    type: array
+                    items:
+                      type: object
+                  total_reagents_used:
+                    type: object
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+          description: ''
+  /api/engineering/data/:
+    post:
+      operationId: engineering_data_create
+      description: Return engineering parts and explosives with reagent costs and
+        auction pricing.
+      summary: Get engineering data
+      tags:
+      - Engineering
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EngineeringDataQueryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EngineeringDataQueryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EngineeringDataQueryRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  parts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EngItem'
+                  explosives:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EngItem'
+                  total_reagents_used:
+                    type: object
+                    properties:
+                      Parts:
+                        type: object
+                      Explosives:
+                        type: object
+          description: ''
+components:
+  schemas:
+    AlchemyGroupDataRequest:
+      type: object
+      properties:
+        faction:
+          type: string
+          minLength: 1
+        realm:
+          type: string
+          minLength: 1
+        selected_record:
+          type: string
+          minLength: 1
+      required:
+      - faction
+      - realm
+      - selected_record
+    AlchemyGroupDataResponse:
+      type: object
+      properties:
+        group:
+          type: string
+        search_group:
+          $ref: '#/components/schemas/SearchGroupEnum'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlchemyItem'
+      required:
+      - group
+      - items
+    AlchemyItem:
+      type: object
+      properties:
+        group:
+          type: string
+          readOnly: true
+        item_id:
+          type: integer
+        yield_quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - group
+      - item_id
+    BoeDataQueryRequest:
+      type: object
+      properties:
+        realm:
+          type: string
+          minLength: 1
+        faction:
+          type: string
+          minLength: 1
+        record_id:
+          type: integer
+      required:
+      - faction
+      - realm
+      - record_id
+    CookingGroupDataRequest:
+      type: object
+      properties:
+        faction:
+          type: string
+          minLength: 1
+        realm:
+          type: string
+          minLength: 1
+        selected_record:
+          type: string
+          minLength: 1
+      required:
+      - faction
+      - realm
+      - selected_record
+    CookingItem:
+      type: object
+      properties:
+        id_ingame:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+        yield_quantity:
+          type: integer
+          readOnly: true
+      required:
+      - id_ingame
+      - name
+      - type
+      - yield_quantity
+    EngineeringDataQueryRequest:
+      type: object
+      properties:
+        faction:
+          type: string
+          minLength: 1
+        realm:
+          type: string
+          minLength: 1
+        record_id:
+          type: integer
+      required:
+      - faction
+      - realm
+      - record_id
+    ItemClass:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        subclasses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemSubclass'
+          readOnly: true
+      required:
+      - id
+      - name
+      - subclasses
+    ItemSearch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        id_ingame:
+          type: string
+          maxLength: 50
+        name:
+          type: string
+          maxLength: 200
+        icon:
+          type: string
+          nullable: true
+          maxLength: 100
+        quality:
+          $ref: '#/components/schemas/QualityEnum'
+        itemClass:
+          type: string
+          readOnly: true
+        subClass:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - id_ingame
+      - itemClass
+      - name
+      - subClass
+    ItemSubclass:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+      required:
+      - id
+      - name
+    OverridePriceRequest:
+      type: object
+      properties:
+        record_id:
+          type: string
+          minLength: 1
+        item_id:
+          type: string
+          minLength: 1
+        new_price:
+          type: number
+          format: double
+          nullable: true
+      required:
+      - item_id
+      - new_price
+      - record_id
+    QualityEnum:
+      enum:
+      - Common
+      - Uncommon
+      - Rare
+      - Epic
+      - Legendary
+      type: string
+      description: |-
+        * `Common` - Common
+        * `Uncommon` - Uncommon
+        * `Rare` - Rare
+        * `Epic` - Epic
+        * `Legendary` - Legendary
+    Records:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        realm_name:
+          type: string
+          readOnly: true
+        faction:
+          type: string
+          readOnly: true
+        item_count:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - faction
+      - id
+      - item_count
+      - realm_name
+      - timestamp
+    SearchGroupEnum:
+      enum:
+      - Flask
+      - Elixir
+      - Potion
+      type: string
+      description: |-
+        * `Flask` - Flasks
+        * `Elixir` - Elixirs
+        * `Potion` - Potions
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+tags:
+- name: Registros
+  description: Core auction house records, item search, filters, and pricing history
+- name: Alchemy
+  description: Alchemy profession - flasks, elixirs, and potions profitability
+- name: Jewelcrafting
+  description: Jewelcrafting profession - raw gems prospecting and cut gems
+- name: Boe
+  description: Bind-on-Equip items - gear, enhancements, and consumables
+- name: Cooking
+  description: Cooking profession - buff foods grouped by stat type
+- name: Engineering
+  description: Engineering profession - parts, enhancements, and explosives

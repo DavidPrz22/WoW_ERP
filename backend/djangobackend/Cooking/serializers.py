@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import CookingItem, CookingRecipe, CookingReagent
 
 
@@ -21,10 +22,20 @@ class CookingItemSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='item.name', read_only=True)
     id_ingame = serializers.CharField(source='item.id_ingame', read_only=True)
     type = serializers.CharField(read_only=True)
+    yield_quantity = serializers.SerializerMethodField()
 
     class Meta:
         model = CookingItem
         fields = ['id_ingame', 'name', 'type', 'yield_quantity']
+
+    @extend_schema_field(int)
+    def get_yield_quantity(self, obj):
+        recipe = getattr(obj, 'recipes', None)
+        if recipe:
+            recipe_instance = recipe.first() if hasattr(recipe, 'first') else recipe
+            if recipe_instance:
+                return recipe_instance.yield_quantity
+        return 1
 
     def to_representation(self, instance):
         recipe = getattr(instance, 'recipes', None)

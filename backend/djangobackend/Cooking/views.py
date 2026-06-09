@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from .models import CookingItem, CookingRecipe
 from .serializers import CookingGroupDataSerializer, CookingItemSerializer
 from .services.cooking_calculations_service import CookingCalculationsService
@@ -7,11 +8,37 @@ from Registros.models import ItemRecord
 
 
 class GetCookingGroupsDataView(generics.ListAPIView):
+    """GET lists all cooking items; POST calculates pricing data grouped by buff type (Agility, Stamina, etc.)."""
     serializer_class = CookingGroupDataSerializer
 
     def get_queryset(self):
         return CookingItem.objects.all()
 
+    @extend_schema(
+        tags=['Cooking'],
+        summary='List cooking items',
+        description='Lists all cooking items with their types and recipes.',
+        responses=CookingItemSerializer(many=True),
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    @extend_schema(
+        tags=['Cooking'],
+        summary='Calculate cooking profitability',
+        description='Calculate pricing data grouped by buff type (Agility, Stamina, etc.).',
+        request=CookingGroupDataSerializer,
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'groups_data': {'type': 'array', 'items': {'type': 'object'}},
+                    'total_reagents_used': {'type': 'object'},
+                },
+            },
+            404: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

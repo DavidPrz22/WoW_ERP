@@ -13,6 +13,7 @@ import Jewelcrafting from "@/pages/Professions/Jewelcrafting";
 import Engineering from "@/pages/Professions/Engineering";
 import Cooking from "@/pages/Professions/Cooking";
 import BoesFeature from "@/pages/Professions/Boes";
+import APIDocs from "@/pages/APIDocs";
 
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/professions/engineering" element={<Engineering />} />
             <Route path="/professions/cooking" element={<Cooking />} />
             <Route path="/professions/BOE" element={<BoesFeature />} />
+            <Route path="/api-docs" element={<APIDocs />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

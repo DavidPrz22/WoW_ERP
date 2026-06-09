@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from .models import GemCuts, JewelcraftingItems
 from .serializers import JewelcraftingItemsQuerySerializer
@@ -7,11 +8,48 @@ from Registros.models import ItemRecord
 
 
 class GetJewelcraftingItemsView(generics.ListAPIView):
-    serializer_class = JewelcraftingItemsQuerySerializer
-
-    def get_queryset(self):
-        return JewelcraftingItems.objects.none()
-
+    @extend_schema(
+        tags=['Jewelcrafting'],
+        summary='Get jewelcrafting items',
+        description='Return raw gems for prospecting and cut gems for gemcutting, enriched with auction house prices.',
+        parameters=[
+            OpenApiParameter(name='faction', description='Faction (Horde or Alliance)', required=True, type=str),
+            OpenApiParameter(name='realm', description='Realm name', required=True, type=str),
+            OpenApiParameter(name='record_id', description='Auction record ID', required=True, type=int),
+        ],
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'raw_gems': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'object',
+                            'properties': {
+                                'name': {'type': 'string'},
+                                'procChance': {'type': 'string'},
+                                'vendorPrice': {'type': 'integer'},
+                                'ahPrice': {'type': 'number', 'nullable': True},
+                            },
+                        },
+                    },
+                    'cut_gems': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'object',
+                            'properties': {
+                                'name': {'type': 'string'},
+                                'color': {'type': 'string'},
+                                'rawGem': {'type': 'string'},
+                                'craftingCost': {'type': 'number', 'nullable': True},
+                                'ahPrice': {'type': 'number', 'nullable': True},
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    )
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)

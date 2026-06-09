@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from .models import( 
     Item, 
     Faction, 
@@ -27,6 +28,34 @@ from django.db.models import Count, Q
 from django.core.management import call_command
 
 class PricingHistoryView(GenericAPIView):
+    @extend_schema(
+        tags=['Registros'],
+        summary='Get item pricing history',
+        description='Return time-series pricing data for a specific item on a given realm/faction.',
+        parameters=[
+            OpenApiParameter(name='item_id', description='Item ID (id_ingame)', required=True, type=str),
+            OpenApiParameter(name='faction', description='Faction (Horde or Alliance)', required=True, type=str),
+            OpenApiParameter(name='realm', description='Realm name', required=True, type=str),
+            OpenApiParameter(name='from_date', description='Start date (ISO format)', required=False, type=str),
+            OpenApiParameter(name='to_date', description='End date (ISO format)', required=False, type=str),
+        ],
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'id': {'type': 'string'},
+                    'quality': {'type': 'string'},
+                    'name': {'type': 'string'},
+                    'icon': {'type': 'string'},
+                    'chartData': {
+                        'type': 'array',
+                        'items': {'$ref': '#/components/schemas/PricingFormatted'},
+                    },
+                },
+            },
+            400: {'type': 'object', 'properties': {'detail': {'type': 'string'}}},
+        },
+    )
     def get(self, request):
         serializer = PricingHistoryQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -86,9 +115,12 @@ class PricingHistoryView(GenericAPIView):
 
 
 class FilterClassSubclassView(GenericAPIView):
-    """
-    Returns a structured mapping of classes and their associated subclasses.
-    """
+    @extend_schema(
+        tags=['Registros'],
+        summary='Get item class and subclass filters',
+        description='Returns a structured mapping of item classes and their associated subclasses.',
+        responses={200: ItemClassSerializer(many=True)},
+    )
     def get(self, request):
         classes = ItemClass.objects.prefetch_related('subclasses').all()
         serializer = ItemClassSerializer(classes, many=True)
@@ -96,37 +128,54 @@ class FilterClassSubclassView(GenericAPIView):
 
 
 class FilterQualityView(GenericAPIView):
-    """
-    Returns available options for Quality.
-    """
+    @extend_schema(
+        tags=['Registros'],
+        summary='Get quality filter options',
+        description='Returns available item quality options (Common, Uncommon, Rare, Epic, Legendary).',
+        responses={200: {'type': 'array', 'items': {'type': 'string'}}},
+    )
     def get(self, request):
         qualities = [choice[0] for choice in Quality.choices]
         return Response(qualities, status=status.HTTP_200_OK)
 
 
 class FilterFactionView(GenericAPIView):
-    """
-    Returns available options for Faction.
-    """
+    @extend_schema(
+        tags=['Registros'],
+        summary='Get faction filter options',
+        description='Returns available faction options (Horde, Alliance).',
+        responses={200: {'type': 'array', 'items': {'type': 'string'}}},
+    )
     def get(self, request):
         factions = [choice[0] for choice in Faction.choices]
         return Response(factions, status=status.HTTP_200_OK)
 
 
 class FilterRealmView(GenericAPIView):
-    """
-    Returns available options for Realm from the AuctionHouse model.
-    """
+    @extend_schema(
+        tags=['Registros'],
+        summary='Get realm filter options',
+        description='Returns available realm options from the AuctionHouse model.',
+        responses={200: {'type': 'array', 'items': {'type': 'object', 'properties': {'realm_name': {'type': 'string'}}}}},
+    )
     def get(self, request):
         realms = AuctionHouse.objects.values('realm_name').distinct()
         return Response(list(realms), status=status.HTTP_200_OK)
 
 
 class ItemSearchView(GenericAPIView):
-    """
-    Returns a list of items matching the case-insensitive search and applied filters.
-    Query Params: searchterm, class, subclass, quality
-    """
+    @extend_schema(
+        tags=['Registros'],
+        summary='Search items',
+        description='Returns a list of items matching the case-insensitive search and applied filters. Limited to 50 results.',
+        parameters=[
+            OpenApiParameter(name='searchTerm', description='Case-insensitive search term', required=False, type=str),
+            OpenApiParameter(name='class', description='Item class filter', required=False, type=str),
+            OpenApiParameter(name='subclass', description='Item subclass filter', required=False, type=str),
+            OpenApiParameter(name='quality', description='Item quality filter', required=False, type=str),
+        ],
+        responses={200: ItemSearchSerializer(many=True)},
+    )
     def get(self, request):
 
         searchterm = request.query_params.get('searchTerm', '').strip()
@@ -162,8 +211,19 @@ class RecordsPagination(PageNumberPagination):
 
 
 class RecordsView(GenericAPIView):
-    pagination_class = RecordsPagination
-
+    @extend_schema(
+        tags=['Registros'],
+        summary='List auction scan snapshots',
+        description='List paginated auction house scan snapshots with optional realm, faction, and search filters.',
+        parameters=[
+            OpenApiParameter(name='realm', description='Filter by realm name', required=False, type=str),
+            OpenApiParameter(name='faction', description='Filter by faction', required=False, type=str),
+            OpenApiParameter(name='search', description='Search by ID or realm name', required=False, type=str),
+            OpenApiParameter(name='page', description='Page number', required=False, type=int),
+            OpenApiParameter(name='page_size', description='Items per page (max 50)', required=False, type=int),
+        ],
+        responses={200: RecordsSerializer(many=True)},
+    )
     def get(self, request):
         queryset = Records.objects.select_related('auction_house').annotate(
             item_count=Count('item_records')
@@ -193,6 +253,16 @@ class RecordsView(GenericAPIView):
 
 
 class GenerateRecordView(GenericAPIView):
+    @extend_schema(
+        tags=['Registros'],
+        summary='Generate auction record',
+        description='Trigger the get_pricing_data management command to fetch a new auction house pricing snapshot.',
+        request=None,
+        responses={
+            200: {'type': 'object', 'properties': {'message': {'type': 'string'}}},
+            500: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def post(self, request):
         try:
             call_command('get_pricing_data')
@@ -202,6 +272,49 @@ class GenerateRecordView(GenericAPIView):
 
 
 class GenerateRecordsDataView(GenericAPIView):
+    @extend_schema(
+        tags=['Registros'],
+        summary='Get material pricing data',
+        description='Return pricing data for predefined material categories (herbs, ores, cloth, etc.) for a selected auction record.',
+        parameters=[
+            OpenApiParameter(name='realm', description='Realm name', required=True, type=str),
+            OpenApiParameter(name='faction', description='Faction (Horde or Alliance)', required=True, type=str),
+            OpenApiParameter(name='selected_record', description='Auction record ID', required=True, type=str),
+        ],
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'groups': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'object',
+                            'properties': {
+                                'title': {'type': 'string'},
+                                'entries': {
+                                    'type': 'array',
+                                    'items': {
+                                        'type': 'object',
+                                        'properties': {
+                                            'recordId': {'type': 'string'},
+                                            'itemId': {'type': 'string'},
+                                            'name': {'type': 'string'},
+                                            'price': {'type': 'number'},
+                                            'icon': {'type': 'string'},
+                                            'marketValuePercent': {'type': 'integer'},
+                                            'overridenPrice': {'type': 'number', 'nullable': True},
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            400: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+            500: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def get(self, request):
         
         HERBS_GROUP = ["Felweed", "Dreaming Glory", "Nightmare Vine", "Terocone", "Ancient Lichen", "Netherbloom", "Mana Thistle", "Ragveil", "Fel Lotus", "Dreamfoil", "Mountain Silversage", "Plaguebloom", "Icecap", "Black Lotus", "Arthas' Tears", "Blindweed", "Gromsblood", "Firebloom", "Golden Sansam"]
@@ -283,6 +396,17 @@ class GenerateRecordsDataView(GenericAPIView):
         
 
 class OverridePriceView(GenericAPIView):
+    @extend_schema(
+        tags=['Registros'],
+        summary='Override item price',
+        description='Set or clear a custom price override for a specific ItemRecord.',
+        request=OverridePriceSerializer,
+        responses={
+            200: {'type': 'object', 'properties': {'message': {'type': 'string'}}},
+            404: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+            500: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def post(self, request):
         try:
             serializer = OverridePriceSerializer(data=request.data)
@@ -306,6 +430,27 @@ class OverridePriceView(GenericAPIView):
 
 
 class UserDataRecordView(GenericAPIView):
+    @extend_schema(
+        tags=['Registros'],
+        summary='Get user last selected record',
+        description="Return the authenticated user's last selected auction record details.",
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'recordDetails': {
+                        'type': 'object',
+                        'properties': {
+                            'recordId': {'type': 'integer'},
+                            'realm': {'type': 'string'},
+                            'faction': {'type': 'string'},
+                        },
+                    },
+                },
+            },
+            404: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def get(self, request):
         user_data = Userdata.objects.filter(id_user=request.user.id or 'davidprz').first()
         return_data = {}
@@ -329,6 +474,19 @@ class UserDataRecordView(GenericAPIView):
 
 
 class DeleteRecordView(GenericAPIView):
+    @extend_schema(
+        tags=['Registros'],
+        summary='Delete auction record',
+        description="Delete an auction house scan snapshot and all its cascading ItemRecord entries.",
+        parameters=[
+            OpenApiParameter(name='record_id', description='Record ID to delete', required=True, type=int, location=OpenApiParameter.PATH),
+        ],
+        responses={
+            200: {'type': 'object', 'properties': {'message': {'type': 'string'}}},
+            404: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+            500: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def delete(self, request, record_id):
         try:
             record = Records.objects.get(id=record_id)

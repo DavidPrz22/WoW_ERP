@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from Boe.models import BoeItem, BoeRecipe, BoeReagent, Profession, Category
 
 PRIMAL_NETHER_ID = "23572"
@@ -16,16 +17,19 @@ class BoeReagentSerializer(serializers.ModelSerializer):
         model = BoeReagent
         fields = ['id', 'name', 'quantity', 'min_buyout', 'overriden_min_buyout', 'is_nether_input']
 
+    @extend_schema_field(float)
     def get_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         item_id = obj.reagent.id_ingame
         return records_map.get(item_id, {}).get('min_buyout')
 
+    @extend_schema_field(float)
     def get_overriden_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         item_id = obj.reagent.id_ingame
         return records_map.get(item_id, {}).get('overriden_min_buyout')
 
+    @extend_schema_field(str)
     def get_is_nether_input(self, obj):
         item_id = obj.reagent.id_ingame
         if item_id == PRIMAL_NETHER_ID:
@@ -46,11 +50,13 @@ class BoeItemSerializer(serializers.ModelSerializer):
         model = BoeItem
         fields = ['name', 'min_buyout', 'overriden_min_buyout', 'yield_quantity', 'reagents']
 
+    @extend_schema_field(float)
     def get_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         item_id = obj.item.id_ingame
         return records_map.get(item_id, {}).get('min_buyout')
 
+    @extend_schema_field(float)
     def get_overriden_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         item_id = obj.item.id_ingame

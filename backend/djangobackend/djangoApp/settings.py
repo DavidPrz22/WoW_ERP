@@ -61,10 +61,20 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Mi API con DRF',
-    'DESCRIPTION': 'Descripción de mi proyecto',
+    'TITLE': 'Wow TBC Auction House API',
+    'DESCRIPTION': 'API for managing World of Warcraft TBC auction house pricing data and profession profitability calculations',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'TAGS': [
+        {'name': 'Registros', 'description': 'Core auction house records, item search, filters, and pricing history'},
+        {'name': 'Alchemy', 'description': 'Alchemy profession - flasks, elixirs, and potions profitability'},
+        {'name': 'Jewelcrafting', 'description': 'Jewelcrafting profession - raw gems prospecting and cut gems'},
+        {'name': 'Boe', 'description': 'Bind-on-Equip items - gear, enhancements, and consumables'},
+        {'name': 'Cooking', 'description': 'Cooking profession - buff foods grouped by stat type'},
+        {'name': 'Engineering', 'description': 'Engineering profession - parts, enhancements, and explosives'},
+    ],
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SORT_OPERATIONS': False,
 }
 
 MIDDLEWARE = [

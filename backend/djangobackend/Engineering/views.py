@@ -1,13 +1,40 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from .models import EngItem
 from .serializers import EngineeringDataQuerySerializer, EngItemSerializer
 from Registros.models import ItemRecord
 
 
 class GetEngineeringDataView(generics.GenericAPIView):
-    serializer_class = EngineeringDataQuerySerializer
-
+    @extend_schema(
+        tags=['Engineering'],
+        summary='Get engineering data',
+        description='Return engineering parts and explosives with reagent costs and auction pricing.',
+        request=EngineeringDataQuerySerializer,
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'parts': {
+                        'type': 'array',
+                        'items': {'$ref': '#/components/schemas/EngItem'},
+                    },
+                    'explosives': {
+                        'type': 'array',
+                        'items': {'$ref': '#/components/schemas/EngItem'},
+                    },
+                    'total_reagents_used': {
+                        'type': 'object',
+                        'properties': {
+                            'Parts': {'type': 'object'},
+                            'Explosives': {'type': 'object'},
+                        },
+                    },
+                },
+            },
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -53,6 +80,7 @@ class GetEngineeringDataView(generics.GenericAPIView):
 
     @staticmethod
     def _build_reagent_map(items):
+        """Build a map of item name to list of reagents with name, id, and quantity."""
         result = {}
         for item in items:
             recipe = item.recipes.first()

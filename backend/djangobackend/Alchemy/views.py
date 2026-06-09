@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from .models import AlchemyItem, AlchemyGroup, Recipe, VIALS_PRICES
 from .serializers import AlchemyGroupDataResponseSerializer, AlchemyGroupDataSerializer, AlchemyItemSerializer
 from Registros.models import Item, ItemRecord
@@ -8,9 +9,27 @@ from .services.alchemy_calculations_service import AlchemyCalculationsService
 
 
 class CreateAlchemyItemView(generics.CreateAPIView):
-    queryset = AlchemyItem.objects.all()
-    serializer_class = AlchemyItemSerializer
-
+    @extend_schema(
+        tags=['Alchemy'],
+        summary='Create alchemy item',
+        description='Create a new AlchemyItem by resolving the group, validating the item, and linking its recipe.',
+        request={
+            'application/json': {
+                'type': 'object',
+                'required': ['group', 'item_id'],
+                'properties': {
+                    'group': {'type': 'string', 'description': 'Alchemy group name (Flasks, Elixirs, Potions)'},
+                    'item_id': {'type': 'string', 'description': 'Item id_ingame'},
+                    'yield_quantity': {'type': 'integer', 'description': 'Recipe yield quantity'},
+                },
+            },
+        },
+        responses={
+            201: AlchemyItemSerializer,
+            400: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+            404: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
         group_name = data.get('group')
@@ -49,10 +68,34 @@ class CreateAlchemyItemView(generics.CreateAPIView):
 class GetAlchemyGroupsDataView(generics.ListAPIView):
     serializer_class = AlchemyGroupDataSerializer
 
+    @extend_schema(
+        tags=['Alchemy'],
+        summary='Get alchemy groups data',
+        description='GET lists all alchemy groups; POST calculates profit/cost data for each group using auction prices.',
+        responses=AlchemyGroupDataResponseSerializer(many=True),
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
     def get_queryset(self):
-        queryset = AlchemyGroup.objects.all()
-        return queryset
-    
+        return AlchemyGroup.objects.all()
+
+    @extend_schema(
+        tags=['Alchemy'],
+        summary='Calculate alchemy profitability',
+        description='Calculate profit/cost data for each alchemy group using auction house prices.',
+        request=AlchemyGroupDataSerializer,
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'groups_data': {'type': 'array', 'items': {'type': 'object'}},
+                    'total_reagents_used': {'type': 'object'},
+                },
+            },
+            404: {'type': 'object', 'properties': {'error': {'type': 'string'}}},
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

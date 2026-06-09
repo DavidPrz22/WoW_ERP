@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Home, Database, LineChart, ChevronDown, FlaskConical, Gem, Wrench, UtensilsCrossed, Package, PackageIcon } from "lucide-react";
+import { Home, Database, LineChart, ChevronDown, FlaskConical, Gem, Wrench, UtensilsCrossed, Package, PackageIcon, BookOpen } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +21,7 @@ const main = [
   { title: "Home", url: "/", icon: Home },
   { title: "Records", url: "/records", icon: Database },
   { title: "Pricing History", url: "/pricing", icon: LineChart },
+  { title: "API Docs", url: "/api-docs", icon: BookOpen },
 ];
 
 const professions = [

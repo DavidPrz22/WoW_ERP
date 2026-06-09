@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import EngItem, EngRecipe, EngReagent
 
 
@@ -15,10 +16,12 @@ class EngReagentSerializer(serializers.Serializer):
     min_buyout = serializers.SerializerMethodField()
     overriden_min_buyout = serializers.SerializerMethodField()
 
+    @extend_schema_field(float)
     def get_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         return records_map.get(obj.reagent.id_ingame, {}).get('min_buyout')
 
+    @extend_schema_field(float)
     def get_overriden_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         return records_map.get(obj.reagent.id_ingame, {}).get('overriden_min_buyout')
@@ -37,10 +40,12 @@ class EngItemSerializer(serializers.ModelSerializer):
         model = EngItem
         fields = ['name', 'id_ingame', 'type', 'yield_quantity', 'reagents', 'min_buyout', 'overriden_min_buyout']
 
+    @extend_schema_field(int)
     def get_yield_quantity(self, obj):
         recipe = obj.recipes.first()
         return recipe.yield_quantity if recipe else 1
 
+    @extend_schema_field(list)
     def get_reagents(self, obj):
         recipe = obj.recipes.first()
         if not recipe:
@@ -49,10 +54,12 @@ class EngItemSerializer(serializers.ModelSerializer):
         serializer = EngReagentSerializer(reagents, many=True, context=self.context)
         return serializer.data
 
+    @extend_schema_field(float)
     def get_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         return records_map.get(obj.item.id_ingame, {}).get('min_buyout')
 
+    @extend_schema_field(float)
     def get_overriden_min_buyout(self, obj):
         records_map = self.context.get('records_map', {})
         return records_map.get(obj.item.id_ingame, {}).get('overriden_min_buyout')
