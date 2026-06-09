@@ -47,7 +47,7 @@ export function PriceTablePanel() {
       const { recordDetails } = userDataRecordDetails;
       const recordId = recordDetails.recordId;
       
-      const matchingRecord = recordsSelectData?.results.find(r => r.id === recordId);
+      const matchingRecord = recordsSelectData?.results?.find(r => r.id === recordId);
 
       if (matchingRecord) {
           setDataRecordId(recordId.toString());

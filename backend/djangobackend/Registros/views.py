@@ -249,7 +249,12 @@ class RecordsView(GenericAPIView):
             return self.get_paginated_response(serializer.data)
             
         serializer = RecordsSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({
+            'count': queryset.count(),
+            'next': None,
+            'previous': None,
+            'results': serializer.data
+        }, status=status.HTTP_200_OK)
 
 
 class GenerateRecordView(GenericAPIView):
