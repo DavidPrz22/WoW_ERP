@@ -51,8 +51,9 @@ export function EngineeringDashboard() {
       const craftingCost = calculateCraftingCost(part.reagents, part.yield_quantity);
       const ahPrice = part.overriden_min_buyout ?? part.min_buyout ?? 0;
       const profitPerItem = calculateProfitPerItem(ahPrice, craftingCost);
-      cost += craftingCost * qty;
-      profit += profitPerItem * qty;
+      const actualQty = qty * (part.yield_quantity || 1);
+      cost += craftingCost * actualQty;
+      profit += profitPerItem * actualQty;
     }
 
     for (const explosive of explosivesData || []) {
@@ -62,8 +63,9 @@ export function EngineeringDashboard() {
       const craftingCost = calculateExplosiveCost(explosive, parts, buying);
       const ahPrice = explosive.overriden_min_buyout ?? explosive.min_buyout ?? 0;
       const profitPerItem = calculateProfitPerItem(ahPrice, craftingCost);
-      cost += craftingCost * qty;
-      profit += profitPerItem * qty;
+      const actualQty = qty * (explosive.yield_quantity || 1);
+      cost += craftingCost * actualQty;
+      profit += profitPerItem * actualQty;
     }
 
     return { cost, profit };

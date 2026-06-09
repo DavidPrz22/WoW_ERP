@@ -38,10 +38,11 @@ export function ExplosivesTable() {
       const roi = calculateROI(profitPerItem, craftingCost);
       const noAh = ahPrice <= 0;
       const qty = quantities[explosive.name] ?? 0;
-      const expectedProfit = profitPerItem * qty;
+      const actualQty = qty * yieldQty;
+      const expectedProfit = profitPerItem * actualQty;
       totalProfit += expectedProfit;
 
-      return { explosive, buying, yieldQty, craftingCost, breakeven, ahPrice, profitPerItem, roi, noAh, qty, expectedProfit };
+      return { explosive, buying, yieldQty, craftingCost, breakeven, ahPrice, profitPerItem, roi, noAh, qty, actualQty, expectedProfit };
     });
 
     return { rows, totalProfit };
@@ -62,8 +63,9 @@ export function ExplosivesTable() {
           <TableRow className="bg-secondary/50 border-b border-primary/20 hover:bg-secondary/50">
             <TableHead className="h-10 uppercase tracking-wider text-xs">Item</TableHead>
             <TableHead className="h-10 text-center uppercase tracking-wider text-xs w-28">Buy Reagents</TableHead>
-            <TableHead className="h-10 text-right uppercase tracking-wider text-xs w-20">QTY</TableHead>
+            <TableHead className="h-10 text-right uppercase tracking-wider text-xs w-24">CRAFT AMT</TableHead>
             <TableHead className="h-10 text-right uppercase tracking-wider text-xs">Yield</TableHead>
+            <TableHead className="h-10 text-right uppercase tracking-wider text-xs w-20">QTY</TableHead>
             <TableHead className="h-10 text-right uppercase tracking-wider text-xs">Crafting Cost</TableHead>
             <TableHead className="h-10 text-right uppercase tracking-wider text-xs">Breakeven</TableHead>
             <TableHead className="h-10 text-center uppercase tracking-wider text-xs w-32">AH Price</TableHead>
@@ -73,7 +75,7 @@ export function ExplosivesTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tableRows.rows.map(({ explosive, buying, yieldQty, craftingCost, breakeven, ahPrice, profitPerItem, roi, noAh, qty, expectedProfit }) => (
+          {tableRows.rows.map(({ explosive, buying, yieldQty, craftingCost, breakeven, ahPrice, profitPerItem, roi, noAh, qty, actualQty, expectedProfit }) => (
             <TableRow key={explosive.name} className="border-b border-border/30 hover:bg-secondary/40 transition-colors duration-150">
               <TableCell className="py-2 font-medium text-gold">
                 <div className="flex items-center gap-2">
@@ -102,6 +104,7 @@ export function ExplosivesTable() {
                 />
               </TableCell>
               <TableCell className="py-2 text-right tabular-nums font-mono">{yieldQty}</TableCell>
+              <TableCell className="py-2 text-right tabular-nums font-mono">{actualQty}</TableCell>
               <TableCell className="py-2 text-right"><WowCurrency value={craftingCost} /></TableCell>
               <TableCell className="py-2 text-right tabular-nums font-mono text-muted-foreground">
                 <WowCurrency value={breakeven} />
@@ -131,7 +134,7 @@ export function ExplosivesTable() {
             </TableRow>
           ))}
           <TableRow className="bg-secondary/30 border-t-2 border-primary/30">
-            <TableCell colSpan={8} className="py-3 font-semibold text-gold text-right">
+            <TableCell colSpan={9} className="py-3 font-semibold text-gold text-right">
               Total Expected Profit
             </TableCell>
             <TableCell className="py-3 text-right">

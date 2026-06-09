@@ -87,9 +87,10 @@ export function ShoppingListDialog({
       const isExplosive = groupKey === "Explosives";
 
       for (const itemName in group) {
-        const itemQty = qtys[itemName] || 0;
+        const craftAmt = qtys[itemName] || 0;
+        const yieldQty = yieldMap.get(itemName) || 1;
 
-        resolveReagents(itemName, itemQty, isExplosive, (name, qty) => {
+        resolveReagents(itemName, craftAmt * yieldQty, isExplosive, (name, qty) => {
           addNeed(needsByGroup[groupKey], name, qty);
           addNeed(totalNeeds, name, qty);
         });
