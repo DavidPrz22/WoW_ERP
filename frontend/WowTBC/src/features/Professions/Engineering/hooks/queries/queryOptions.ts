@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getEngineeringData } from '../../api';
 import { EngineeringDataQuerySchema } from '../../schemas/schemas';
-import type { TEngineeringDataQueryParams } from '../../types';
+import type { TEngineeringDataQueryParams } from '../../schemas/schemas';
 
 export const ENGINEERING_DATA = 'engineering-data';
 

@@ -9,7 +9,7 @@ export function getReagentPrice(reagent: EngReagent): number {
 }
 
 export function calculateCraftingCost(reagents: EngReagent[], yieldQuantity: number): number {
-  const yieldQty = yieldQuantity && yieldQuantity > 0 ? yieldQuantity : 1;
+  const yieldQty = yieldQuantity || 1;
   const totalReagentCost = reagents.reduce(
     (sum, reagent) => {
       const price = getReagentPrice(reagent);

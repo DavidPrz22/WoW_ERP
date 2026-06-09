@@ -54,17 +54,15 @@ export function ShoppingListDialog({
 
     function resolveReagents(
       itemName: string,
-      itemQty: number,
+      craftsNeeded: number,
       isExplosive: boolean,
       addToNeeds: (name: string, qty: number) => void
     ) {
-      if (itemQty <= 0) return;
+      if (craftsNeeded <= 0) return;
 
-      const yieldQty = yieldMap.get(itemName) || 1;
-      const craftsNeeded = Math.ceil(itemQty / yieldQty);
 
       const groupKey = isExplosive ? "Explosives" : "Parts";
-      const reagents = reagentList[groupKey as keyof typeof reagentList]?.[itemName];
+      const reagents = reagentList && reagentList[groupKey as keyof typeof reagentList]?.[itemName] || [];
       if (!reagents) return;
 
       for (const reagent of reagents) {
@@ -72,7 +70,7 @@ export function ShoppingListDialog({
         const reagentIsPart = partSet.has(reagent.name);
 
         if (isToggleOn && reagentIsPart) {
-          resolveReagents(reagent.name, reagent.qty * craftsNeeded, false, addToNeeds);
+          resolveReagents(reagent.name, craftsNeeded, false, addToNeeds);
         } else {
           addToNeeds(reagent.name, reagent.qty * craftsNeeded);
         }
@@ -88,9 +86,8 @@ export function ShoppingListDialog({
 
       for (const itemName in group) {
         const craftAmt = qtys[itemName] || 0;
-        const yieldQty = yieldMap.get(itemName) || 1;
 
-        resolveReagents(itemName, craftAmt * yieldQty, isExplosive, (name, qty) => {
+        resolveReagents(itemName, craftAmt, isExplosive, (name, qty) => {
           addNeed(needsByGroup[groupKey], name, qty);
           addNeed(totalNeeds, name, qty);
         });
