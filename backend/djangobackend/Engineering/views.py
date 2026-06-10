@@ -7,6 +7,7 @@ from Registros.models import ItemRecord
 
 
 class GetEngineeringDataView(generics.GenericAPIView):
+    serializer_class = EngineeringDataQuerySerializer
     @extend_schema(
         tags=['Engineering'],
         summary='Get engineering data',

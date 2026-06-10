@@ -7,6 +7,7 @@ from Boe.services.boe_calculations_service import BoeCalculationsService
 
 
 class GetBoeDataView(generics.GenericAPIView):
+    serializer_class = BoeDataQuerySerializer
     @extend_schema(
         tags=['Boe'],
         summary='Get BOE item data',

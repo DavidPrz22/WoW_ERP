@@ -8,6 +8,7 @@ from Registros.models import ItemRecord
 
 
 class GetJewelcraftingItemsView(generics.ListAPIView):
+    serializer_class = JewelcraftingItemsQuerySerializer
     @extend_schema(
         tags=['Jewelcrafting'],
         summary='Get jewelcrafting items',
