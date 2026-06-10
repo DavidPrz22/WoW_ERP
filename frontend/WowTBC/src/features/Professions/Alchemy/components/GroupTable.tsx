@@ -33,6 +33,12 @@ export function GroupTable({
 
   const [alchemyImportData, setAlchemyImportData] = useState<AlchemyImportRecord | null>(null);
   const { dataRecordId } = useAlchemyStore();
+  const [prevRecordId, setPrevRecordId] = useState(dataRecordId);
+
+  if (dataRecordId !== prevRecordId) {
+    setPrevRecordId(dataRecordId);
+    setAlchemyImportData(null);
+  }
 
   const [draft, setDraft] = useState<{ name: string; id: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
