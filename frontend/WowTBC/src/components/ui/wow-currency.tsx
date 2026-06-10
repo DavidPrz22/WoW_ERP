@@ -1,5 +1,16 @@
 import { cn } from "@/lib/utils";
-import { parseWowCurrency } from "../utils/helpers";
+
+const COPPER_PER_GOLD = 10000;
+const COPPER_PER_SILVER = 100;
+
+function parseWowCurrency(totalCopper: number) {
+  const isNegative = totalCopper < 0;
+  const copperValue = Math.round(Math.abs(totalCopper));
+  const gold = Math.floor(copperValue / COPPER_PER_GOLD);
+  const silver = Math.floor((copperValue % COPPER_PER_GOLD) / COPPER_PER_SILVER);
+  const copper = copperValue % COPPER_PER_SILVER;
+  return { isNegative, gold, silver, copper };
+}
 
 export function WowCurrency({ value, isProfit = false }: { value: number; isProfit?: boolean }) {
   if (!isFinite(value)) return <span>—</span>;

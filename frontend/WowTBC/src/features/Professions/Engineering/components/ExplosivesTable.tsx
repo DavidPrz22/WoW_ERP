@@ -10,8 +10,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useEngineeringStore } from "@/ZustandStores/useEngineeringStore";
 import { calculateExplosiveCost, calculateBreakeven, calculateProfitPerItem, calculateROI } from "../utils/helpers";
-import { WowCurrency } from "./WowCurrency";
-import { QtyInput } from "./QtyInput";
+import { WowCurrency } from "@/components/ui/wow-currency";
+import { QtyInput } from "@/components/ui/qty-input";
 
 function getAhPrice(item: { min_buyout: number | null; overriden_min_buyout: number | null }): number {
   if (item.overriden_min_buyout !== null && item.overriden_min_buyout !== undefined) {

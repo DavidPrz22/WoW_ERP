@@ -1,16 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useJewelcraftingStore } from "@/ZustandStores/useJewelcraftingStore";
 import { GemcuttingSectionTable } from "./GemcuttingSectionTable";
+import { JewelcraftingSummaryCards } from "./JewelcraftingSummaryCards";
 import type { JewelcraftingCutGem } from "../types/types";
-import { COLOR_MAP } from "../utils/constants";
+import { COLOR_MAP, AH_CUT } from "../utils/constants";
 
-
-interface GemcuttingPanelProps {
-  cutGems: JewelcraftingCutGem[] | null;
-  AhPrices: Record<string, number>;
-  prospectingPrices: Record<string, number>;
-}
 
 interface CutSection {
   color: string;
@@ -37,7 +33,8 @@ function groupByColorAndGem(cuts: JewelcraftingCutGem[]): CutSection[] {
   return Object.values(groups);
 }
 
-export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: GemcuttingPanelProps) {
+export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: { cutGems: JewelcraftingCutGem[] | null; AhPrices: Record<string, number>; prospectingPrices: Record<string, number> }) {
+  const { quantities, setQty } = useJewelcraftingStore();
   const [useProspectPrices, setUseProspectPrices] = useState(false);
   const [cutPrices, setCutPrices] = useState<Record<string, number>>(() => {
     const m: Record<string, number> = {};
@@ -48,6 +45,32 @@ export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: Gemcut
   });
 
   const sections = groupByColorAndGem(cutGems ?? []);
+
+  const grand = useMemo(() => {
+    let cost = 0;
+    let profit = 0;
+
+    for (const section of sections) {
+      const gemCostCopper = useProspectPrices
+        ? prospectingPrices[section.gem] ?? (section.items[0]?.craftingCost ?? 0)
+        : AhPrices[section.gem] ?? (section.items[0]?.craftingCost ?? 0);
+      const gemCost = gemCostCopper / 10000;
+
+      for (const item of section.items) {
+        const qty = quantities[item.name] ?? 0;
+        if (qty <= 0) continue;
+
+        const rowCost = gemCost;
+        const ahCopperInput = cutPrices[item.name] ?? item.ahPrice ?? 0;
+        const ah = ahCopperInput / 10000;
+        const profitPerItem = ah * (1 - AH_CUT) - rowCost;
+        cost += rowCost * qty;
+        profit += profitPerItem * qty;
+      }
+    }
+
+    return { cost: cost * 10000, profit: profit * 10000 };
+  }, [sections, useProspectPrices, prospectingPrices, AhPrices, cutPrices, quantities]);
 
   return (
     <div className="space-y-6">
@@ -72,6 +95,8 @@ export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: Gemcut
         </div>
       </div>
 
+      <JewelcraftingSummaryCards grand={grand} />
+
       {sections.map((section) => {
         
         const fallbackCost = section.items[0]?.craftingCost ?? 0;
@@ -91,6 +116,8 @@ export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: Gemcut
             cost={gemCost}
             cutPrices={cutPrices}
             setCutPrices={setCutPrices}
+            quantities={quantities}
+            setQty={setQty}
           />
         );
       })}
