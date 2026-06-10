@@ -1,6 +1,7 @@
 import requests
 from django.core.management.base import BaseCommand
 from Registros.models import Item, Records, ItemRecord, AuctionHouse
+from django.core.management.base import CommandError
 
 class Command(BaseCommand):
     help = 'Fetches pricing data from TSM and saves it to the database'
@@ -43,8 +44,7 @@ class Command(BaseCommand):
             try:
                 auction_house = AuctionHouse.objects.get(realm_name=realm, faction=faction)
             except AuctionHouse.DoesNotExist:
-                self.stderr.write(f"AuctionHouse not found for {realm}-{faction}")
-                continue
+                raise CommandError(f"AuctionHouse not found for {realm}-{faction}")
 
             record = Records.objects.create(auction_house=auction_house)
             items_records = []
@@ -79,15 +79,13 @@ class Command(BaseCommand):
         try:
             token = self.get_access_token()
         except requests.exceptions.RequestException as e:
-            self.stderr.write(f"Failed to get token: {e}")
-            return
+            raise CommandError(f"Failed to get token: {e}")
 
         self.stdout.write("Fetching pricing data...")
         try:
             data: dict = self.pricing_data(token, **REALMS)
         except requests.exceptions.RequestException as e:
-            self.stderr.write(f"Failed to get pricing data: {e}")
-            return
+            raise CommandError(f"Failed to get pricing data: {e}")
         
         self.stdout.write("Saving data to database...")
         self.save_pricing_data(data)
