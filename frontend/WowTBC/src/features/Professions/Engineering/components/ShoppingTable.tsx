@@ -1,4 +1,4 @@
-import { QtyInput } from "./QtyInput";
+import { QtyInput } from "@/components/ui/qty-input";
 import {
   Table,
   TableBody,
