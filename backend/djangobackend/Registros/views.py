@@ -211,6 +211,8 @@ class RecordsPagination(PageNumberPagination):
 
 
 class RecordsView(GenericAPIView):
+    pagination_class = RecordsPagination
+
     @extend_schema(
         tags=['Registros'],
         summary='List auction scan snapshots',

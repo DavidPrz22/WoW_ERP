@@ -7,7 +7,7 @@ import { useJewelcraftingItems } from '@/features/Professions/Jewelcrafting/hook
 import { useBoeData } from '@/features/Professions/BoE/hooks/queries/queries';
 
 export const useHomeRecords = () => {
-  return useRecords({ page_size: 5 });
+  return useRecords({ page_size: 10 });
 };
 
 export const useHomeRecordData = (realm: string, faction: string, recordId: string) => {

@@ -10,7 +10,7 @@ import { type TGetRecordDataParams , GetRecordDataSchema } from "@/schemas/schem
 export const recordsQueryOptions = (params: Partial<TGetRecordsParams>) => {
   const result = GetRecordsSchema.safeParse(params);
   return queryOptions({
-    queryKey: ["records", result.data?.realm, result.data?.faction, result.data?.page],
+    queryKey: ["records", result.data?.realm, result.data?.faction, result.data?.page, result.data?.page_size],
     queryFn: () => getRecords(result.data!),
     enabled: result.success,
     staleTime: Infinity

@@ -20,6 +20,7 @@ export function SystemRecordsHeader() {
   const [deleteRecordId, setDeleteRecordId] = useState<number | null>(null);
   const { data, isLoading } = useRecords({
     page: page,
+    page_size: 50,
   });
 
   const rawRecords = data?.results || [];
