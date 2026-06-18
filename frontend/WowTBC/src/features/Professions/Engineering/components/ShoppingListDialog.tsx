@@ -56,47 +56,55 @@ export function ShoppingListDialog({
       itemName: string,
       craftsNeeded: number,
       isExplosive: boolean,
-      addToNeeds: (name: string, qty: number) => void
+      addToNeeds: (name: string, qty: number) => void,
+      isToggleActive?: boolean,
     ) {
       if (craftsNeeded <= 0) return;
-
 
       const groupKey = isExplosive ? "Explosives" : "Parts";
       const reagents = reagentList && reagentList[groupKey as keyof typeof reagentList]?.[itemName] || [];
       if (!reagents) return;
-
+      
       for (const reagent of reagents) {
-        const isToggleOn = isExplosive && !!buyReagentsToggles[itemName];
+        // isToggleActive is used as a flag to keep checking for parts which reagents can be split into other reagents
+        const isToggleOn = isToggleActive || (isExplosive && !!buyReagentsToggles[itemName]);
+
         const reagentIsPart = partSet.has(reagent.name);
 
         if (isToggleOn && reagentIsPart) {
-          resolveReagents(reagent.name, craftsNeeded, false, addToNeeds);
+          // We multiply the craftsNeeded by the reagent quantity since there is an amount needed per craft of the reagent so we need to account for that when calculating the total amount of the reagent needed. We also divide by the yield quantity of the reagent to get the number of crafts needed to produce the required amount of the reagent.
+          // We divide by the yield quantity of the reagent to get the number of crafts needed to produce the required amount of the reagent. Without that yield quantity, we would be calculating the number of crafts needed to produce the required amount of the reagent as if it was a 1:1 ratio, which is not accurate.
+          resolveReagents(
+            reagent.name, 
+            craftsNeeded * reagent.qty / (yieldMap.get(reagent.name) || 1), 
+            false, 
+            addToNeeds,
+            isToggleOn);
         } else {
           addToNeeds(reagent.name, reagent.qty * craftsNeeded);
         }
       }
     }
-
+  
     for (const groupKey in reagentList) {
       const group = reagentList[groupKey as keyof typeof reagentList];
       needsByGroup[groupKey] = {};
       mergedGroups.push({ group: groupKey });
-
       const isExplosive = groupKey === "Explosives";
-
       for (const itemName in group) {
         const craftAmt = qtys[itemName] || 0;
-
+        
+        console.log(itemName, group[itemName])
         resolveReagents(itemName, craftAmt, isExplosive, (name, qty) => {
           addNeed(needsByGroup[groupKey], name, qty);
           addNeed(totalNeeds, name, qty);
+          
         });
       }
     }
 
     return { totalNeeds, needsByGroup, mergedGroups };
   }, [reagentList, qtys, partsData, explosivesData, buyReagentsToggles]);
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
