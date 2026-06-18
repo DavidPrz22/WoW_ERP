@@ -14,7 +14,7 @@ import Engineering from "@/pages/Professions/Engineering";
 import Cooking from "@/pages/Professions/Cooking";
 import BoesFeature from "@/pages/Professions/Boes";
 import APIDocs from "@/pages/APIDocs";
-
+import Workers from "@/pages/Workers";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +35,7 @@ const App = () => (
             <Route path="/professions/cooking" element={<Cooking />} />
             <Route path="/professions/BOE" element={<BoesFeature />} />
             <Route path="/api-docs" element={<APIDocs />} />
+            <Route path="/workers" element={<Workers />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

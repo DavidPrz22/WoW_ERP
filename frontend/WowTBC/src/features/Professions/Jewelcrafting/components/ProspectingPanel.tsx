@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { useJewelcraftingStore } from "@/ZustandStores/useJewelcraftingStore";
 import {
   AH_CUT,
@@ -27,10 +27,8 @@ export function ProspectingPanel({
   setAhPrice,
   setProspectPrice,
 }: ProspectingPanelProps) {
-  const [oreCost, setOreCost] = useState(0);
-  const [oreOwned, setOreOwned] = useState(1000);
   const [vendorEnabled, setVendorEnabled] = useState(false);
-  const { obtenidoOverrides, setObtenidoOverrides } = useJewelcraftingStore();
+  const { oreOwned, oreCost, setOreOwned, setOreCost, obtenidoOverrides, setObtenidoOverrides } = useJewelcraftingStore();
 
   const costToCraft = oreCost;
   const subtotal = oreOwned * costToCraft;

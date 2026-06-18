@@ -22,7 +22,6 @@ import {
   Wrench,
   UtensilsCrossed,
   PackageIcon,
-  ChevronRight,
   Copy,
   Check,
 } from "lucide-react";

@@ -13,6 +13,8 @@ interface JewelcraftingStore {
   prospectAhPrices: PriceRecord;
   prospectPrices: PriceRecord;
   quantities: Record<string, number>;
+  oreOwned: number;
+  oreCost: number;
   setDataFaction: (faction: string) => void;
   setDataRealm: (realm: string) => void;
   setDataRecordId: (recordId: string) => void;
@@ -21,6 +23,8 @@ interface JewelcraftingStore {
   setProspectAhPrices: (updater: PriceUpdater) => void;
   setProspectPrices: (updater: PriceUpdater) => void;
   setQty: (name: string, val: number) => void;
+  setOreOwned: (val: number) => void;
+  setOreCost: (val: number) => void;
   obtenidoOverrides: PriceRecord;
   setObtenidoOverrides: (updater: PriceUpdater) => void;
 }
@@ -31,10 +35,12 @@ export const useJewelcraftingStore = create<JewelcraftingStore>((set) => ({
   dataRecordId: '',
   rawGems: null,
   cutGems: null,
+  obtenidoOverrides: {},
   prospectAhPrices: {},
   prospectPrices: {},
   quantities: {},
-  obtenidoOverrides: {},
+  oreOwned: 1000,
+  oreCost: 0,
   setDataFaction: (dataFaction) => set({ dataFaction, dataRealm: '', dataRecordId: '' }),
   setDataRealm: (dataRealm) => set({ dataRealm, dataRecordId: '' }),
   setDataRecordId: (dataRecordId) => set({ dataRecordId }),
@@ -49,6 +55,8 @@ export const useJewelcraftingStore = create<JewelcraftingStore>((set) => ({
   setQty: (name, val) => set((state) => ({
     quantities: { ...state.quantities, [name]: val },
   })),
+  setOreOwned: (oreOwned) => set({ oreOwned }),
+  setOreCost: (oreCost) => set({ oreCost }),
   setObtenidoOverrides: (updater) => set((state) => ({
     obtenidoOverrides: typeof updater === 'function' ? (updater as (p: PriceRecord) => PriceRecord)(state.obtenidoOverrides) : updater,
   })),
