@@ -968,5 +968,795 @@
         "quantity": 1
       }
     ]
+  },
+  {
+    "itemId": "32586",
+    "name": "Bracers of Nimble Thought",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "21842",
+        "name": "Bolt of Imbued Netherweave",
+        "quantity": 3
+      },
+      {
+        "id": "24271",
+        "name": "Spellcloth",
+        "quantity": 4
+      },
+      {
+        "id": "22457",
+        "name": "Primal Mana",
+        "quantity": 8
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32582",
+    "name": "Bracers of Renewed Life",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "23793",
+        "name": "Heavy Knothide Leather",
+        "quantity": 4
+      },
+      {
+        "id": "22451",
+        "name": "Primal Air",
+        "quantity": 6
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 6
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32584",
+    "name": "Swiftheal Wraps",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "21842",
+        "name": "Bolt of Imbued Netherweave",
+        "quantity": 3
+      },
+      {
+        "id": "21845",
+        "name": "Primal Mooncloth",
+        "quantity": 4
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 8
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32571",
+    "name": "Dawnsteel Bracers",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "23449",
+        "name": "Khorium Bar",
+        "quantity": 14
+      },
+      {
+        "id": "23573",
+        "name": "Hardened Adamantite Bar",
+        "quantity": 2
+      },
+      {
+        "id": "21884",
+        "name": "Primal Fire",
+        "quantity": 6
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32568",
+    "name": "Swiftsteel Bracers",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "23448",
+        "name": "Felsteel Bar",
+        "quantity": 14
+      },
+      {
+        "id": "23573",
+        "name": "Hardened Adamantite Bar",
+        "quantity": 2
+      },
+      {
+        "id": "22451",
+        "name": "Primal Air",
+        "quantity": 6
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32577",
+    "name": "Living Earth Bindings",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "23793",
+        "name": "Heavy Knothide Leather",
+        "quantity": 4
+      },
+      {
+        "id": "22451",
+        "name": "Primal Air",
+        "quantity": 4
+      },
+      {
+        "id": "22452",
+        "name": "Primal Earth",
+        "quantity": 4
+      },
+      {
+        "id": "29547",
+        "name": "Wind Scales",
+        "quantity": 12
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32574",
+    "name": "Bindings of Lightning Reflexes",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "23793",
+        "name": "Heavy Knothide Leather",
+        "quantity": 4
+      },
+      {
+        "id": "22451",
+        "name": "Primal Air",
+        "quantity": 4
+      },
+      {
+        "id": "21885",
+        "name": "Primal Water",
+        "quantity": 4
+      },
+      {
+        "id": "29547",
+        "name": "Wind Scales",
+        "quantity": 12
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32580",
+    "name": "Swiftstrike Bracers",
+    "profession": "PHASE THREE BOE",
+    "category": "Heart of Darkness Armor",
+    "reagents": [
+      {
+        "id": "23793",
+        "name": "Heavy Knothide Leather",
+        "quantity": 4
+      },
+      {
+        "id": "22451",
+        "name": "Primal Air",
+        "quantity": 10
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32420",
+    "name": "Night's End",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21842",
+        "name": "Bolt of Imbued Netherweave",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 2
+      },
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "itemId": "32389",
+    "name": "Soulguard Leggings",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 3
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 4
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 6
+      },
+      {
+        "id": "21842",
+        "name": "Bolt of Imbued Netherweave",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "itemId": "32390",
+    "name": "Soulguard Girdle",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 3
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "21842",
+        "name": "Bolt of Imbued Netherweave",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "itemId": "32391",
+    "name": "Soulguard Slippers",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "21842",
+        "name": "Bolt of Imbued Netherweave",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "itemId": "32392",
+    "name": "Soulguard Bracers",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 1
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 2
+      },
+      {
+        "id": "21842",
+        "name": "Bolt of Imbued Netherweave",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "itemId": "32393",
+    "name": "Redeemed Soul Cinch",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 3
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "25707",
+        "name": "Fel Hide",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "itemId": "32394",
+    "name": "Redeemed Soul Moccasins",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "25707",
+        "name": "Fel Hide",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32395",
+    "name": "Redeemed Soul Wristguards",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 1
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 2
+      },
+      {
+        "id": "25707",
+        "name": "Fel Hide",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "itemId": "32396",
+    "name": "Redeemed Soul Legguards",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 3
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 4
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 6
+      },
+      {
+        "id": "25707",
+        "name": "Fel Hide",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "itemId": "32397",
+    "name": "Waistguard of Shackled Souls",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 3
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "25700",
+        "name": "Fel Scales",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "itemId": "32398",
+    "name": "Boots of Shackled Souls",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "25700",
+        "name": "Fel Scales",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32399",
+    "name": "Bracers of Shackled Souls",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 1
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 2
+      },
+      {
+        "id": "25700",
+        "name": "Fel Scales",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "itemId": "32400",
+    "name": "Greaves of Shackled Souls",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 3
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 4
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 6
+      },
+      {
+        "id": "25700",
+        "name": "Fel Scales",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "itemId": "32401",
+    "name": "Shadesteel Girdle",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 3
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "23446",
+        "name": "Adamantite Bar",
+        "quantity": 8
+      }
+    ]
+  },
+  {
+    "itemId": "32402",
+    "name": "Shadesteel Sabots",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 2
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 4
+      },
+      {
+        "id": "23446",
+        "name": "Adamantite Bar",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32403",
+    "name": "Shadesteel Bracers",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 1
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 2
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 2
+      },
+      {
+        "id": "23446",
+        "name": "Adamantite Bar",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "itemId": "32404",
+    "name": "Shadesteel Greaves",
+    "profession": "Shadow Resistance",
+    "category": "Heart of Darkness",
+    "reagents": [
+      {
+        "id": "32428",
+        "name": "Heart of Darkness",
+        "quantity": 3
+      },
+      {
+        "id": "22450",
+        "name": "Void Crystal",
+        "quantity": 1
+      },
+      {
+        "id": "21886",
+        "name": "Primal Life",
+        "quantity": 4
+      },
+      {
+        "id": "22456",
+        "name": "Primal Shadow",
+        "quantity": 6
+      },
+      {
+        "id": "23446",
+        "name": "Adamantite Bar",
+        "quantity": 12
+      }
+    ]
   }
 ]

@@ -9,6 +9,7 @@ export type JewelcraftingCutGem = {
   name: string;
   color: string;
   rawGem: string;
+  rarity: string;
   craftingCost: number;
   ahPrice: number | null;
 };

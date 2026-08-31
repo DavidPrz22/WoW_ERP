@@ -10,12 +10,17 @@ class GEM_COLORS(models.TextChoices):
     ORANGE = 'Orange', 'Orange'
     PURPLE = 'Purple', 'Purple'
 
+class GEM_RARITY(models.TextChoices):
+    COMMON = 'Common', 'Common'
+    RARE = 'Rare', 'Rare'
+    EPIC = 'Epic', 'Epic'
+
 
 class JewelcraftingItems(models.Model):
     item = models.OneToOneField(Item, on_delete=models.CASCADE, unique=True)
     proc_chance = models.FloatField()
     vendor_price = models.IntegerField()
-
+    rarity = models.CharField(max_length=50, choices=GEM_RARITY.choices, default=GEM_RARITY.RARE)
     def __str__(self):
         return self.item.name
     

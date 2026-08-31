@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useJewelcraftingStore } from "@/ZustandStores/useJewelcraftingStore";
 import { GemcuttingSectionTable } from "./GemcuttingSectionTable";
 import { JewelcraftingSummaryCards } from "./JewelcraftingSummaryCards";
@@ -33,6 +34,95 @@ function groupByColorAndGem(cuts: JewelcraftingCutGem[]): CutSection[] {
   return Object.values(groups);
 }
 
+function computeGrand(
+  sections: CutSection[],
+  useProspectPrices: boolean,
+  prospectingPrices: Record<string, number>,
+  AhPrices: Record<string, number>,
+  cutPrices: Record<string, number>,
+  quantities: Record<string, number>,
+) {
+  let cost = 0;
+  let profit = 0;
+
+  for (const section of sections) {
+    const gemCostCopper = useProspectPrices
+      ? prospectingPrices[section.gem] ?? (section.items[0]?.craftingCost ?? 0)
+      : AhPrices[section.gem] ?? (section.items[0]?.craftingCost ?? 0);
+    const gemCost = gemCostCopper / 10000;
+
+    for (const item of section.items) {
+      const qty = quantities[item.name] ?? 0;
+      if (qty <= 0) continue;
+
+      const rowCost = gemCost;
+      const ahCopperInput = cutPrices[item.name] ?? item.ahPrice ?? 0;
+      const ah = ahCopperInput / 10000;
+      const profitPerItem = ah * (1 - AH_CUT) - rowCost;
+      cost += rowCost * qty;
+      profit += profitPerItem * qty;
+    }
+  }
+
+  return { cost: cost * 10000, profit: profit * 10000 };
+}
+
+function RarityTabContent({
+  cuts,
+  useProspectPrices,
+  prospectingPrices,
+  AhPrices,
+  cutPrices,
+  setCutPrices,
+  quantities,
+  setQty,
+}: {
+  cuts: JewelcraftingCutGem[];
+  useProspectPrices: boolean;
+  prospectingPrices: Record<string, number>;
+  AhPrices: Record<string, number>;
+  cutPrices: Record<string, number>;
+  setCutPrices: (updater: (prev: Record<string, number>) => Record<string, number>) => void;
+  quantities: Record<string, number>;
+  setQty: (name: string, val: number) => void;
+}) {
+  const sections = groupByColorAndGem(cuts);
+
+  const grand = useMemo(
+    () => computeGrand(sections, useProspectPrices, prospectingPrices, AhPrices, cutPrices, quantities),
+    [sections, useProspectPrices, prospectingPrices, AhPrices, cutPrices, quantities],
+  );
+
+  return (
+    <div className="space-y-6">
+      <JewelcraftingSummaryCards grand={grand} />
+
+      {sections.map((section) => {
+        const fallbackCost = section.items[0]?.craftingCost ?? 0;
+        const gemCostCopper = useProspectPrices
+          ? prospectingPrices[section.gem] ?? fallbackCost
+          : AhPrices[section.gem] ?? fallbackCost;
+        const gemCost = gemCostCopper / 10000;
+
+        return (
+          <GemcuttingSectionTable
+            key={`${section.color}|${section.gem}`}
+            color={section.color}
+            colorClass={section.colorClass}
+            gem={section.gem}
+            items={section.items}
+            cost={gemCost}
+            cutPrices={cutPrices}
+            setCutPrices={setCutPrices}
+            quantities={quantities}
+            setQty={setQty}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: { cutGems: JewelcraftingCutGem[] | null; AhPrices: Record<string, number>; prospectingPrices: Record<string, number> }) {
   const { quantities, setQty } = useJewelcraftingStore();
   const [useProspectPrices, setUseProspectPrices] = useState(false);
@@ -44,33 +134,9 @@ export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: { cutG
     return m;
   });
 
-  const sections = groupByColorAndGem(cutGems ?? []);
-
-  const grand = useMemo(() => {
-    let cost = 0;
-    let profit = 0;
-
-    for (const section of sections) {
-      const gemCostCopper = useProspectPrices
-        ? prospectingPrices[section.gem] ?? (section.items[0]?.craftingCost ?? 0)
-        : AhPrices[section.gem] ?? (section.items[0]?.craftingCost ?? 0);
-      const gemCost = gemCostCopper / 10000;
-
-      for (const item of section.items) {
-        const qty = quantities[item.name] ?? 0;
-        if (qty <= 0) continue;
-
-        const rowCost = gemCost;
-        const ahCopperInput = cutPrices[item.name] ?? item.ahPrice ?? 0;
-        const ah = ahCopperInput / 10000;
-        const profitPerItem = ah * (1 - AH_CUT) - rowCost;
-        cost += rowCost * qty;
-        profit += profitPerItem * qty;
-      }
-    }
-
-    return { cost: cost * 10000, profit: profit * 10000 };
-  }, [sections, useProspectPrices, prospectingPrices, AhPrices, cutPrices, quantities]);
+  const allCuts = useMemo(() => cutGems ?? [], [cutGems]);
+  const rareCuts = useMemo(() => allCuts.filter((c) => c.rarity !== "Epic"), [allCuts]);
+  const epicCuts = useMemo(() => allCuts.filter((c) => c.rarity === "Epic"), [allCuts]);
 
   return (
     <div className="space-y-6">
@@ -95,32 +161,42 @@ export function GemcuttingPanel({ cutGems, AhPrices, prospectingPrices }: { cutG
         </div>
       </div>
 
-      <JewelcraftingSummaryCards grand={grand} />
+      <Tabs defaultValue="rare" className="space-y-6">
+        <TabsList className="bg-card/40 border border-border/70">
+          <TabsTrigger value="rare" className="uppercase tracking-wider text-xs data-[state=active]:text-gold">
+            Rare
+          </TabsTrigger>
+          <TabsTrigger value="epic" className="uppercase tracking-wider text-xs data-[state=active]:text-gold">
+            Epic
+          </TabsTrigger>
+        </TabsList>
 
-      {sections.map((section) => {
-        
-        const fallbackCost = section.items[0]?.craftingCost ?? 0;
-        const gemCostCopper = useProspectPrices
-          ? prospectingPrices[section.gem] ?? fallbackCost
-          : AhPrices[section.gem] ?? fallbackCost;
-  
-        const gemCost = gemCostCopper / 10000;
-
-        return (
-          <GemcuttingSectionTable
-            key={`${section.color}|${section.gem}`}
-            color={section.color}
-            colorClass={section.colorClass}
-            gem={section.gem}
-            items={section.items}
-            cost={gemCost}
+        <TabsContent value="rare" className="mt-0">
+          <RarityTabContent
+            cuts={rareCuts}
+            useProspectPrices={useProspectPrices}
+            prospectingPrices={prospectingPrices}
+            AhPrices={AhPrices}
             cutPrices={cutPrices}
             setCutPrices={setCutPrices}
             quantities={quantities}
             setQty={setQty}
           />
-        );
-      })}
+        </TabsContent>
+
+        <TabsContent value="epic" className="mt-0">
+          <RarityTabContent
+            cuts={epicCuts}
+            useProspectPrices={useProspectPrices}
+            prospectingPrices={prospectingPrices}
+            AhPrices={AhPrices}
+            cutPrices={cutPrices}
+            setCutPrices={setCutPrices}
+            quantities={quantities}
+            setQty={setQty}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

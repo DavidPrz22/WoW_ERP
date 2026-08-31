@@ -96,6 +96,7 @@ class GetJewelcraftingItemsView(generics.ListAPIView):
                 'name': gc.gem_cut.name,
                 'color': gc.color,
                 'rawGem': gc.gem.item.name,
+                'rarity': gc.gem.rarity,
                 'craftingCost': crafting_cost,
                 'ahPrice': cut_ah_price,
             })

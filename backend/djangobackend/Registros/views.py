@@ -325,16 +325,21 @@ class GenerateRecordsDataView(GenericAPIView):
     def get(self, request):
         
         HERBS_GROUP = ["Felweed", "Dreaming Glory", "Nightmare Vine", "Terocone", "Ancient Lichen", "Netherbloom", "Mana Thistle", "Ragveil", "Fel Lotus", "Dreamfoil", "Mountain Silversage", "Plaguebloom", "Icecap", "Black Lotus", "Arthas' Tears", "Blindweed", "Gromsblood", "Firebloom", "Golden Sansam"]
-        ORE_BARS_GROUP = ["Fel Iron Ore", "Fel Iron Bar", "Adamantite Ore", "Adamantite Bar", "Khorium Ore", "Khorium Bar", "Eternium Ore", "Eternium Bar", "Felsteel Bar", "Hardened Adamantite Bar"]
+        ORE_BARS_GROUP = ["Mithril Bar", "Solid Stone","Fel Iron Ore", "Fel Iron Bar", "Adamantite Ore", "Adamantite Bar", "Khorium Ore", "Khorium Bar", "Eternium Ore", "Eternium Bar", "Felsteel Bar", "Hardened Adamantite Bar"]
         CLOTH_GROUP = ["Netherweave Cloth", "Netherweb Spider Silk", "Spellcloth", "Shadowcloth", "Primal Mooncloth", "Bolt of Netherweave", "Bolt of Imbued Netherweave"]
         LEATHER_GROUP = ["Knothide Leather", "Knothide Leather Scraps", "Heavy Knothide Leather", "Wind Scales", "Fel Hide", "Nether Dragonscales", "Thick Clefthoof Leather", "Fel Scales", "Cobra Scales"]
         ENCHANTING_GROUP = ["Arcane Dust", "Greater Planar Essence", "Large Prismatic Shard", "Void Crystal", "Large Brilliant Shard"]
         JEWELCRAFTING_GROUP = ["Living Ruby", "Dawnstone", "Star of Elune", "Noble Topaz", "Talasite", "Nightseye", "Adamantite Powder"]
+        EPIC_GEMS_GROUP=["Crimson Spinel","Pyrestone", "Lionseye", "Seaspray Emerald", "Empyrean Sapphire", "Shadowsong Amethyst"]
         COOKING_GROUP = ["Warped Flesh", "Figluster's Mudfish", "Clefthoof Meat", "Chunk o' Basilisk", "Icefin Bluefish", "Serpent Flesh", "Golden Darter", "Furious Crawdad", "Talbuk Venison", "Buzzard Meat", "Huge Spotted Feltail"]
         ELEMENTALS_GROUP = ["Primal Mana", "Primal Earth", "Primal Life", "Primal Fire", "Primal Air", "Primal Shadow", "Primal Water", "Mote of Mana", "Mote of Earth", "Mote of Life", "Mote of Fire", "Mote of Air", "Mote of Shadow", "Mote of Water", "Primal Might"]
+        MISC_GROUP= ["Mark of the Illidari", "Heart of Darkness"]
         VIALS_GROUP = ["Imbued Vial", "Crystal Vial"]
+
         
         DATA_RECORDS = {
+            'PHASE THREE MISC PRICES': MISC_GROUP,
+            'EPIC GEMS PRICES': EPIC_GEMS_GROUP,
             'HERB PRICES': HERBS_GROUP,
             'ORE AND BAR PRICES': ORE_BARS_GROUP,
             'CLOTH PRICES': CLOTH_GROUP,
